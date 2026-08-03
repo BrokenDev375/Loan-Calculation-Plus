@@ -93,14 +93,14 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
         if (activity != null) AdManager.showInter(activity, "inter_home") { onOpen(type) } else onOpen(type)
     }
     Scaffold(bottomBar = { FinanceBottomBar("home", onNavigate) }) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+        LazyColumn(modifier = Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(bottom = 10.dp)) {
             item { FinanceHero() }
             item { CalculatorGrid(listOf(CalculatorType.PERSONAL, CalculatorType.BUSINESS, CalculatorType.MORTGAGE, CalculatorType.AUTO), ::openCalculator) }
             item { HomeSectionTitle("Investment") }
-            item { NativeAdSlot("native_home", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(), isSmall = false) }
+            item { NativeAdSlot("native_home", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(240.dp), isSmall = false) }
             item { InvestmentRow(CalculatorType.FD, ::openCalculator) }
             item { InvestmentRow(CalculatorType.RD, ::openCalculator) }
-            item { OutlinedButton(onClick = { IapOpener.open(context, "home") }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()) { Text("Remove ads and unlock premium") } }
+            item { OutlinedButton(onClick = { IapOpener.open(context, "home") }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(44.dp)) { Text("Remove ads and unlock premium", style = MaterialTheme.typography.bodyMedium) } }
             item {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("History", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -123,13 +123,13 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
 }
 
 @Composable
-private fun HomeSectionTitle(title: String) { Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 20.dp)) }
+private fun HomeSectionTitle(title: String) { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 20.dp)) }
 
 @Composable
 private fun CalculatorGrid(types: List<CalculatorType>, onClick: (CalculatorType) -> Unit) {
-    Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         types.chunked(2).forEach { row ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 row.forEach { type -> Box(Modifier.weight(1f)) { CalculatorCard(type) { onClick(type) } } }
                 if (row.size == 1) Spacer(Modifier.weight(1f))
             }
@@ -139,9 +139,9 @@ private fun CalculatorGrid(types: List<CalculatorType>, onClick: (CalculatorType
 
 @Composable
 private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Unit) {
-    Card(onClick = { onClick(type) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
-            DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(50.dp))
+    Card(onClick = { onClick(type) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(66.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+        Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(46.dp))
             Column(Modifier.weight(1f).padding(start = 12.dp)) { Text(if (type == CalculatorType.FD) "FD" else "RD", fontWeight = FontWeight.Bold); Text(type.label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall) }
             FinanceArrow()
         }
@@ -150,13 +150,13 @@ private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Uni
 
 @Composable
 private fun CalculatorCard(type: CalculatorType, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().height(136.dp), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().height(116.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+        Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                FinanceLoanIcon(type.iconIndex(), Modifier.size(68.dp))
+                FinanceLoanIcon(type.iconIndex(), Modifier.size(58.dp))
                 FinanceArrow()
             }
-            Text(type.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+            Text(type.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

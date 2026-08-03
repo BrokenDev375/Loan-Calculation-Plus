@@ -108,9 +108,9 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
 
 @Composable
 fun FinanceHero(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().height(196.dp)) {
+    Box(modifier.fillMaxWidth().height(176.dp)) {
         Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 34.dp), color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
     }
 }
 
