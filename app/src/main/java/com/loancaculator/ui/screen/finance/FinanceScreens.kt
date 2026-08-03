@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -60,6 +61,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.clip
@@ -103,7 +105,26 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
             item { NativeAdSlot("native_home", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(240.dp), isSmall = false) }
             item { InvestmentRow(CalculatorType.FD, ::openCalculator) }
             item { InvestmentRow(CalculatorType.RD, ::openCalculator) }
-            item { OutlinedButton(onClick = { IapOpener.open(context, "home") }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(44.dp)) { Text("Remove ads and unlock premium", style = MaterialTheme.typography.bodyMedium) } }
+            item {
+                Button(
+                    onClick = { IapOpener.open(context, "home") },
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .background(
+                            Brush.horizontalGradient(listOf(Color(0xFFD18A00), Gold, Color(0xFFFFD96A), Gold, Color(0xFFD18A00))),
+                            RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF4A2B00)),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 2.dp),
+                ) {
+                    Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.size(8.dp))
+                    Text("Remove ads and unlock premium", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                }
+            }
             item {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("History", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
