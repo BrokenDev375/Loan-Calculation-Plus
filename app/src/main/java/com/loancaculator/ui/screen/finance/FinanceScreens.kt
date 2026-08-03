@@ -59,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -79,12 +80,15 @@ import com.loancaculator.data.finance.DepositInput
 import com.loancaculator.data.finance.FinancialCalculator
 import com.loancaculator.data.finance.LoanInput
 import kotlinx.coroutines.flow.collectLatest
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
 fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val history by viewModel.history.collectAsState()
+    val recentHistory = history.take(6)
     val context = LocalContext.current
     fun openCalculator(type: CalculatorType) {
         val activity = context.findActivity()
@@ -102,21 +106,111 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
             item {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("History", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    OutlinedButton(onClick = { onNavigate("history") }) { Text("View all") }
+                    TextButton(onClick = { onNavigate("history") }, contentPadding = PaddingValues(0.dp)) {
+                        Text("View all \u2192", color = Color(0xFF16B2D7), style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
             }
-            item {
-                if (history.isEmpty()) Text("No saved calculations yet", Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                else history.take(2).forEach { historyItem ->
-                    Card(onClick = { onNavigate("result/${historyItem.id}") }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().padding(bottom = 8.dp), shape = RoundedCornerShape(16.dp)) {
-                        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) { Text(historyItem.title, fontWeight = FontWeight.Bold); Text(historyItem.resultSummary.substringBefore("|"), color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                            FinanceArrow()
-                        }
+            if (recentHistory.isEmpty()) {
+                item {
+                    Text(
+                        "No calculations yet \u2014 try a loan or deposit calculator.",
+                        Modifier.padding(horizontal = 20.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                recentHistory.forEach { historyItem ->
+                    item {
+                        HomeHistoryCard(historyItem) { onNavigate("result/${historyItem.id}") }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun HomeHistoryCard(item: CalculationHistoryEntity, onOpen: () -> Unit) {
+    val type = CalculatorType.fromKey(item.calculatorType)
+    val stats = homeHistoryStats(item, type)
+
+    Card(
+        onClick = onOpen,
+        modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                if (type.category == "Loans") {
+                    FinanceLoanIcon(type.iconIndex(), Modifier.size(44.dp))
+                } else {
+                    DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(44.dp))
+                }
+                Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                    Text(item.title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                    Text(
+                        SimpleDateFormat("M/d/yy", Locale.US).format(Date(item.createdAt)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Box(
+                    Modifier.size(28.dp).background(Color(0xFFE1EFF5), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    FinanceArrow()
+                }
+            }
+            Canvas(Modifier.fillMaxWidth().height(1.dp)) {
+                drawLine(
+                    color = Color(0xFFD7E2E6),
+                    start = androidx.compose.ui.geometry.Offset.Zero,
+                    end = androidx.compose.ui.geometry.Offset(size.width, 0f),
+                    strokeWidth = 1f,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f)),
+                )
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                stats.forEach { (label, value) ->
+                    Column(Modifier.weight(1f)) {
+                        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 2.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun homeHistoryStats(item: CalculationHistoryEntity, type: CalculatorType): List<Pair<String, String>> {
+    val currencyCode = loanCurrencyCode(item.inputJson)
+    val rate = inputValue(item.inputJson, "rate")?.toDoubleOrNull()?.let { "${String.format(Locale.US, "%.2f", it)}%" } ?: "—"
+    val months = inputValue(item.inputJson, "months")?.toIntOrNull()
+    val durationLabel = if (type.category == "Deposits") "Tenure" else "Duration"
+    val duration = months?.let(::historyDuration) ?: "—"
+    val amountKey = when {
+        type == CalculatorType.MORTGAGE -> "homePrice"
+        type == CalculatorType.RD -> "monthlyContribution"
+        else -> "principal"
+    }
+    val amount = inputValue(item.inputJson, amountKey)?.toDoubleOrNull()?.let { money(it, currencyCode) } ?: "—"
+    val amountLabel = when {
+        type == CalculatorType.MORTGAGE -> "Home Price"
+        type == CalculatorType.RD -> "Monthly Deposit"
+        type.category == "Deposits" -> "Investment"
+        else -> "Loan Amount"
+    }
+    return listOf("Interest" to rate, durationLabel to duration, amountLabel to amount)
+}
+
+private fun historyDuration(months: Int): String {
+    return if (months % 12 == 0) {
+        val years = months / 12
+        "$years Year${if (years == 1) "" else "s"}"
+    } else {
+        "$months Month${if (months == 1) "" else "s"}"
     }
 }
 
