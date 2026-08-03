@@ -34,6 +34,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
@@ -122,7 +123,7 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
             } else {
                 recentHistory.forEach { historyItem ->
                     item {
-                        HomeHistoryCard(historyItem) { onNavigate("result/${historyItem.id}") }
+                        FinanceHistoryCard(historyItem, onOpen = { onNavigate("result/${historyItem.id}") })
                     }
                 }
             }
@@ -131,17 +132,28 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
 }
 
 @Composable
-private fun HomeHistoryCard(item: CalculationHistoryEntity, onOpen: () -> Unit) {
+internal fun FinanceHistoryCard(
+    item: CalculationHistoryEntity,
+    onOpen: () -> Unit,
+    viewAllStyle: Boolean = false,
+    selectionMode: Boolean = false,
+    selected: Boolean = false,
+    onToggleSelected: () -> Unit = {},
+) {
     val type = CalculatorType.fromKey(item.calculatorType)
-    val stats = homeHistoryStats(item, type)
+    val stats = financeHistoryStats(item, type)
 
     Card(
-        onClick = onOpen,
+        onClick = { if (selectionMode) onToggleSelected() else onOpen() },
         modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(if (viewAllStyle) 20.dp else 16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = if (selected) BorderStroke(2.dp, Color(0xFF16B2D7)) else null,
     ) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            Modifier.padding(if (viewAllStyle) PaddingValues(horizontal = 20.dp, vertical = 18.dp) else PaddingValues(16.dp)),
+            verticalArrangement = Arrangement.spacedBy(if (viewAllStyle) 14.dp else 12.dp),
+        ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 if (type.category == "Loans") {
                     FinanceLoanIcon(type.iconIndex(), Modifier.size(44.dp))
@@ -149,18 +161,26 @@ private fun HomeHistoryCard(item: CalculationHistoryEntity, onOpen: () -> Unit) 
                     DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(44.dp))
                 }
                 Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                    Text(item.title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                    Text(
+                        if (type == CalculatorType.MORTGAGE) "Mortgages" else item.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
                     Text(
                         SimpleDateFormat("M/d/yy", Locale.US).format(Date(item.createdAt)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Box(
-                    Modifier.size(28.dp).background(Color(0xFFE1EFF5), CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    FinanceArrow()
+                if (selectionMode) {
+                    Checkbox(checked = selected, onCheckedChange = { onToggleSelected() })
+                } else {
+                    Box(
+                        Modifier.size(28.dp).background(Color(0xFFE1EFF5), CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        FinanceArrow()
+                    }
                 }
             }
             Canvas(Modifier.fillMaxWidth().height(1.dp)) {
@@ -184,22 +204,23 @@ private fun HomeHistoryCard(item: CalculationHistoryEntity, onOpen: () -> Unit) 
     }
 }
 
-private fun homeHistoryStats(item: CalculationHistoryEntity, type: CalculatorType): List<Pair<String, String>> {
+internal fun financeHistoryStats(item: CalculationHistoryEntity, type: CalculatorType): List<Pair<String, String>> {
     val currencyCode = loanCurrencyCode(item.inputJson)
-    val rate = inputValue(item.inputJson, "rate")?.toDoubleOrNull()?.let { "${String.format(Locale.US, "%.2f", it)}%" } ?: "—"
+    val rateValue = inputValue(item.inputJson, "rate")?.toDoubleOrNull()
+        ?: summaryEntries(item.resultSummary).firstOrNull { it.first == "Interest Rate" }?.second?.toDoubleOrNull()
+    val rate = rateValue?.let { "${String.format(Locale.US, "%.2f", it)}%" } ?: "-"
     val months = inputValue(item.inputJson, "months")?.toIntOrNull()
     val durationLabel = if (type.category == "Deposits") "Tenure" else "Duration"
-    val duration = months?.let(::historyDuration) ?: "—"
+    val duration = months?.let(::historyDuration) ?: "-"
     val amountKey = when {
         type == CalculatorType.MORTGAGE -> "homePrice"
         type == CalculatorType.RD -> "monthlyContribution"
         else -> "principal"
     }
-    val amount = inputValue(item.inputJson, amountKey)?.toDoubleOrNull()?.let { money(it, currencyCode) } ?: "—"
+    val amount = inputValue(item.inputJson, amountKey)?.toDoubleOrNull()?.let { money(it, currencyCode) } ?: "-"
     val amountLabel = when {
-        type == CalculatorType.MORTGAGE -> "Home Price"
         type == CalculatorType.RD -> "Monthly Deposit"
-        type.category == "Deposits" -> "Investment"
+        type == CalculatorType.FD -> "Investment Amount"
         else -> "Loan Amount"
     }
     return listOf("Interest" to rate, durationLabel to duration, amountLabel to amount)
@@ -434,7 +455,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                             val totalMonthly = result.monthlyPayment + extraMonthly
                             val totalPayment = result.totalPayment + extraMonthly * m
                             val summary = "Home Price=$p|Down Payment=$down|Interest Rate=$r|Loan Term=$m|Property Tax=${propertyTax.toDoubleOrNull() ?: 0.0}|PMI=${pmi.toDoubleOrNull() ?: 0.0}|HOA Fees=${hoaFees.toDoubleOrNull() ?: 0.0}|Home insurance=${homeInsurance.toDoubleOrNull() ?: 0.0}|Principal & Interest=${result.monthlyPayment}|Monthly payment=$totalMonthly|Total payment=$totalPayment|Total interest=${result.totalInterest}"
-                            viewModel.save(type, "homePrice=$p;downPayment=$down;months=$m;propertyTax=$propertyTax;pmi=$pmi;hoaFees=$hoaFees;homeInsurance=$homeInsurance;currency=${currency.code}", summary, onSaved)
+                            viewModel.save(type, "homePrice=$p;downPayment=$down;rate=$r;months=$m;propertyTax=$propertyTax;pmi=$pmi;hoaFees=$hoaFees;homeInsurance=$homeInsurance;currency=${currency.code}", summary, onSaved)
                         }
                     } else if (type.category == "Loans") {
                         error = null

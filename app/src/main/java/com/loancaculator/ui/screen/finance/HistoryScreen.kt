@@ -1,18 +1,26 @@
 package com.loancaculator.ui.screen.finance
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,70 +39,123 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
-fun FinanceHistoryScreen(onBack: () -> Unit, onOpen: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
+fun FinanceHistoryScreen(
+    onBack: () -> Unit,
+    onOpen: (Long) -> Unit,
+    viewModel: FinanceViewModel = hiltViewModel(),
+) {
     val history by viewModel.history.collectAsState()
-    var segment by remember { mutableStateOf("Calculation") }
-    val visible = history.filter { if (segment == "Investment") it.category == "Deposits" else it.category == "Loans" }
+    var segment by remember { mutableStateOf("Calculator") }
+    var selectionMode by remember { mutableStateOf(false) }
+    var selectedIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
+    val visible = history.filter { item ->
+        if (segment == "Investment") item.category == "Deposits" else item.category == "Loans"
+    }
 
-    Scaffold(topBar = { FinanceTopBar("History", "Review your saved calculations", onBack) }) { padding ->
+    fun changeSegment(next: String) {
+        segment = next
+        selectedIds = emptySet()
+    }
+
+    fun toggleSelectionMode() {
+        selectionMode = !selectionMode
+        selectedIds = emptySet()
+    }
+
+    Scaffold(
+        containerColor = Color(0xFFD0EFFF),
+        topBar = {
+            FinanceTopBar(
+                title = "History",
+                onBack = onBack,
+                actions = {
+                    IconButton(
+                        onClick = ::toggleSelectionMode,
+                        modifier = Modifier.background(Color.White, CircleShape),
+                    ) {
+                        Icon(
+                            imageVector = if (selectionMode) Icons.Default.Close else Icons.Default.Edit,
+                            contentDescription = if (selectionMode) "Exit selection mode" else "Select history",
+                            tint = Color(0xFF18A9D0),
+                        )
+                    }
+                },
+            )
+        },
+        bottomBar = {
+            if (selectionMode && selectedIds.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        selectedIds.forEach { viewModel.deleteHistory(it) }
+                        selectedIds = emptySet()
+                        selectionMode = false
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp).height(52.dp),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC24545)),
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Delete selected (${selectedIds.size})")
+                }
+            }
+        },
+    ) { padding ->
         LazyColumn(
             Modifier.padding(padding),
-            contentPadding = PaddingValues(bottom = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(bottom = if (selectedIds.isNotEmpty()) 92.dp else 20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
                 Card(
-                    modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp).fillMaxWidth(),
                     shape = RoundedCornerShape(28.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 ) {
                     Row(Modifier.padding(5.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        HistorySegment("Calculation", segment == "Calculation") { segment = "Calculation" }
-                        HistorySegment("Investment", segment == "Investment") { segment = "Investment" }
+                        HistorySegment("Calculator", segment == "Calculator") { changeSegment("Calculator") }
+                        HistorySegment("Investment", segment == "Investment") { changeSegment("Investment") }
                     }
                 }
             }
             if (visible.isEmpty()) {
                 item {
-                    Text(
-                        if (segment == "Investment") "No investment history yet" else "No calculation history yet",
-                        Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            items(visible) { item ->
-                Card(
-                    onClick = { onOpen(item.id) },
-                    modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                ) {
-                    Column(Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) {
-                                Text(item.title, style = MaterialTheme.typography.titleMedium)
-                                Text(
-                                    SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.US).format(Date(item.createdAt)),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            }
-                            IconButton(onClick = { viewModel.deleteHistory(item.id) }) { Icon(Icons.Default.Delete, "Delete") }
+                    Card(
+                        modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, Color(0xFFE1E9EF)),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                    ) {
+                        Box(
+                            Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 34.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                if (segment == "Investment") "No investment history records yet." else "No calculator history records yet.",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                            )
                         }
-                        Text(
-                            item.resultSummary.replace("|", "  \u2022  "),
-                            Modifier.padding(top = 12.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
                     }
+                }
+            } else {
+                items(visible, key = { it.id }) { item ->
+                    FinanceHistoryCard(
+                        item = item,
+                        onOpen = { onOpen(item.id) },
+                        viewAllStyle = true,
+                        selectionMode = selectionMode,
+                        selected = item.id in selectedIds,
+                        onToggleSelected = {
+                            selectedIds = if (item.id in selectedIds) selectedIds - item.id else selectedIds + item.id
+                        },
+                    )
                 }
             }
         }
