@@ -350,15 +350,15 @@ private fun DepositSpriteIcon(index: Int, modifier: Modifier = Modifier.size(54.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
-    var principal by remember { mutableStateOf("0") }
-    var rate by remember { mutableStateOf("0") }
-    var months by remember { mutableStateOf("0") }
-    var downPayment by remember { mutableStateOf("0") }
-    var downPaymentPercent by remember { mutableStateOf("0") }
-    var propertyTax by remember { mutableStateOf("0") }
-    var pmi by remember { mutableStateOf("0") }
-    var hoaFees by remember { mutableStateOf("0") }
-    var homeInsurance by remember { mutableStateOf("0") }
+    var principal by remember { mutableStateOf("") }
+    var rate by remember { mutableStateOf("") }
+    var months by remember { mutableStateOf("") }
+    var downPayment by remember { mutableStateOf("") }
+    var downPaymentPercent by remember { mutableStateOf("") }
+    var propertyTax by remember { mutableStateOf("") }
+    var pmi by remember { mutableStateOf("") }
+    var hoaFees by remember { mutableStateOf("") }
+    var homeInsurance by remember { mutableStateOf("") }
     var compounding by remember { mutableStateOf("1") }
     var error by remember { mutableStateOf<String?>(null) }
     var currencyCode by remember { mutableStateOf("GBP") }
@@ -414,17 +414,23 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     FinanceField("Home Price", principal, {
                         principal = it
                         val home = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
-                        val currentDown = downPayment.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                        val currentDown = downPayment.toDoubleOrNull()?.coerceAtLeast(0.0)
+                        val currentPercent = downPaymentPercent.toDoubleOrNull()?.coerceIn(0.0, 100.0)
                         if (it.isEmpty()) {
                             downPayment = ""
                             downPaymentPercent = ""
                         } else if (home > 0.0) {
-                            val clampedDown = currentDown.coerceAtMost(home)
-                            downPayment = formatMortgageAmount(clampedDown)
-                            downPaymentPercent = formatMortgagePercent(clampedDown / home * 100.0)
-                        } else {
-                            downPayment = "0"
-                            downPaymentPercent = "0"
+                            when {
+                                currentDown != null -> {
+                                    val clampedDown = currentDown.coerceAtMost(home)
+                                    downPayment = formatMortgageAmount(clampedDown)
+                                    downPaymentPercent = formatMortgagePercent(clampedDown / home * 100.0)
+                                }
+                                currentPercent != null -> {
+                                    downPaymentPercent = formatMortgagePercent(currentPercent)
+                                    downPayment = formatMortgageAmount(home * currentPercent / 100.0)
+                                }
+                            }
                         }
                     }, prefix = "${currency.symbol} ")
                 }
@@ -441,8 +447,8 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                                 downPayment = if (requestedDown > home) formatMortgageAmount(clampedDown) else it
                                 downPaymentPercent = formatMortgagePercent(clampedDown / home * 100.0)
                             } else {
-                                downPayment = "0"
-                                downPaymentPercent = "0"
+                                downPayment = it
+                                downPaymentPercent = ""
                             }
                         }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
                         FinanceField("Down Payment", downPaymentPercent, {
@@ -453,7 +459,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                             downPayment = if (it.isEmpty()) "" else if (home > 0.0) {
                                 formatMortgageAmount(home * clampedPercent / 100.0)
                             } else {
-                                "0"
+                                ""
                             }
                         }, suffix = "%", modifier = Modifier.weight(1f), showInfo = false)
                     }
@@ -486,7 +492,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             item { error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) } }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = { principal = "0"; rate = "0"; months = "0"; termUnit = if (isDeposit) "Month" else "Year"; compounding = "1"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
+                    Button(onClick = { principal = ""; rate = ""; months = ""; termUnit = if (isDeposit) "Month" else "Year"; compounding = "1"; downPayment = ""; downPaymentPercent = ""; propertyTax = ""; pmi = ""; hoaFees = ""; homeInsurance = ""; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
@@ -594,7 +600,7 @@ private fun LoanTermField(
             OutlinedTextField(
                 value = value,
                 onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-                placeholder = { Text(label, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+                placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
                 modifier = Modifier.weight(1f).height(56.dp),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodyMedium,
@@ -663,7 +669,7 @@ private fun MortgageTermField(value: String, onValueChange: (String) -> Unit) {
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-            placeholder = { Text("Loan Term", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
             suffix = { Text("Year", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
@@ -696,7 +702,7 @@ private fun FinanceField(
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter { char -> char.isDigit() || char == '.' }) },
-            placeholder = { Text(label, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
             prefix = { prefix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
             suffix = { suffix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
             modifier = Modifier.fillMaxWidth().height(56.dp),
