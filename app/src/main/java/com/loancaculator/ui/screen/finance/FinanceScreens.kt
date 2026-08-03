@@ -215,25 +215,32 @@ private fun DepositSpriteIcon(index: Int, modifier: Modifier = Modifier.size(54.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
-    var principal by remember { mutableStateOf("100000000") }
-    var rate by remember { mutableStateOf("8.5") }
-    var months by remember { mutableStateOf("5") }
-    var contribution by remember { mutableStateOf("1000000") }
+    var principal by remember { mutableStateOf(if (type.category == "Deposits") "" else "100000000") }
+    var rate by remember { mutableStateOf(if (type.category == "Deposits") "" else "8.5") }
+    var months by remember { mutableStateOf(if (type.category == "Deposits") "" else "5") }
     var downPayment by remember { mutableStateOf("0") }
     var downPaymentPercent by remember { mutableStateOf("0") }
     var propertyTax by remember { mutableStateOf("0") }
     var pmi by remember { mutableStateOf("0") }
     var hoaFees by remember { mutableStateOf("0") }
     var homeInsurance by remember { mutableStateOf("0") }
+    var compounding by remember { mutableStateOf("4") }
     var error by remember { mutableStateOf<String?>(null) }
     var currencyCode by remember { mutableStateOf("GBP") }
     var currencyMenuOpen by remember { mutableStateOf(false) }
-    var termUnit by remember { mutableStateOf("Year") }
+    var termUnit by remember { mutableStateOf(if (type.category == "Deposits") "Month" else "Year") }
     var termMenuOpen by remember { mutableStateOf(false) }
     var startDateMillis by remember { mutableStateOf(System.currentTimeMillis()) }
     var datePickerOpen by remember { mutableStateOf(false) }
     val currency = loanCurrency(currencyCode)
     val isLoan = type.category == "Loans"
+    val isDeposit = type.category == "Deposits"
+    val amountLabel = when {
+        type == CalculatorType.MORTGAGE -> "Home Price"
+        type == CalculatorType.RD -> "Monthly Deposit"
+        isLoan -> "Loan Amount"
+        else -> "Investment Amount"
+    }
     val loanAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
     Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
@@ -251,7 +258,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    FieldLabel(if (type == CalculatorType.MORTGAGE) "Home Price" else if (type.category == "Loans") "Loan Amount" else "Investment Amount")
+                    FieldLabel(amountLabel)
                     Box {
                         OutlinedButton(onClick = { currencyMenuOpen = true }, shape = RoundedCornerShape(24.dp), colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF10233A))) {
                             Text("${currency.flag}  ${currency.code}")
@@ -300,20 +307,20 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     }
                 }
             } else {
-                item { FinanceField(if (type.category == "Loans") "Loan Amount" else "Investment Amount", principal, { principal = it }, prefix = "${currency.symbol} ") }
+                item { FinanceField(amountLabel, principal, { principal = it }, prefix = "${currency.symbol} ") }
                 item { FinanceField("Interest Rate", rate, { rate = it }, suffix = "%") }
-                item { LoanTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }) }
-                if (type == CalculatorType.PERSONAL || type == CalculatorType.AUTO) {
+                item { LoanTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }, label = if (isDeposit) "Tenure" else "Loan Term") }
+                if (type == CalculatorType.FD) {
+                    item { DepositCompoundingField(compounding, { compounding = it }) }
+                }
+                if (type == CalculatorType.PERSONAL || type == CalculatorType.AUTO || isDeposit) {
                     item { StartDateField(startDateMillis, onClick = { datePickerOpen = true }) }
                 }
-            }
-            if (type == CalculatorType.RD) {
-                item { FinanceField("Monthly contribution", contribution, { contribution = it }, prefix = "${currency.symbol} ") }
             }
             item { error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) } }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = { principal = "100000000"; rate = "8.5"; months = "5"; termUnit = "Year"; contribution = "1000000"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
+                    Button(onClick = { principal = if (isDeposit) "" else "100000000"; rate = if (isDeposit) "" else "8.5"; months = if (isDeposit) "" else "5"; termUnit = if (isDeposit) "Month" else "Year"; compounding = "4"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
@@ -339,8 +346,15 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                         viewModel.save(type, "principal=$p;rate=$r;months=$m$startDatePart;currency=${currency.code}", FinancialCalculator.summary(type, loan = result), onSaved)
                     } else {
                         error = null
-                        val result = FinancialCalculator.deposit(DepositInput(p, r, m, if (type == CalculatorType.RD) contribution.toDoubleOrNull() ?: 0.0 else 0.0))
-                        viewModel.save(type, "principal=$p;rate=$r;months=$m;currency=${currency.code}", FinancialCalculator.summary(type, deposit = result), onSaved)
+                        val compoundPeriods = compounding.toIntOrNull() ?: 4
+                        val depositInput = if (type == CalculatorType.RD) {
+                            DepositInput(0.0, r, m, monthlyContribution = p, compounding = compoundPeriods)
+                        } else {
+                            DepositInput(p, r, m, compounding = compoundPeriods)
+                        }
+                        val result = FinancialCalculator.deposit(depositInput)
+                        val amountKey = if (type == CalculatorType.RD) "monthlyContribution" else "principal"
+                        viewModel.save(type, "$amountKey=$p;rate=$r;months=$m;compounding=$compoundPeriods;startDate=$startDateMillis;currency=${currency.code}", FinancialCalculator.summary(type, deposit = result), onSaved)
                     }
                     }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text("Calculate") }
                 }
@@ -396,14 +410,15 @@ private fun LoanTermField(
     onUnitChange: (String) -> Unit,
     menuOpen: Boolean,
     onMenuOpenChange: (Boolean) -> Unit,
+    label: String = "Loan Term",
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        FieldLabel("Loan Term")
+        FieldLabel(label)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             OutlinedTextField(
                 value = value,
                 onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-                placeholder = { Text("Loan Term", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
+                placeholder = { Text(label, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
                 modifier = Modifier.weight(1f).height(64.dp),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodyLarge,
@@ -433,6 +448,32 @@ private fun LoanTermField(
                     listOf("Year", "Month").forEach { option ->
                         DropdownMenuItem(text = { Text(option) }, onClick = { onUnitChange(option); onMenuOpenChange(false) })
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DepositCompoundingField(value: String, onValueChange: (String) -> Unit) {
+    var menuOpen by remember { mutableStateOf(false) }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        FieldLabel("The number of times interest")
+        Box {
+            OutlinedButton(
+                onClick = { menuOpen = true },
+                modifier = Modifier.fillMaxWidth().height(64.dp),
+                shape = RoundedCornerShape(30.dp),
+                border = BorderStroke(1.dp, Color.White),
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
+            ) {
+                Text(value, style = MaterialTheme.typography.bodyLarge)
+                Spacer(Modifier.weight(1f))
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose compounding frequency", tint = Color(0xFF6E777B))
+            }
+            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                listOf("1", "2", "4", "12").forEach { option ->
+                    DropdownMenuItem(text = { Text(option) }, onClick = { onValueChange(option); menuOpen = false })
                 }
             }
         }
@@ -525,6 +566,7 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (
     val entries = summaryEntries(item?.resultSummary.orEmpty())
     val currencyCode = loanCurrencyCode(item?.inputJson.orEmpty())
     val startDate = inputValue(item?.inputJson.orEmpty(), "startDate")?.toLongOrNull()
+    val termMonths = inputValue(item?.inputJson.orEmpty(), "months")?.toIntOrNull()
     val payoffMonths = entries.firstOrNull { it.first.equals("Payoff months", ignoreCase = true) }?.second?.toDoubleOrNull()?.toInt()
     Scaffold(topBar = { FinanceTopBar("Calculation result", item?.title, onBack, compact = true) }) { padding ->
         LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -532,7 +574,7 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (
             item {
                 Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        if (item?.category == "Loans" && startDate != null) {
+                        if ((item?.category == "Loans" || item?.category == "Deposits") && startDate != null) {
                             ResultDateRow("Start Date", formatDate(startDate))
                         }
                         entries.forEachIndexed { index, (label, value) ->
@@ -544,6 +586,9 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (
                         if (item?.category == "Loans" && startDate != null && payoffMonths != null) {
                             Divider(color = Color(0xFFD7E2E6))
                             ResultDateRow("Pay-off Date", payoffDate(startDate, payoffMonths))
+                        } else if (item?.category == "Deposits" && startDate != null && termMonths != null) {
+                            Divider(color = Color(0xFFD7E2E6))
+                            ResultDateRow("Maturity Date", payoffDate(startDate, termMonths))
                         }
                     }
                 }

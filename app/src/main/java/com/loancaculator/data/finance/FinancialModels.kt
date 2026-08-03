@@ -87,7 +87,7 @@ object FinancialCalculator {
                 "Total interest" to loan.totalInterest, "Payoff months" to loan.payoffMonths.toDouble())
         } else {
             mapOf("Maturity value" to (deposit?.maturityValue ?: 0.0),
-                "Total deposited" to (deposit?.totalDeposited ?: 0.0),
+                (if (type == CalculatorType.RD) "Total deposited" else "Total invested") to (deposit?.totalDeposited ?: 0.0),
                 "Interest earned" to (deposit?.interestEarned ?: 0.0))
         }
         return values.entries.joinToString("|") { "${it.key}=${String.format(Locale.US, "%.2f", it.value)}" }
