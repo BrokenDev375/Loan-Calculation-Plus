@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -23,9 +24,6 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -129,30 +127,38 @@ private val financeTabs = listOf(
 
 @Composable
 fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Modifier = Modifier) {
-    NavigationBar(modifier = modifier, containerColor = Color.White, tonalElevation = 0.dp) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .background(Color.White)
+            .padding(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         financeTabs.forEach { tab ->
-            val label = stringResource(tab.labelRes)
-            val selected = current == tab.route
-            NavigationBarItem(
-                selected = selected,
-                onClick = { onNavigate(tab.route) },
-                icon = {
-                    Box(Modifier.size(40.dp).background(if (selected) Color(0xFFE4F5FA) else Color(0xFFF1F4F5), CircleShape), contentAlignment = Alignment.Center) {
-                        Icon(tab.icon, contentDescription = label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(22.dp))
-                    }
-                },
-                label = {
-                    Text(
-                        label,
-                        fontSize = 11.sp,
-                        lineHeight = 12.sp,
-                        maxLines = 2,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-                colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF18A9D0), selectedTextColor = Color(0xFF18A9D0), unselectedIconColor = Color.Transparent, unselectedTextColor = Color(0xFF9BA7AD), indicatorColor = Color.Transparent),
-            )
+            val route = if (tab.label == "Setting") "setting" else tab.label.lowercase()
+            val selected = current == route
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { onNavigate(route) }
+                    .offset(y = 1.dp)
+                    .padding(vertical = 0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Box(Modifier.size(22.dp).background(if (selected) Color(0xFFE4F5FA) else Color(0xFFF1F4F5), CircleShape), contentAlignment = Alignment.Center) {
+                    Icon(tab.icon, contentDescription = tab.label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(15.dp))
+                }
+                Text(
+                    tab.label,
+                    fontSize = 9.sp,
+                    lineHeight = 9.sp,
+                    color = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD),
+                    maxLines = 1,
+                )
+            }
         }
     }
 }
