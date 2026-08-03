@@ -14,6 +14,7 @@
     <entry><key>native_intro4_enable</key><value>true</value></entry>
     <entry><key>native_permission_enable</key><value>true</value></entry>
     <entry><key>native_home_enable</key><value>true</value></entry>
+    <entry><key>native_tools_enable</key><value>true</value></entry>
     <entry><key>native_scan_update_enable</key><value>true</value></entry>
     <entry><key>native_update_available_enable</key><value>true</value></entry>
     <entry><key>native_user_app_enable</key><value>true</value></entry>

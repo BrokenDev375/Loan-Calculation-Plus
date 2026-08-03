@@ -2,6 +2,7 @@ package com.loancaculator.ui.screen.finance
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -115,15 +117,28 @@ fun FinanceHero(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FinanceTopBar(title: String, subtitle: String? = null, onBack: (() -> Unit)? = null, actions: @Composable RowScope.() -> Unit = {}) {
-    Box(Modifier.fillMaxWidth().height(138.dp)) {
+fun FinanceTopBar(title: String, subtitle: String? = null, onBack: (() -> Unit)? = null, actions: @Composable RowScope.() -> Unit = {}, compact: Boolean = false) {
+    val barHeight = if (compact) 70.dp else 138.dp
+    val backSize = if (compact) 36.dp else 48.dp
+    val iconSize = if (compact) 20.dp else 24.dp
+    val titleSize = if (compact) 20.sp else 24.sp
+    Box(Modifier.fillMaxWidth().height(barHeight)) {
         Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
         onBack?.let { callback ->
-            IconButton(onClick = callback, modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp).background(Color.White, CircleShape)) { Icon(Icons.Default.ArrowBack, "Back", tint = Color(0xFF18A9D0)) }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = if (compact) 12.dp else 16.dp)
+                    .size(backSize)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .clickable(onClick = callback),
+                contentAlignment = Alignment.Center,
+            ) { Icon(Icons.Default.ArrowBack, "Back", tint = Color(0xFF18A9D0), modifier = Modifier.size(iconSize)) }
         }
-        Row(Modifier.align(Alignment.TopEnd).padding(10.dp), horizontalArrangement = Arrangement.End, content = actions)
-        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Row(Modifier.align(Alignment.TopEnd).padding(if (compact) 6.dp else 10.dp), horizontalArrangement = Arrangement.End, content = actions)
+        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = if (compact) 8.dp else 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(title, color = Color.White, fontSize = titleSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             subtitle?.let { Text(it, color = Color.White.copy(alpha = .9f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center) }
         }
     }

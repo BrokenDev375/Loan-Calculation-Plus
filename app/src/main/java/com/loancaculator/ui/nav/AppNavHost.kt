@@ -56,7 +56,7 @@ fun AppNavHost(startRoute: String, navController: NavHostController = rememberNa
             FinanceHomeScreen(onNavigate = ::navigateTab, onOpen = ::openCalculator)
         }
         composable(Screen.Tools.route) {
-            ToolsScreen(onNavigate = ::navigateTab, onOpenCalculator = ::openCalculator,
+            ToolsScreen(onNavigate = ::navigateTab,
                 onConverter = { navController.navigate(Screen.converter(it)) }, onWorldClock = { navController.navigate(Screen.WorldClock.route) })
         }
         composable(Screen.Compare.route) {
