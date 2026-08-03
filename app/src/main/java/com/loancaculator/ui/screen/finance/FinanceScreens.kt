@@ -410,18 +410,51 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                 }
             }
             if (type == CalculatorType.MORTGAGE) {
-                item { FinanceField("Home Price", principal, { principal = it }, prefix = "${currency.symbol} ") }
+                item {
+                    FinanceField("Home Price", principal, {
+                        principal = it
+                        val home = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                        val currentDown = downPayment.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                        if (it.isEmpty()) {
+                            downPayment = ""
+                            downPaymentPercent = ""
+                        } else if (home > 0.0) {
+                            val clampedDown = currentDown.coerceAtMost(home)
+                            downPayment = formatMortgageAmount(clampedDown)
+                            downPaymentPercent = formatMortgagePercent(clampedDown / home * 100.0)
+                        } else {
+                            downPayment = "0"
+                            downPaymentPercent = "0"
+                        }
+                    }, prefix = "${currency.symbol} ")
+                }
                 item {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         FinanceField("Down Payment", downPayment, {
-                            downPayment = it
                             val home = principal.toDoubleOrNull() ?: 0.0
-                            downPaymentPercent = if (home > 0 && it.isNotEmpty()) "%.2f".format(Locale.US, (it.toDoubleOrNull() ?: 0.0) / home * 100.0) else ""
+                            val requestedDown = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                            if (it.isEmpty()) {
+                                downPayment = ""
+                                downPaymentPercent = ""
+                            } else if (home > 0.0) {
+                                val clampedDown = requestedDown.coerceAtMost(home)
+                                downPayment = if (requestedDown > home) formatMortgageAmount(clampedDown) else it
+                                downPaymentPercent = formatMortgagePercent(clampedDown / home * 100.0)
+                            } else {
+                                downPayment = "0"
+                                downPaymentPercent = "0"
+                            }
                         }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
                         FinanceField("Down Payment", downPaymentPercent, {
-                            downPaymentPercent = it
                             val home = principal.toDoubleOrNull() ?: 0.0
-                            downPayment = if (home > 0 && it.isNotEmpty()) "%.2f".format(Locale.US, home * (it.toDoubleOrNull() ?: 0.0) / 100.0) else ""
+                            val requestedPercent = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                            val clampedPercent = requestedPercent.coerceIn(0.0, 100.0)
+                            downPaymentPercent = if (it.isEmpty()) "" else if (requestedPercent > 100.0) "100" else it
+                            downPayment = if (it.isEmpty()) "" else if (home > 0.0) {
+                                formatMortgageAmount(home * clampedPercent / 100.0)
+                            } else {
+                                "0"
+                            }
                         }, suffix = "%", modifier = Modifier.weight(1f), showInfo = false)
                     }
                 }
@@ -461,7 +494,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     if (p <= 0 || r < 0 || m <= 0) {
                         error = "Enter a valid amount, rate and term."
                     } else if (type == CalculatorType.MORTGAGE) {
-                        val down = downPayment.toDoubleOrNull() ?: 0.0
+                        val down = (downPayment.toDoubleOrNull() ?: 0.0).coerceIn(0.0, p)
                         val financed = (p - down).coerceAtLeast(0.0)
                         if (financed <= 0.0) {
                             error = "Down payment must be lower than the home price."
@@ -523,6 +556,10 @@ private fun FieldLabel(label: String, showInfo: Boolean = true) {
         if (showInfo) Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF18A9D0), modifier = Modifier.padding(start = 4.dp).size(17.dp))
     }
 }
+
+private fun formatMortgageAmount(value: Double): String = String.format(Locale.US, "%.2f", value.coerceAtLeast(0.0))
+
+private fun formatMortgagePercent(value: Double): String = String.format(Locale.US, "%.2f", value.coerceIn(0.0, 100.0))
 
 @Composable
 private fun StartDateField(startDateMillis: Long, onClick: () -> Unit) {
