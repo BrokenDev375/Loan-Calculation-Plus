@@ -350,16 +350,16 @@ private fun DepositSpriteIcon(index: Int, modifier: Modifier = Modifier.size(54.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
-    var principal by remember { mutableStateOf(if (type.category == "Deposits") "" else "100000000") }
-    var rate by remember { mutableStateOf(if (type.category == "Deposits") "" else "8.5") }
-    var months by remember { mutableStateOf(if (type.category == "Deposits") "" else "5") }
+    var principal by remember { mutableStateOf("0") }
+    var rate by remember { mutableStateOf("0") }
+    var months by remember { mutableStateOf("0") }
     var downPayment by remember { mutableStateOf("0") }
     var downPaymentPercent by remember { mutableStateOf("0") }
     var propertyTax by remember { mutableStateOf("0") }
     var pmi by remember { mutableStateOf("0") }
     var hoaFees by remember { mutableStateOf("0") }
     var homeInsurance by remember { mutableStateOf("0") }
-    var compounding by remember { mutableStateOf("4") }
+    var compounding by remember { mutableStateOf("1") }
     var error by remember { mutableStateOf<String?>(null) }
     var currencyCode by remember { mutableStateOf("GBP") }
     var currencyMenuOpen by remember { mutableStateOf(false) }
@@ -453,7 +453,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             item { error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) } }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = { principal = if (isDeposit) "" else "100000000"; rate = if (isDeposit) "" else "8.5"; months = if (isDeposit) "" else "5"; termUnit = if (isDeposit) "Month" else "Year"; compounding = "4"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
+                    Button(onClick = { principal = "0"; rate = "0"; months = "0"; termUnit = if (isDeposit) "Month" else "Year"; compounding = "1"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
