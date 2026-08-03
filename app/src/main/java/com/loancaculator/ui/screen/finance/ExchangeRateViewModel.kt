@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ExchangeRateUiState(
-    val base: String = "EUR",
+    val base: String = "GBP",
     val target: String = "USD",
     val rates: Map<String, Double> = emptyMap(),
     val lastUpdatedAt: Long? = null,
@@ -49,14 +49,16 @@ class ExchangeRateViewModel @Inject constructor(private val repository: Exchange
         setTarget(current.base)
     }
 
-    fun reset() {
+    fun reset(defaultBase: String = "GBP") {
+        val normalizedBase = defaultBase.uppercase()
+        val defaultTarget = if (normalizedBase == "GBP") "USD" else "GBP"
         val current = _state.value
-        if (current.base == "EUR") {
-            _state.update { it.copy(target = "USD", error = null) }
-            if (current.rates.isEmpty() && !current.isLoading) loadBase("EUR")
+        if (current.base == normalizedBase) {
+            _state.update { it.copy(target = defaultTarget, error = null) }
+            if (current.rates.isEmpty() && !current.isLoading) loadBase(normalizedBase)
         } else {
-            loadBase("EUR")
-            setTarget("USD")
+            loadBase(normalizedBase)
+            setTarget(defaultTarget)
         }
     }
 

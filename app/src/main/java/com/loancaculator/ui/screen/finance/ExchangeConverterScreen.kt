@@ -8,6 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
+import com.loancaculator.core.AppStorage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -17,10 +19,12 @@ private val supportedCurrencies = listOf("EUR", "USD", "GBP", "JPY", "VND")
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 fun ApiConverterScreen(onBack: () -> Unit, viewModel: ExchangeRateViewModel = hiltViewModel()) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     var amount by remember { mutableStateOf("") }
-    
-    LaunchedEffect(Unit) { viewModel.loadBase("EUR") }
+    val configuredBase = remember { AppStorage.exchangeBaseCurrency(context) }
+
+    LaunchedEffect(configuredBase) { viewModel.loadBase(configuredBase) }
 
     val units = supportedCurrencies.map { code ->
         val currency = loanCurrency(code)
@@ -63,7 +67,7 @@ fun ApiConverterScreen(onBack: () -> Unit, viewModel: ExchangeRateViewModel = hi
         onSwap = { if (!state.isLoading) viewModel.swap() },
         onReset = {
             amount = ""
-            viewModel.reset()
+            viewModel.reset(configuredBase)
         },
         onCalculate = { },
         calculateEnabled = !state.isLoading && rate != null,

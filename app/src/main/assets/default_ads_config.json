@@ -18,6 +18,8 @@
   "native_permission":      "ca-app-pub-9405071173323068/9605123317",
   "native_home":            "ca-app-pub-9405071173323068/6440325387",
   "native_tools":           "ca-app-pub-9405071173323068/6440325387",
+  "native_compare":         "ca-app-pub-9405071173323068/6440325387",
+  "native_settings":        "ca-app-pub-9405071173323068/6440325387",
   "native_calculator":      "ca-app-pub-9405071173323068/6440325387",
   "native_scan_update":     "ca-app-pub-9405071173323068/2572811105",
   "native_update_available":"ca-app-pub-9405071173323068/3657259691",

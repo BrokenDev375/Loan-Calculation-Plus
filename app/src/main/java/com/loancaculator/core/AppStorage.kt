@@ -13,6 +13,7 @@ object AppStorage {
     private const val KEY_ONBOARDING_DONE = "onboarding_done"
     private const val KEY_AGREE = "agree_permission"
     private const val KEY_LANGUAGE = "language"
+    private const val KEY_EXCHANGE_BASE_CURRENCY = "exchange_base_currency"
 
     // Port RN: bộ đếm số lần vào Home (goToHomeNumber, bắt đầu 1, +1 mỗi lần mở app đến Home).
     private const val KEY_GO_TO_HOME = "go_to_home_number"
@@ -45,6 +46,15 @@ object AppStorage {
 
     fun language(context: Context): String? =
         prefs(context).getString(KEY_LANGUAGE, null)
+
+    fun exchangeBaseCurrency(context: Context): String =
+        prefs(context).getString(KEY_EXCHANGE_BASE_CURRENCY, "GBP")?.uppercase() ?: "GBP"
+
+    fun setExchangeBaseCurrency(context: Context, currencyCode: String) {
+        prefs(context).edit()
+            .putString(KEY_EXCHANGE_BASE_CURRENCY, currencyCode.uppercase())
+            .apply()
+    }
 
     // ── Gate hiện Intro (port RN AppNavigation.js) ────────────────────────────
 
