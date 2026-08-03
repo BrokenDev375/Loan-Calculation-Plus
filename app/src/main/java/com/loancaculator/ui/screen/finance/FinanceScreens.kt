@@ -240,7 +240,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
         isLoan -> "Loan Amount"
         else -> "Investment Amount"
     }
-    val calculatorAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
+    val calculatorAdHeight = if (type == CalculatorType.MORTGAGE) 260.dp else 140.dp
     Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
             NativeAdSlot(
