@@ -48,7 +48,7 @@ fun ApiConverterScreen(onBack: () -> Unit, viewModel: ExchangeRateViewModel = hi
     LaunchedEffect(Unit) { viewModel.loadBase("GBP") }
 
     val targetOptions = supportedCurrencies.filter { it != state.base && (state.rates.isEmpty() || state.rates.containsKey(it)) }
-    Scaffold(topBar = { FinanceTopBar("Exchange Rate", "Live reference rates", onBack, actions = { IconButton(onClick = viewModel::refresh) { Icon(Icons.Default.Refresh, "Refresh", tint = Color.White) } }) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("Exchange Rate", "Live reference rates", onBack, compact = true, actions = { IconButton(onClick = viewModel::refresh) { Icon(Icons.Default.Refresh, "Refresh", tint = Color.White) } }) }) { padding ->
         Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("Choose both currencies", style = MaterialTheme.typography.titleMedium)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {

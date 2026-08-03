@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -236,7 +235,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
     val currency = loanCurrency(currencyCode)
     val isLoan = type.category == "Loans"
     val loanAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
-    Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
             if (isLoan) {
                 NativeAdSlot(
@@ -314,7 +313,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             item { error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) } }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = { principal = "100000000"; rate = "8.5"; months = "5"; termUnit = "Year"; contribution = "1000000"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Icon(Icons.Default.Refresh, null); Spacer(Modifier.size(6.dp)); Text("Reset Fields") }
+                    Button(onClick = { principal = "100000000"; rate = "8.5"; months = "5"; termUnit = "Year"; contribution = "1000000"; downPayment = "0"; downPaymentPercent = "0"; propertyTax = "0"; pmi = "0"; hoaFees = "0"; homeInsurance = "0"; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
@@ -527,7 +526,7 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (
     val currencyCode = loanCurrencyCode(item?.inputJson.orEmpty())
     val startDate = inputValue(item?.inputJson.orEmpty(), "startDate")?.toLongOrNull()
     val payoffMonths = entries.firstOrNull { it.first.equals("Payoff months", ignoreCase = true) }?.second?.toDoubleOrNull()?.toInt()
-    Scaffold(topBar = { FinanceTopBar("Calculation result", item?.title, onBack) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("Calculation result", item?.title, onBack, compact = true) }) { padding ->
         LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             item { Text("Result after calculation", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
             item {
