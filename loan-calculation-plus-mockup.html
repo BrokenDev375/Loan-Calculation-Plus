@@ -1,0 +1,3746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Calculation Plus — Interactive Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B2E4F;
+      --navy-2: #123C64;
+      --teal: #178A8A;
+      --gold: #E7A93C;
+      --mint: #E8F6F3;
+      --paper: #F5F8FA;
+      --card: #FFFFFF;
+      --ink: #10233A;
+      --ink-soft: #5B7186;
+      --line: #E1E9EF;
+      --danger: #C24545;
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(11, 46, 79, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #90E0EF;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      width: 340px;
+      height: 759px;
+      aspect-ratio: 1080 / 2412;
+      flex-shrink: 0;
+      background: #D0EFFF;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
+      border-radius: 34px;
+      border: 7px solid #0F1E2E;
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+    }
+
+    @media (max-width:480px) {
+      body {
+        padding: 0;
+        background: #D0EFFF;
+      }
+
+      #app {
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Sora', sans-serif;
+      margin: 0;
+    }
+
+    /* ---------- Header (Compact Straight Ocean Blue Top Banner) ---------- */
+    .hero {
+      background: linear-gradient(180deg, #00B4D8 0%, #0077B6 55%, #03045E 100%);
+      color: #fff;
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+      border-radius: 0;
+      box-shadow: 0 4px 16px rgba(0, 119, 182, 0.25);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      transition: padding .2s, height .2s;
+    }
+
+    /* Header Home */
+    .hero.hero-big {
+      min-height: 200px;
+      height: 200px;
+      padding: 30px 20px;
+      border-radius: 0;
+      box-shadow: 0 8px 24px rgba(0, 119, 182, 0.35);
+      justify-content: center;
+    }
+
+    /* Header Tools */
+    .hero.hero-tools {
+      min-height: 100px;
+      height: 100px;
+      padding: 20px 20px;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 119, 182, 0.3);
+    }
+
+    /* Header Compare */
+    .hero.hero-compare {
+      min-height: 100px;
+      height: 100px;
+      padding: 20px 20px;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 119, 182, 0.3);
+    }
+
+    /* Header Setting */
+    .hero.hero-setting {
+      min-height: 100px;
+      height: 100px;
+      padding: 20px 20px;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 119, 182, 0.3);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.25), transparent 50%),
+        radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.12), transparent 45%);
+      pointer-events: none;
+      border-radius: 0;
+    }
+
+    .hero.hero-big::after {
+      border-radius: 0;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      color: #009CBF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      transition: transform .15s;
+    }
+
+    .back-btn:active {
+      transform: scale(0.92);
+    }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .brand-row {
+      display: none !important;
+    }
+
+    .brand-mark {
+      display: none !important;
+    }
+
+    /* ---------- Scroll body ---------- */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow-y: auto;
+      background: #D0EFFF;
+      padding-bottom: 92px;
+      animation: fadeIn .25s ease;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 16px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-label:first-child {
+      margin-top: 4px;
+    }
+
+    .view-all-btn {
+      color: #0077B6;
+      background: rgba(0, 180, 216, 0.15);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0;
+      padding: 5px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s ease;
+      user-select: none;
+      position: relative;
+      z-index: 10;
+    }
+
+    .view-all-btn:hover,
+    .view-all-btn:active {
+      background: #00B4D8;
+      color: #FFFFFF;
+      transform: scale(0.96);
+    }
+
+    /* ---------- Grid cards (Home) ---------- */
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 0 20px;
+    }
+
+    .tile {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 16px 14px;
+      min-height: 98px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      border: 1px solid rgba(11, 46, 79, 0.04);
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(11, 46, 79, 0.12);
+    }
+
+    .tile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .tile-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .tile-desc {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      display: block !important;
+      font-weight: 400;
+    }
+
+    .tile-arrow {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--mint);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .ic-personal {
+      background: #FBEAD9;
+    }
+
+    .ic-business {
+      background: #DCEEEC;
+    }
+
+    .ic-mortgage {
+      background: #E3E9F5;
+    }
+
+    .ic-auto {
+      background: #F1E5F7;
+    }
+
+    .ic-fd {
+      background: #E1F3E6;
+    }
+
+    .ic-rd {
+      background: #FDEBEE;
+    }
+
+    /* ---------- Wide list row (Compare, Investment list) ---------- */
+    .row-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 15px 16px;
+      min-height: 74px;
+      margin: 0 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      border: 1px solid rgba(11, 46, 79, 0.04);
+      transition: transform .15s;
+    }
+
+    .row-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .row-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .row-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .row-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #10233A;
+    }
+
+    .row-desc {
+      font-size: 11px;
+      color: #5B7186;
+      margin-top: 2px;
+      display: block !important;
+    }
+
+    .row-chev {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #E1EFF5;
+      color: #00A6CE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ---------- History cards ---------- */
+    .hist-card {
+      background: var(--card);
+      border-radius: 16px;
+      margin: 0 20px 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(11, 46, 79, 0.04);
+    }
+
+    .hist-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .hist-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14.5px;
+    }
+
+    .hist-date {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+
+    .hist-grid {
+      display: flex;
+      gap: 18px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      flex-wrap: wrap;
+    }
+
+    .hist-stat span {
+      display: block;
+    }
+
+    .hist-stat .k {
+      font-size: 11px;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .hist-stat .v {
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .empty-hist {
+      margin: 0 20px;
+      padding: 34px 20px;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 13px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px dashed var(--line);
+    }
+
+    /* ---------- Form screens ---------- */
+    .form-wrap {
+      padding: 20px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    /* ---------- History View All Screen & Segmented Switcher ---------- */
+    .seg-tab-wrap {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 5px;
+      display: flex;
+      box-shadow: 0 4px 14px rgba(0, 119, 182, 0.08);
+    }
+
+    .seg-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-weight: 700;
+      font-size: 14.5px;
+      color: #10233A;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .seg-tab.active {
+      background: #00B4D8;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+    }
+
+    /* History Card (Matching caculator.jpg & investment.jpg) */
+    .vhistory-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+
+    .vhistory-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .vhistory-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .vhistory-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .vhistory-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #10233A;
+    }
+
+    .vhistory-date {
+      font-size: 12px;
+      color: #8CA0B3;
+      margin-top: 2px;
+    }
+
+    .vhistory-chev {
+      margin-left: auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #E1EFF5;
+      color: #00A6CE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .vhistory-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px dashed #E1E9EF;
+    }
+
+    .vhistory-stat .k {
+      font-size: 12px;
+      color: #8CA0B3;
+      font-weight: 500;
+    }
+
+    .vhistory-stat .v {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #10233A;
+      margin-top: 3px;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14.5px;
+      margin-bottom: 8px;
+    }
+
+    .info-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .currency-badge {
+      margin-left: auto;
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #10233A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+
+    .input-shell {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      height: 50px;
+      transition: border-color .15s;
+      overflow: hidden;
+    }
+
+    .input-shell:focus-within {
+      border-color: var(--teal);
+    }
+
+    .input-shell input {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      font-weight: 600;
+      height: 100%;
+    }
+
+    .input-shell select {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      font-weight: 600;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 100%;
+      cursor: pointer;
+      padding-right: 18px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B7186' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 4px center;
+    }
+
+    .input-shell input::placeholder {
+      color: #94A8BE;
+      font-weight: 400;
+      font-size: 13.5px;
+    }
+
+    .unit {
+      color: var(--ink-soft);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      height: 52px;
+      border-radius: 28px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all .2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, #FFE5B4 0%, #FFC04D 100%);
+      color: #7A3B00;
+      box-shadow: 0 4px 14px rgba(255, 192, 77, 0.35);
+    }
+
+    .btn-reset:hover {
+      background: linear-gradient(135deg, #FFDB99 0%, #FFB333 100%);
+      box-shadow: 0 6px 18px rgba(255, 179, 51, 0.45);
+    }
+
+    .btn-calc {
+      background: linear-gradient(135deg, #00D2FF 0%, #0077B6 100%);
+      color: #FFFFFF;
+      box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+    }
+
+    .btn-calc:hover {
+      background: linear-gradient(135deg, #1AD7FF 0%, #0088CC 100%);
+      box-shadow: 0 8px 24px rgba(0, 180, 216, 0.55);
+    }
+
+    .result-card {
+      margin-top: 22px;
+      border-radius: 20px;
+      padding: 22px;
+      background: linear-gradient(155deg, var(--navy), var(--navy-2));
+      color: #fff;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+      animation: fadeIn .3s ease;
+    }
+
+    .result-headline {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.65);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .result-amount {
+      font-family: 'Sora', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin: 6px 0 16px;
+      color: var(--gold);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 14px;
+    }
+
+    .result-item .k {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .result-item .v {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .err-msg {
+      color: var(--danger);
+      font-size: 12.5px;
+      margin-top: -8px;
+      margin-bottom: 14px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .err-msg.show {
+      display: block;
+    }
+
+    /* ---------- Tools grid ---------- */
+    .tool-panel {
+      margin: 0 20px 16px;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .tool-panel.show {
+      display: block;
+    }
+
+    .tool-panel .field-label {
+      margin-bottom: 10px;
+    }
+
+    .converter-result {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: var(--mint);
+      border-radius: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 15px;
+      text-align: center;
+    }
+
+    /* ---------- Settings ---------- */
+    .setting-row {
+      background: var(--card);
+      border-radius: 16px;
+      margin: 0 20px 14px;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      border: 1px solid rgba(11, 46, 79, 0.04);
+    }
+
+    .setting-row .row-icon {
+      background: var(--mint);
+      color: var(--teal);
+    }
+
+    .setting-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14.5px;
+    }
+
+    /* ---------- Bottom nav ---------- */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 6px 12px;
+      z-index: 20;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--ink-soft);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 70px;
+    }
+
+    .nav-item .nav-ic {
+      font-size: 19px;
+    }
+
+    .nav-item.active {
+      color: var(--teal);
+    }
+
+    /* toast */
+    .toast {
+      position: absolute;
+      bottom: 96px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+      z-index: 40;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ---------- Result Screen (Post-calculation) ---------- */
+    .res-wrap {
+      padding: 16px 20px 30px;
+      background: #D0EFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ad-box {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .ad-badge {
+      background: #F1A83B;
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+
+    .ad-icon-img {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #3B1B6C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .ad-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ad-info .ad-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #10233A;
+    }
+
+    .ad-info .ad-sub {
+      font-size: 11.5px;
+      color: #61778C;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ad-btn {
+      background: #25C974;
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .res-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 16px rgba(11, 46, 79, 0.05);
+    }
+
+    .res-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #10233A;
+      margin-bottom: 14px;
+    }
+
+    .res-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14.5px;
+    }
+
+    .res-label {
+      color: #378092;
+      font-weight: 600;
+    }
+
+    .res-val {
+      color: #10233A;
+      font-weight: 700;
+    }
+
+    .btn-amortization {
+      background: #30C5DF;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 26px;
+      padding: 12px 20px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 14px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(48, 197, 223, 0.3);
+    }
+
+    .btn-action-compare {
+      background: #00A6CE;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 28px;
+      height: 52px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 16px rgba(0, 166, 206, 0.3);
+    }
+
+    .btn-action-pdf {
+      background: #ECA328;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 28px;
+      height: 52px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 16px rgba(236, 163, 40, 0.3);
+    }
+
+    /* Donut chart for Mortgage */
+    .donut-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px 0 16px;
+    }
+
+    .donut-graphic {
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+
+    .donut-graphic svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .donut-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .donut-center-sub {
+      font-size: 12px;
+      color: #378092;
+      font-weight: 600;
+    }
+
+    .donut-center-val {
+      font-size: 20px;
+      color: #10233A;
+      font-weight: 800;
+      margin: 2px 0;
+    }
+
+    .donut-center-unit {
+      font-size: 12px;
+      color: #378092;
+      font-weight: 500;
+    }
+
+    .legend-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #378092;
+      font-weight: 600;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Amortization table */
+    .amort-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12.5px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .amort-table th {
+      background: #00A6CE;
+      color: #fff;
+      padding: 10px 6px;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .amort-table th:first-child,
+    .amort-table td:first-child {
+      text-align: center;
+    }
+
+    .amort-table td {
+      padding: 10px 6px;
+      text-align: right;
+      border-bottom: 1px solid #E6F2F5;
+      font-weight: 500;
+    }
+
+    /* ---------- Converter Screen (Exchange Rate, Temp, Mass, Speed, Length) ---------- */
+    .conv-wrap {
+      padding: 14px 16px 24px;
+      background: #D0EFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .conv-card {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(11, 46, 79, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .conv-input-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #E4EEF2;
+      padding-bottom: 6px;
+    }
+
+    .conv-input-row input {
+      border: none;
+      outline: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #10233A;
+      width: 75%;
+      background: transparent;
+    }
+
+    .conv-unit-symbol {
+      font-size: 18px;
+      font-weight: 600;
+      color: #6A8696;
+    }
+
+    .conv-select-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      min-height: 48px;
+      padding: 6px 0 2px;
+    }
+
+    .conv-select-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: #10233A;
+    }
+
+    .conv-flag {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: #F0F5F8;
+      flex-shrink: 0;
+    }
+
+    .conv-note {
+      font-size: 12.5px;
+      color: #378092;
+      font-weight: 600;
+      padding: 0 4px;
+      margin: -2px 0;
+    }
+
+    .conv-swap-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #F2A229;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: -6px auto;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(242, 162, 41, 0.35);
+      border: 2.5px solid #EAF4F8;
+      z-index: 5;
+      transition: transform 0.2s;
+    }
+
+    .conv-swap-btn:active {
+      transform: scale(0.92) rotate(180deg);
+    }
+
+    /* World Clock Styles */
+    .clock-empty-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      gap: 16px;
+    }
+
+    .clock-empty-img {
+      width: 140px;
+      height: 140px;
+      background: #E1EFF5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      color: #8BA8B8;
+    }
+
+    .clock-empty-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #10233A;
+    }
+
+    .clock-empty-desc {
+      font-size: 13.5px;
+      color: #5B7186;
+      line-height: 1.4;
+    }
+
+    .btn-add-clock {
+      background: #00A6CE;
+      color: #fff;
+      border: none;
+      border-radius: 28px;
+      height: 52px;
+      width: 100%;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 166, 206, 0.3);
+    }
+
+    .clock-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 16px rgba(11, 46, 79, 0.05);
+    }
+
+    .clock-card-name {
+      font-weight: 700;
+      font-size: 16px;
+      color: #10233A;
+    }
+
+    .clock-card-sub {
+      font-size: 13px;
+      color: #5B7186;
+      margin-top: 4px;
+    }
+
+    .clock-card-time {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: #10233A;
+    }
+
+    /* City Grouped Item */
+    .city-row {
+      padding: 12px 6px;
+      border-bottom: 1px solid #EBF3F6;
+      font-weight: 600;
+      font-size: 15px;
+      color: #10233A;
+      cursor: pointer;
+    }
+
+    .city-row:last-child {
+      border-bottom: none;
+    }
+
+    /* ---------- Compare Detail Screen ---------- */
+    .comp-wrap {
+      padding: 16px 20px 30px;
+      background: #D0EFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .comp-carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 14px;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .comp-card {
+      min-width: 90%;
+      max-width: 90%;
+      background: #FFFFFF;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(11, 46, 79, 0.05);
+      scroll-snap-align: center;
+      flex-shrink: 0;
+    }
+
+    .comp-card-header {
+      background: #00A6CE;
+      color: #FFFFFF;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .comp-card-trash {
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.9;
+      transition: opacity 0.15s;
+    }
+
+    .comp-card-trash:hover {
+      opacity: 1;
+    }
+
+    .comp-card-body {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .comp-indicator-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .comp-dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 4px;
+      background: #C4DEE5;
+      transition: all 0.2s;
+    }
+
+    /* ---------- Tools Grid Screen (Matching home.jpg screenshot) ---------- */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 14px 16px 24px;
+    }
+
+    .tool-tile {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 13px 12px;
+      box-shadow: 0 4px 16px rgba(11, 46, 79, 0.05);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 130px;
+      height: 130px;
+      transition: transform .15s ease, box-shadow .15s ease;
+      border: 1px solid rgba(11, 46, 79, 0.03);
+    }
+
+    .tool-tile:hover,
+    .tool-tile:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(11, 46, 79, 0.1);
+    }
+
+    .tool-tile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .tool-tile-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
+
+    .tool-tile-arrow {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #E1EFF5;
+      color: #00A6CE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tool-tile-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 13.5px;
+      margin-top: 8px;
+      line-height: 1.25;
+    }
+
+    .tool-tile-desc {
+      font-size: 11px;
+      color: #78909C;
+      line-height: 1.3;
+      margin-top: 3px;
+      display: block !important;
+      font-weight: 400;
+    }
+
+    ::-webkit-scrollbar {
+      width: 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- ============ HEADER ============ -->
+    <div class="hero hero-big" id="hero">
+      <div class="hero-top">
+        <div class="back-btn" id="backBtn" style="display:none;" onclick="goHome()">←</div>
+        <div>
+          <div class="hero-title" id="heroTitle">Loan Calculation Plus</div>
+          <div class="hero-sub" id="heroSub">Plan smarter. Borrow wiser.</div>
+        </div>
+        <div class="back-btn" id="homeIconBtn" style="display:none; margin-left:auto;" onclick="goHome()">🏠</div>
+        <div class="back-btn" id="editPencilBtn" style="display:none; margin-left:auto;"
+          onclick="showToast('Edit history mode')">✏️</div>
+      </div>
+    </div>
+
+    <!-- ============ HOME ============ -->
+    <div class="screen active" id="screen-home">
+      <div class="section-label">Loans</div>
+      <div class="grid2">
+        <div class="tile" onclick="openCalc('personal')">
+          <div class="tile-arrow">→</div>
+          <div class="tile-icon ic-personal">🐷</div>
+          <div class="tile-title">Personal Loan</div>
+          <div class="tile-desc">Estimate monthly repayments</div>
+        </div>
+        <div class="tile" onclick="openCalc('business')">
+          <div class="tile-arrow">→</div>
+          <div class="tile-icon ic-business">🤝</div>
+          <div class="tile-title">Business Loan</div>
+          <div class="tile-desc">Plan business financing</div>
+        </div>
+        <div class="tile" onclick="openCalc('mortgage')">
+          <div class="tile-arrow">→</div>
+          <div class="tile-icon ic-mortgage">🏦</div>
+          <div class="tile-title">Mortgages</div>
+          <div class="tile-desc">Home affordability check</div>
+        </div>
+        <div class="tile" onclick="openCalc('auto')">
+          <div class="tile-arrow">→</div>
+          <div class="tile-icon ic-auto">🚗</div>
+          <div class="tile-title">Auto Loan</div>
+          <div class="tile-desc">Car payment breakdown</div>
+        </div>
+      </div>
+
+      <!-- Ad Banner Card (Matching screenshot home.jpg) -->
+      <div style="padding: 14px 20px 0;">
+        <div style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+          <div
+            style="position:relative; background:linear-gradient(135deg, #FFE5D9 0%, #FFCAD4 100%); height:115px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <span
+              style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.35); color:#fff; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; z-index:2;">▶</span>
+            <div
+              style="background:#fff; border-radius:12px; padding:10px 14px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:80%;">
+              <div style="font-size:11px; color:#5B7186; font-weight:600;">Vòng tiền tối đa 😯</div>
+              <div style="font-size:18px; font-weight:800; color:#E53935; margin:2px 0;">25,000,000đ</div>
+              <div style="font-size:10px; color:#5B7186;">⏱ Thời hạn khoản vay: <strong>12 Tháng</strong></div>
+            </div>
+          </div>
+          <div style="padding:10px 12px; display:flex; align-items:center; gap:10px;">
+            <div
+              style="width:36px; height:36px; background:#0066FF; color:#fff; font-weight:800; font-size:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              D</div>
+            <div style="flex:1; min-width:0;">
+              <div
+                style="font-weight:700; font-size:12.5px; color:#10233A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Đơn giản cho cuộc sống</div>
+              <div
+                style="font-size:11px; color:#5B7186; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                Ứng dụng hỗ trợ bạn tiếp cận quy trình đăng ký nhanh chóng và t...</div>
+            </div>
+            <button
+              style="background:#25C974; color:#fff; border:none; font-weight:700; font-size:12px; padding:8px 14px; border-radius:20px; cursor:pointer; flex-shrink:0;">Đăng
+              ký</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Investment</div>
+      <div class="row-card" onclick="openCalc('fd')">
+        <div class="row-icon ic-fd">👛</div>
+        <div class="row-body">
+          <div class="row-title">FD</div>
+          <div class="row-desc">Fixed Deposit</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+      <div class="row-card" onclick="openCalc('rd')">
+        <div class="row-icon ic-rd">💳</div>
+        <div class="row-body">
+          <div class="row-title">RD</div>
+          <div class="row-desc">Recurring Deposit</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+
+      <div class="section-label">History <span class="view-all-btn" onclick="openHistoryViewAll()">View all ➔</span>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+    <!-- ============ HISTORY VIEW ALL SCREEN (Matching caculator.jpg & investment.jpg) ============ -->
+    <div class="screen" id="screen-history-viewall">
+      <div style="padding:16px 20px 30px; display:flex; flex-direction:column; gap:16px;">
+        <!-- Segmented Tab Bar Switcher -->
+        <div class="seg-tab-wrap">
+          <div class="seg-tab active" id="seg-tab-calc" onclick="switchHistorySegment('calc')">Calculator</div>
+          <div class="seg-tab" id="seg-tab-invest" onclick="switchHistorySegment('invest')">Investment</div>
+        </div>
+
+        <!-- History List Container -->
+        <div id="historyViewAllList" style="display:flex; flex-direction:column; gap:14px;"></div>
+      </div>
+    </div>
+
+    <!-- ============ TOOLS ============ -->
+    <div class="screen" id="screen-tools">
+
+      <!-- Ad Banner Card (Compact - Fits on 1 Screen) -->
+      <div style="padding: 10px 16px 0;">
+        <div style="background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.06);">
+          <div
+            style="position:relative; background:linear-gradient(135deg, #FFE5D9 0%, #FFCAD4 100%); height:72px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <span
+              style="position:absolute; top:6px; right:8px; background:rgba(0,0,0,0.35); color:#fff; font-size:9px; font-weight:600; padding:2px 6px; border-radius:8px; z-index:2;">▶</span>
+            <div
+              style="background:#fff; border-radius:10px; padding:6px 12px; text-align:center; box-shadow:0 3px 10px rgba(0,0,0,0.08); width:85%;">
+              <div style="font-size:10.5px; color:#5B7186; font-weight:600;">Vòng tiền tối đa 😯 <strong style="color:#E53935; font-size:13px;">25,000,000đ</strong></div>
+              <div style="font-size:9.5px; color:#5B7186;">Thời hạn khoản vay: <strong>12 Tháng</strong></div>
+            </div>
+          </div>
+          <div style="padding:8px 10px; display:flex; align-items:center; gap:8px;">
+            <div
+              style="width:30px; height:30px; background:#0066FF; color:#fff; font-weight:800; font-size:13px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              D</div>
+            <div style="flex:1; min-width:0;">
+              <div
+                style="font-weight:700; font-size:11.5px; color:#10233A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Đơn giản cho cuộc sống</div>
+              <div
+                style="font-size:10px; color:#5B7186; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Ứng dụng hỗ trợ bạn tiếp cận quy trình đăng ký nhanh chóng...</div>
+            </div>
+            <button
+              style="background:#25C974; color:#fff; border:none; font-weight:700; font-size:11px; padding:6px 12px; border-radius:16px; cursor:pointer; flex-shrink:0;">Đăng
+              ký</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools 2-column Grid (Matching screenshot home.jpg) -->
+      <div class="tools-grid">
+
+        <!-- 1. Exchange Rate -->
+        <div class="tool-tile" onclick="openTool('exchange')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#E0F2FE;">💱</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#00A6CE;">Exchange Rate</div>
+            <div class="tool-tile-desc">Easily convert between currencies</div>
+          </div>
+        </div>
+
+        <!-- 2. Temperature -->
+        <div class="tool-tile" onclick="openTool('temp')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#FCE7F3;">🌡️</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#E05297;">Temperature</div>
+            <div class="tool-tile-desc">Convert Celsius, Fahrenheit, and Kelvin.</div>
+          </div>
+        </div>
+
+        <!-- 3. Mass Convert -->
+        <div class="tool-tile" onclick="openTool('mass')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#E0F2FE;">⚖️</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#0077B6;">Mass Convert</div>
+            <div class="tool-tile-desc">Convert grams, pounds, ounces and other units</div>
+          </div>
+        </div>
+
+        <!-- 4. Speed Convert -->
+        <div class="tool-tile" onclick="openTool('speed')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#FFEDD5;">🏎️</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#E05345;">Speed Convert</div>
+            <div class="tool-tile-desc">Convert kilometers per hour, miles per hour.</div>
+          </div>
+        </div>
+
+        <!-- 5. Length Convert -->
+        <div class="tool-tile" onclick="openTool('length')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#DCFCE7;">📏</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#25A244;">Length Convert</div>
+            <div class="tool-tile-desc">Convert units like inches meters and more!</div>
+          </div>
+        </div>
+
+        <!-- 6. World Clock -->
+        <div class="tool-tile" onclick="openTool('clock')">
+          <div class="tool-tile-top">
+            <div class="tool-tile-icon" style="background:#FEF3C7;">🕒</div>
+            <div class="tool-tile-arrow">➔</div>
+          </div>
+          <div>
+            <div class="tool-tile-title" style="color:#D98A11;">World Clock</div>
+            <div class="tool-tile-desc">Track current time in multiple cities.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Exchange -->
+      <div class="tool-panel" id="tool-exchange">
+        <div class="field-label">Exchange Rate</div>
+        <div class="two-col">
+          <div class="input-shell"><input type="number" id="exAmt" placeholder="Amount" value="100"></div>
+          <div class="input-shell"><select id="exRate">
+              <option value="1.0">GBP → GBP (1.00)</option>
+              <option value="1.27">GBP → USD (1.27)</option>
+              <option value="1.17">GBP → EUR (1.17)</option>
+              <option value="188.5">GBP → JPY (188.5)</option>
+              <option value="0.0165">GBP → VND (÷0.0165)</option>
+            </select></div>
+        </div>
+        <button class="btn btn-calc" style="width:100%;margin-top:12px;" onclick="calcExchange()">Convert</button>
+        <div class="converter-result" id="exResult" style="display:none;"></div>
+      </div>
+
+      <!-- Temperature -->
+      <div class="tool-panel" id="tool-temp">
+        <div class="field-label">Temperature</div>
+        <div class="two-col">
+          <div class="input-shell"><input type="number" id="tempVal" placeholder="Value" value="20"></div>
+          <div class="input-shell"><select id="tempFrom">
+              <option value="C">Celsius</option>
+              <option value="F">Fahrenheit</option>
+              <option value="K">Kelvin</option>
+            </select></div>
+        </div>
+        <button class="btn btn-calc" style="width:100%;margin-top:12px;" onclick="calcTemp()">Convert</button>
+        <div class="converter-result" id="tempResult" style="display:none;"></div>
+      </div>
+
+      <!-- Mass -->
+      <div class="tool-panel" id="tool-mass">
+        <div class="field-label">Mass Convert</div>
+        <div class="two-col">
+          <div class="input-shell"><input type="number" id="massVal" placeholder="Value" value="1"></div>
+          <div class="input-shell"><select id="massFrom">
+              <option value="kg">Kilograms</option>
+              <option value="g">Grams</option>
+              <option value="lb">Pounds</option>
+              <option value="oz">Ounces</option>
+            </select></div>
+        </div>
+        <button class="btn btn-calc" style="width:100%;margin-top:12px;" onclick="calcMass()">Convert</button>
+        <div class="converter-result" id="massResult" style="display:none;"></div>
+      </div>
+
+      <!-- Speed -->
+      <div class="tool-panel" id="tool-speed">
+        <div class="field-label">Speed Convert</div>
+        <div class="two-col">
+          <div class="input-shell"><input type="number" id="spdVal" placeholder="Value" value="100"></div>
+          <div class="input-shell"><select id="spdFrom">
+              <option value="kmh">km/h</option>
+              <option value="mph">mph</option>
+              <option value="ms">m/s</option>
+            </select></div>
+        </div>
+        <button class="btn btn-calc" style="width:100%;margin-top:12px;" onclick="calcSpeed()">Convert</button>
+        <div class="converter-result" id="spdResult" style="display:none;"></div>
+      </div>
+
+      <!-- Length -->
+      <div class="tool-panel" id="tool-length">
+        <div class="field-label">Length Convert</div>
+        <div class="two-col">
+          <div class="input-shell"><input type="number" id="lenVal" placeholder="Value" value="1"></div>
+          <div class="input-shell"><select id="lenFrom">
+              <option value="m">Meters</option>
+              <option value="km">Kilometers</option>
+              <option value="ft">Feet</option>
+              <option value="in">Inches</option>
+              <option value="mi">Miles</option>
+            </select></div>
+        </div>
+        <button class="btn btn-calc" style="width:100%;margin-top:12px;" onclick="calcLength()">Convert</button>
+        <div class="converter-result" id="lenResult" style="display:none;"></div>
+      </div>
+
+      <!-- Clock -->
+      <div class="tool-panel" id="tool-clock">
+        <div class="field-label">World Clock</div>
+        <div id="clockList" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+
+    <!-- ============ COMPARE ============ -->
+    <div class="screen" id="screen-compare">
+      <!-- Ad Banner Card (Matching Home & Tools - Expanded Height) -->
+      <div style="padding: 10px 16px 8px;">
+        <div style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.07);">
+          <div
+            style="position:relative; background:linear-gradient(135deg, #FFE5D9 0%, #FFCAD4 100%); height:115px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <span
+              style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.35); color:#fff; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; z-index:2;">▶</span>
+            <div
+              style="background:#fff; border-radius:12px; padding:10px 14px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:82%;">
+              <div style="font-size:11px; color:#5B7186; font-weight:600;">Vòng tiền tối đa 😯</div>
+              <div style="font-size:18px; font-weight:800; color:#E53935; margin:2px 0;">25,000,000đ</div>
+              <div style="font-size:10px; color:#5B7186;">⏱ Thời hạn khoản vay: <strong>12 Tháng</strong></div>
+            </div>
+          </div>
+          <div style="padding:10px 12px; display:flex; align-items:center; gap:10px;">
+            <div
+              style="width:36px; height:36px; background:#0066FF; color:#fff; font-weight:800; font-size:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              D</div>
+            <div style="flex:1; min-width:0;">
+              <div
+                style="font-weight:700; font-size:12.5px; color:#10233A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Đơn giản cho cuộc sống</div>
+              <div
+                style="font-size:11px; color:#5B7186; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                Ứng dụng hỗ trợ bạn tiếp cận quy trình đăng ký nhanh chóng...</div>
+            </div>
+            <button
+              style="background:#25C974; color:#fff; border:none; font-weight:700; font-size:12px; padding:8px 14px; border-radius:20px; cursor:pointer; flex-shrink:0;">Đăng
+              ký</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-card" onclick="openCompareDetail('personal')">
+        <div class="row-icon ic-personal">🐷</div>
+        <div class="row-body">
+          <div class="row-title">Compare Personal Loan</div>
+          <div class="row-desc">Compare monthly payments, total interest and terms side by side.</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+      <div class="row-card" onclick="openCompareDetail('business')">
+        <div class="row-icon ic-business">🤝</div>
+        <div class="row-body">
+          <div class="row-title">Compare Business Loan</div>
+          <div class="row-desc">Compare business borrowing options, interest rates and terms.</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+      <div class="row-card" onclick="openCompareDetail('mortgage')">
+        <div class="row-icon ic-mortgage">🏦</div>
+        <div class="row-body">
+          <div class="row-title">Compare Mortgages</div>
+          <div class="row-desc">Compare home loans with tax, PMI, HOA fees and monthly totals.</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+      <div class="row-card" onclick="openCompareDetail('auto')">
+        <div class="row-icon ic-auto">🚗</div>
+        <div class="row-body">
+          <div class="row-title">Compare Auto Loan</div>
+          <div class="row-desc">Compare car loan terms, interest rates and monthly payments.</div>
+        </div>
+        <div class="row-chev">→</div>
+      </div>
+    </div>
+
+    <!-- ============ SETTINGS ============ -->
+    <div class="screen" id="screen-setting">
+      <!-- Ad Banner Card (Matching Home, Tools & Compare) -->
+      <div style="padding: 10px 16px 4px;">
+        <div style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.07);">
+          <div
+            style="position:relative; background:linear-gradient(135deg, #FFE5D9 0%, #FFCAD4 100%); height:105px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <span
+              style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.35); color:#fff; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; z-index:2;">▶</span>
+            <div
+              style="background:#fff; border-radius:12px; padding:8px 14px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:82%;">
+              <div style="font-size:11px; color:#5B7186; font-weight:600;">Vòng tiền tối đa 😯</div>
+              <div style="font-size:18px; font-weight:800; color:#E53935; margin:2px 0;">25,000,000đ</div>
+              <div style="font-size:10px; color:#5B7186;">⏱ Thời hạn khoản vay: <strong>12 Tháng</strong></div>
+            </div>
+          </div>
+          <div style="padding:10px 12px; display:flex; align-items:center; gap:10px;">
+            <div
+              style="width:36px; height:36px; background:#0066FF; color:#fff; font-weight:800; font-size:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              D</div>
+            <div style="flex:1; min-width:0;">
+              <div
+                style="font-weight:700; font-size:12.5px; color:#10233A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Đơn giản cho cuộc sống</div>
+              <div
+                style="font-size:11px; color:#5B7186; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                Ứng dụng hỗ trợ bạn tiếp cận quy trình đăng ký nhanh chóng...</div>
+            </div>
+            <button
+              style="background:#25C974; color:#fff; border:none; font-weight:700; font-size:12px; padding:8px 14px; border-radius:20px; cursor:pointer; flex-shrink:0;">Đăng
+              ký</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Preferences</div>
+      <div class="setting-row" onclick="showToast('Language: English (UK)')">
+        <div class="row-icon">🌐</div>
+        <div class="setting-title">Language</div>
+        <div class="row-chev" style="margin-left:auto;">→</div>
+      </div>
+      <div class="setting-row" onclick="showToast('Opening privacy policy…')">
+        <div class="row-icon">🛡️</div>
+        <div class="setting-title">Privacy Policy</div>
+        <div class="row-chev" style="margin-left:auto;">→</div>
+      </div>
+      <div class="setting-row" onclick="showToast('Share link copied')">
+        <div class="row-icon">🔗</div>
+        <div class="setting-title">Share</div>
+        <div class="row-chev" style="margin-left:auto;">→</div>
+      </div>
+      <div class="setting-row" onclick="showToast('Loan Calculation Plus — mockup v1.0')">
+        <div class="row-icon">ℹ️</div>
+        <div class="setting-title">About Us</div>
+        <div class="row-chev" style="margin-left:auto;">→</div>
+      </div>
+      <div class="section-label">Data</div>
+      <div class="setting-row" onclick="clearHistory()">
+        <div class="row-icon">🗑️</div>
+        <div class="setting-title">Clear calculation history</div>
+        <div class="row-chev" style="margin-left:auto;">→</div>
+      </div>
+    </div>
+
+    <!-- ============ CALCULATOR: PERSONAL / BUSINESS / AUTO (shared template) ============ -->
+    <div class="screen" id="screen-loanform">
+      <div class="form-wrap">
+        <div class="field">
+          <div class="field-label">Loan Amount <span class="info-dot">i</span>
+            <div class="currency-badge">🇬🇧 GBP <span style="font-size:11px; opacity:0.6;">➔</span></div>
+          </div>
+          <div class="input-shell"><input type="number" id="ln-amount" placeholder="Loan Amount"><span
+              class="unit">£</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Interest Rate <span class="info-dot">i</span></div>
+          <div class="input-shell"><input type="number" id="ln-rate" placeholder="Interest Rate"><span
+              class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Loan Term <span class="info-dot">i</span></div>
+          <div class="two-col">
+            <div class="input-shell"><input type="number" id="ln-term" placeholder="Loan Term"></div>
+            <div class="input-shell"><select id="ln-term-unit">
+                <option value="year">Year</option>
+                <option value="month">Month</option>
+              </select></div>
+          </div>
+        </div>
+        <div class="field" id="ln-startdate-field">
+          <div class="field-label">Start Date</div>
+          <div class="input-shell"><input type="date" id="ln-startdate" placeholder="Start Date"><span
+              class="unit">📅</span></div>
+        </div>
+        <div class="err-msg" id="ln-err">Please fill in all fields with valid numbers.</div>
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetLoanForm()">Reset Fields</button>
+          <button class="btn btn-calc" id="ln-calc-btn" onclick="calcLoan()">Calculate</button>
+        </div>
+        <div class="result-card" id="ln-result">
+          <div class="result-headline">Estimated payment</div>
+          <div class="result-amount" id="ln-monthly">£0.00 / mo</div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="k">Loan Amount</div>
+              <div class="v" id="ln-r-amount">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Total Interest</div>
+              <div class="v" id="ln-r-interest">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Total Payment</div>
+              <div class="v" id="ln-r-total">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Term</div>
+              <div class="v" id="ln-r-term">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CALCULATOR: MORTGAGE ============ -->
+    <div class="screen" id="screen-mortgage">
+      <div class="form-wrap">
+        <div class="field">
+          <div class="field-label">Home Price <span class="info-dot">i</span>
+            <div class="currency-badge">🇬🇧 GBP <span style="font-size:11px; opacity:0.6;">➔</span></div>
+          </div>
+          <div class="input-shell"><input type="number" id="mg-price" placeholder="Home Price"><span
+              class="unit">£</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Down Payment <span class="info-dot">i</span></div>
+          <div class="two-col">
+            <div class="input-shell"><input type="number" id="mg-down-amt" placeholder="Down Payment"><span
+                class="unit">£</span></div>
+            <div class="input-shell"><input type="number" id="mg-down-pct" placeholder="Down Payment"
+                oninput="syncDownPct()"><span class="unit">%</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Loan Term <span class="info-dot">i</span></div>
+          <div class="input-shell"><input type="number" id="mg-term" placeholder="Loan Term"><span
+              class="unit">Year</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Interest Rate <span class="info-dot">i</span></div>
+          <div class="input-shell"><input type="number" id="mg-rate" placeholder="Interest Rate"><span
+              class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <div class="two-col">
+            <div>
+              <div class="field-label" style="font-size:13px; font-weight:600;">Property Tax</div>
+              <div class="input-shell"><input type="number" id="mg-tax" placeholder="Property Tax"><span
+                  class="unit">£</span></div>
+            </div>
+            <div>
+              <div class="field-label" style="font-size:13px; font-weight:600;">PMI</div>
+              <div class="input-shell"><input type="number" id="mg-pmi" placeholder="PMI"><span class="unit">£</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="two-col">
+            <div>
+              <div class="field-label" style="font-size:13px; font-weight:600;">HOA Fees</div>
+              <div class="input-shell"><input type="number" id="mg-hoa" placeholder="HOA Fees"><span
+                  class="unit">£</span></div>
+            </div>
+            <div>
+              <div class="field-label" style="font-size:13px; font-weight:600;">Home insurance</div>
+              <div class="input-shell"><input type="number" id="mg-ins" placeholder="Home insurance"><span
+                  class="unit">£</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="err-msg" id="mg-err">Please enter a valid home price, term and interest rate.</div>
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetMortgageForm()">Reset Fields</button>
+          <button class="btn btn-calc" onclick="calcMortgage()">Calculate</button>
+        </div>
+        <div class="result-card" id="mg-result">
+          <div class="result-headline">Estimated total monthly payment</div>
+          <div class="result-amount" id="mg-monthly">£0.00 / mo</div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="k">Principal & Interest</div>
+              <div class="v" id="mg-r-pi">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Loan Amount</div>
+              <div class="v" id="mg-r-loan">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Tax + PMI + Ins.</div>
+              <div class="v" id="mg-r-extra">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Total of Payments</div>
+              <div class="v" id="mg-r-total">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CALCULATOR: FD / RD (shared) ============ -->
+    <div class="screen" id="screen-deposit">
+      <div class="form-wrap">
+        <div class="field">
+          <div class="field-label" id="dep-amt-label">Investment Amount <span class="info-dot">i</span>
+            <div class="currency-badge">🇬🇧 GBP <span style="font-size:11px; opacity:0.6;">➔</span></div>
+          </div>
+          <div class="input-shell"><input type="number" id="dep-amount" placeholder="Investment Amount"><span
+              class="unit">£</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Interest Rate <span class="info-dot">i</span></div>
+          <div class="input-shell"><input type="number" id="dep-rate" placeholder="Interest Rate"><span
+              class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Tenure <span class="info-dot">i</span></div>
+          <div class="two-col">
+            <div class="input-shell"><input type="number" id="dep-tenure" placeholder="Tenure"></div>
+            <div class="input-shell"><select id="dep-tenure-unit">
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+              </select></div>
+          </div>
+        </div>
+        <div class="field" id="dep-compound-field">
+          <div class="field-label">The number of times interest <span class="info-dot">i</span></div>
+          <div class="input-shell"><select id="dep-compound">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="4">4</option>
+              <option value="12">12</option>
+            </select></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Start Date</div>
+          <div class="input-shell"><input type="date" id="dep-startdate" placeholder="Start Date"><span
+              class="unit">📅</span></div>
+        </div>
+        <div class="err-msg" id="dep-err">Please fill in all fields with valid numbers.</div>
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetDepositForm()">Reset Fields</button>
+          <button class="btn btn-calc" onclick="calcDeposit()">Calculate</button>
+        </div>
+        <div class="result-card" id="dep-result">
+          <div class="result-headline" id="dep-headline">Maturity value</div>
+          <div class="result-amount" id="dep-maturity">£0.00</div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="k" id="dep-invested-label">Invested</div>
+              <div class="v" id="dep-r-invested">—</div>
+            </div>
+            <div class="result-item">
+              <div class="k">Interest Earned</div>
+              <div class="v" id="dep-r-interest">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CALCULATOR RESULT SCREEN (Full Screen matching Screenshots) ============ -->
+    <div class="screen" id="screen-result">
+      <div class="res-wrap">
+
+        <!-- Meta Ad Box (Matching detail.jpg) -->
+        <div class="ad-banner-card"
+          style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+          <div
+            style="position:relative; background:#8E8E93; height:125px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <span
+              style="position:absolute; top:8px; left:8px; background:#F5B027; color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; z-index:2;">AD</span>
+            <span
+              style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.45); color:#fff; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; z-index:2;">Ads
+              served by Meta</span>
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop"
+              style="width:100%; height:100%; object-fit:cover;" alt="Ad Banner">
+            <span
+              style="position:absolute; bottom:8px; right:8px; color:#fff; background:rgba(0,0,0,0.5); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; z-index:2;">▶</span>
+          </div>
+          <div style="padding:10px 12px; display:flex; align-items:center; gap:10px;">
+            <div
+              style="width:36px; height:36px; background:#000; color:#fff; font-weight:800; font-size:9px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              Outlier</div>
+            <div style="flex:1; min-width:0;">
+              <div
+                style="font-weight:700; font-size:12.5px; color:#10233A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                Thông thạo hai ngôn ngữ? AI ...</div>
+              <div
+                style="font-size:11px; color:#5B7186; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                Thành thạo tiếng Việt lẫn tiếng Anh? Đánh giá câu trả lời AI song ngữ trên ...</div>
+            </div>
+            <button
+              style="background:#25C974; color:#fff; border:none; font-weight:700; font-size:12px; padding:8px 14px; border-radius:20px; cursor:pointer; flex-shrink:0;">Đăng
+              ký</button>
+          </div>
+        </div>
+
+        <!-- Card 1: Loan Information -->
+        <div class="res-card">
+          <div class="res-card-title">Loan Information</div>
+          <div id="res-info-body">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Card 2: Result after calculation -->
+        <div class="res-card">
+          <div class="res-card-title">Result after calculation</div>
+          <div id="res-calc-body">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Card 3: Amortization Table (Monthly) -->
+        <div class="res-card" id="res-amort-card" style="display:none;">
+          <div class="res-card-title">Amortization Table (Monthly)</div>
+          <div style="overflow-x:auto;">
+            <table class="amort-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Payment</th>
+                  <th>Interest</th>
+                  <th>Principal</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody id="res-amort-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:6px;">
+          <button class="btn-action-compare" onclick="addToCompare()">
+            <span
+              style="font-size:18px; border:2px solid #fff; border-radius:5px; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; line-height:1; font-weight:700;">+</span>
+            Add to compare list
+          </button>
+          <button class="btn-action-pdf" onclick="sharePDF()">
+            <span style="font-size:18px;">📄</span>
+            Share PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CONVERTER SCREEN (Full Screen Matching Exchange Screenshots) ============ -->
+    <div class="screen" id="screen-converter">
+      <div class="conv-wrap">
+
+        <!-- Card 1: From Unit -->
+        <div class="conv-card">
+          <div class="conv-input-row">
+            <input type="number" id="conv-from-val" value="25888" oninput="liveConvert()">
+            <span class="conv-unit-symbol" id="conv-from-sym">€</span>
+          </div>
+          <div class="conv-select-row">
+            <div class="conv-select-left">
+              <span class="conv-flag" id="conv-from-flag">🇪🇺</span>
+              <select id="conv-from-select" onchange="onConvSelectChange()"
+                style="border:none; outline:none; font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#10233A; background:transparent; cursor:pointer;">
+              </select>
+            </div>
+            <span style="color:#5B7186; font-size:14px;">▼</span>
+          </div>
+        </div>
+
+        <!-- Note Below Card 1 -->
+        <div class="conv-note" id="conv-from-note">1 EUR ≈ 1.1507 USD</div>
+
+        <!-- Swap Button -->
+        <div class="conv-swap-btn" onclick="swapConverterUnits()">🔄</div>
+
+        <!-- Card 2: To Unit -->
+        <div class="conv-card">
+          <div class="conv-input-row">
+            <input type="number" id="conv-to-val" value="29790.5639" readonly style="color:#10233A;">
+            <span class="conv-unit-symbol" id="conv-to-sym">$</span>
+          </div>
+          <div class="conv-select-row">
+            <div class="conv-select-left">
+              <span class="conv-flag" id="conv-to-flag">🇺🇸</span>
+              <select id="conv-to-select" onchange="onConvSelectChange()"
+                style="border:none; outline:none; font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#10233A; background:transparent; cursor:pointer;">
+              </select>
+            </div>
+            <span style="color:#5B7186; font-size:14px;">▼</span>
+          </div>
+        </div>
+
+        <!-- Note Below Card 2 -->
+        <div class="conv-note" id="conv-to-note">1 USD ≈ 0.869 EUR</div>
+
+        <!-- Action Buttons -->
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-reset" onclick="resetConverterFields()">Reset Fields</button>
+          <button class="btn btn-calc" onclick="liveConvert()">Calculate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ WORLD CLOCK SCREEN ============ -->
+    <div class="screen" id="screen-worldclock">
+      <div class="conv-wrap">
+        <!-- Clocks Container -->
+        <div id="world-clock-list" style="display:flex; flex-direction:column; gap:14px;">
+          <!-- Empty state or Clock cards -->
+        </div>
+
+        <!-- Add Clock Button -->
+        <button class="btn-add-clock" onclick="openAddClockModal()" style="margin-top:auto;">
+          <span style="font-size:18px;">🕒</span> Add Clock
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ ADD CLOCK SEARCH SCREEN ============ -->
+    <div class="screen" id="screen-addclock">
+      <div
+        style="padding:16px 20px 30px; background:#D0EFFF; display:flex; flex-direction:column; gap:14px; min-height:100%;">
+        <!-- Search Input Shell -->
+        <div
+          style="background:#fff; border-radius:16px; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+          <input type="text" id="clock-search-input" placeholder="search" oninput="filterCities()"
+            style="width:85%; border:none; outline:none; font-size:16px; color:#10233A; font-family:'Inter',sans-serif;">
+          <span style="font-size:18px; color:#00A6CE;">🔍</span>
+        </div>
+
+        <!-- City List Grouped by Alphabet -->
+        <div id="city-grouped-list"
+          style="background:#fff; border-radius:20px; padding:16px; display:flex; flex-direction:column; gap:6px; box-shadow:0 4px 16px rgba(11,46,79,0.05);">
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ COMPARE DETAIL SCREEN (Full Screen Matching Compare Screenshots) ============ -->
+    <div class="screen" id="screen-compare-detail">
+      <div class="comp-wrap">
+        <!-- Carousel Container -->
+        <div class="comp-carousel" id="comp-cards-container" onscroll="updateCompDots()">
+          <!-- Dynamically rendered compare cards -->
+        </div>
+
+        <!-- Dots Indicator Bar -->
+        <div class="comp-indicator-bar" id="comp-dots-bar">
+        </div>
+
+        <!-- Button to Add Another Calculation -->
+        <button class="btn-action-compare" style="margin-top:10px;" onclick="addAnotherToCompare()">
+          <span
+            style="font-size:18px; border:2px solid #fff; border-radius:5px; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; line-height:1; font-weight:700;">+</span>
+          Add New Calculation
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ BOTTOM NAV ============ -->
+    <div class="bottom-nav" id="bottomNav">
+      <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+        <div class="nav-ic">🏠</div>Home
+      </div>
+      <div class="nav-item" data-tab="tools" onclick="switchTab('tools')">
+        <div class="nav-ic">🧮</div>Tools
+      </div>
+      <div class="nav-item" data-tab="compare" onclick="switchTab('compare')">
+        <div class="nav-ic">⚖️</div>Compare
+      </div>
+      <div class="nav-item" data-tab="setting" onclick="switchTab('setting')">
+        <div class="nav-ic">⚙️</div>Setting
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    /* ---------------- STATE ---------------- */
+    let currentCalc = null; // 'personal' | 'business' | 'auto' | 'mortgage' | 'fd' | 'rd'
+    let currentTab = 'home';
+
+    const CALC_META = {
+      personal: { title: 'Personal Loan', sub: 'Plan your borrowing', screen: 'screen-loanform' },
+      business: { title: 'Business Loan', sub: 'Finance your growth', screen: 'screen-loanform' },
+      auto: { title: 'Auto Loan', sub: 'Drive away prepared', screen: 'screen-loanform' },
+      mortgage: { title: 'Mortgages', sub: 'Know your home budget', screen: 'screen-mortgage' },
+      fd: { title: 'Fixed Deposit', sub: 'Grow a lump sum', screen: 'screen-deposit' },
+      rd: { title: 'Recurring Deposit', sub: 'Grow monthly savings', screen: 'screen-deposit' }
+    };
+
+    function fmt(n) {
+      if (isNaN(n)) return '£0.00';
+      return '£' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    /* ---------------- NAVIGATION ---------------- */
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + tab).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
+      document.getElementById('backBtn').style.display = 'none';
+      document.getElementById('homeIconBtn').style.display = 'none';
+      const pencil = document.getElementById('editPencilBtn'); if (pencil) pencil.style.display = 'none';
+      document.getElementById('bottomNav').style.display = 'flex';
+
+      const titles = { home: ['Loan Calculation Plus', 'Plan smarter. Borrow wiser.'], tools: ['Tools', 'Everyday conversions'], compare: ['Compare', 'All calculators side by side'], setting: ['Settings', 'Manage your preferences'] };
+      document.getElementById('heroTitle').textContent = titles[tab][0];
+      document.getElementById('heroSub').textContent = titles[tab][1];
+
+      const heroEl = document.getElementById('hero');
+      heroEl.classList.remove('hero-big', 'hero-tools', 'hero-compare', 'hero-setting');
+      if (tab === 'home') {
+        heroEl.classList.add('hero-big');
+        document.getElementById('heroSub').style.display = 'block';
+      } else if (tab === 'tools') {
+        heroEl.classList.add('hero-tools');
+        document.getElementById('heroSub').style.display = 'none';
+      } else if (tab === 'compare') {
+        heroEl.classList.add('hero-compare');
+        document.getElementById('heroSub').style.display = 'none';
+      } else if (tab === 'setting') {
+        heroEl.classList.add('hero-setting');
+        document.getElementById('heroSub').style.display = 'none';
+      } else {
+        document.getElementById('heroSub').style.display = 'none';
+      }
+      renderHistory();
+    }
+
+    let returnTab = 'home';
+    function goHome() {
+      switchTab(returnTab || 'home');
+    }
+
+    function openCalc(key) {
+      returnTab = currentTab;
+      currentCalc = key;
+      const meta = CALC_META[key];
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(meta.screen).classList.add('active');
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('homeIconBtn').style.display = 'none';
+      const pencil = document.getElementById('editPencilBtn'); if (pencil) pencil.style.display = 'none';
+      document.getElementById('bottomNav').style.display = 'none';
+
+      const heroEl = document.getElementById('hero');
+      heroEl.classList.remove('hero-big');
+      document.getElementById('heroTitle').textContent = meta.title;
+      document.getElementById('heroSub').style.display = 'none';
+
+      if (meta.screen === 'screen-loanform') {
+        resetLoanForm();
+        const isBiz = (key === 'business');
+        document.getElementById('ln-term-unit').value = isBiz ? 'month' : 'year';
+        document.getElementById('ln-startdate-field').style.display = isBiz ? 'none' : 'block';
+      }
+      if (meta.screen === 'screen-mortgage') resetMortgageForm();
+      if (meta.screen === 'screen-deposit') {
+        resetDepositForm();
+        const isRD = key === 'rd';
+        document.getElementById('dep-compound-field').style.display = isRD ? 'none' : 'block';
+        document.getElementById('dep-headline').textContent = 'Maturity value';
+        document.getElementById('dep-invested-label').textContent = isRD ? 'Total Deposited' : 'Invested';
+      }
+    }
+
+    /* ---------------- CONVERTER & WORLD CLOCK LOGIC (Matching Exchange Screenshots) ---------------- */
+    let currentToolKey = 'exchange';
+
+    const CONVERTER_CONFIGS = {
+      exchange: {
+        title: 'Exchange Rate',
+        units: [
+          { id: 'EUR', label: 'EUR', flag: '🇪🇺', sym: '€', rateToUSD: 1.1507 },
+          { id: 'USD', label: 'USD', flag: '🇺🇸', sym: '$', rateToUSD: 1.0 },
+          { id: 'GBP', label: 'GBP', flag: '🇬🇧', sym: '£', rateToUSD: 1.27 },
+          { id: 'JPY', label: 'JPY', flag: '🇯🇵', sym: '¥', rateToUSD: 0.0065 },
+          { id: 'VND', label: 'VND', flag: '🇻🇳', sym: '₫', rateToUSD: 0.000039 }
+        ],
+        defaultFrom: 'EUR',
+        defaultTo: 'USD',
+        defaultVal: 25888,
+        isCurrency: true
+      },
+      temp: {
+        title: 'Temperature',
+        units: [
+          { id: 'C', label: 'Celsius', flag: '🌡️', sym: '°C' },
+          { id: 'F', label: 'Fahrenheit', flag: '🌡️', sym: '°F' },
+          { id: 'K', label: 'Kelvin', flag: '🌡️', sym: 'K' }
+        ],
+        defaultFrom: 'C',
+        defaultTo: 'F',
+        defaultVal: 0,
+        isCurrency: false
+      },
+      mass: {
+        title: 'Mass Convert',
+        units: [
+          { id: 'g', label: 'Gam', flag: '⚖️', sym: 'g', toBase: 0.001 },
+          { id: 'kg', label: 'Kilogram', flag: '⚖️', sym: 'kg', toBase: 1 },
+          { id: 'lb', label: 'Pound', flag: '⚖️', sym: 'lb', toBase: 0.453592 },
+          { id: 'oz', label: 'Ounce', flag: '⚖️', sym: 'oz', toBase: 0.0283495 }
+        ],
+        defaultFrom: 'g',
+        defaultTo: 'kg',
+        defaultVal: 0,
+        isCurrency: false
+      },
+      speed: {
+        title: 'Speed Convert',
+        units: [
+          { id: 'C', label: 'Speed of light', flag: '🏎️', sym: 'C', toBase: 299792458 },
+          { id: 'ma', label: 'Mach', flag: '🏎️', sym: 'ma', toBase: 340.29 },
+          { id: 'kmh', label: 'km/h', flag: '🏎️', sym: 'km/h', toBase: 1 / 3.6 },
+          { id: 'mph', label: 'mph', flag: '🏎️', sym: 'mph', toBase: 0.44704 }
+        ],
+        defaultFrom: 'C',
+        defaultTo: 'ma',
+        defaultVal: 0,
+        isCurrency: false
+      },
+      length: {
+        title: 'Length Convert',
+        units: [
+          { id: 'cm', label: 'Centimeter', flag: '📏', sym: 'cm', toBase: 0.01 },
+          { id: 'mm', label: 'Millimeter', flag: '📏', sym: 'mm', toBase: 0.001 },
+          { id: 'm', label: 'Meter', flag: '📏', sym: 'm', toBase: 1 },
+          { id: 'km', label: 'Kilometer', flag: '📏', sym: 'km', toBase: 1000 },
+          { id: 'in', label: 'Inch', flag: '📏', sym: 'in', toBase: 0.0254 },
+          { id: 'ft', label: 'Foot', flag: '📏', sym: 'ft', toBase: 0.3048 }
+        ],
+        defaultFrom: 'cm',
+        defaultTo: 'mm',
+        defaultVal: 0,
+        isCurrency: false
+      }
+    };
+
+    let userWorldClocks = [
+      { city: 'Etc/GMT+7', sub: 'Today, (UTC-07:00)', time: '02:42' }
+    ];
+
+    const ALL_CITIES = [
+      'ACT', 'Abidjan', 'Accra', 'Acre', 'Adak', 'Addis_Ababa', 'Adelaide', 'Aden',
+      'Bangkok', 'Beijing', 'Berlin', 'Cairo', 'Chicago', 'Dubai', 'Hanoi',
+      'Hong_Kong', 'London', 'Los_Angeles', 'Madrid', 'Moscow', 'New_York',
+      'Paris', 'Rome', 'Seoul', 'Singapore', 'Sydney', 'Tokyo', 'Toronto'
+    ];
+
+    function openTool(key) {
+      currentToolKey = key;
+      returnTab = currentTab;
+
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('homeIconBtn').style.display = 'none';
+      document.getElementById('bottomNav').style.display = 'none';
+
+
+      if (key === 'clock') {
+        document.getElementById('screen-worldclock').classList.add('active');
+        document.getElementById('heroTitle').textContent = 'World Clock';
+        document.getElementById('heroSub').textContent = '';
+        renderWorldClockList();
+        return;
+      }
+
+      const config = CONVERTER_CONFIGS[key];
+      if (!config) return;
+
+      document.getElementById('screen-converter').classList.add('active');
+      document.getElementById('heroTitle').textContent = config.title;
+      document.getElementById('heroSub').textContent = '';
+
+      const fromSel = document.getElementById('conv-from-select');
+      const toSel = document.getElementById('conv-to-select');
+
+      fromSel.innerHTML = config.units.map(u => `<option value="${u.id}">${u.label}</option>`).join('');
+      toSel.innerHTML = config.units.map(u => `<option value="${u.id}">${u.label}</option>`).join('');
+
+      fromSel.value = config.defaultFrom;
+      toSel.value = config.defaultTo;
+      document.getElementById('conv-from-val').value = config.defaultVal;
+
+      updateConverterUI();
+    }
+
+    function updateConverterUI() {
+      const config = CONVERTER_CONFIGS[currentToolKey];
+      if (!config) return;
+
+      const fromId = document.getElementById('conv-from-select').value;
+      const toId = document.getElementById('conv-to-select').value;
+
+      const uFrom = config.units.find(u => u.id === fromId) || config.units[0];
+      const uTo = config.units.find(u => u.id === toId) || config.units[1];
+
+      document.getElementById('conv-from-sym').textContent = uFrom.sym;
+      document.getElementById('conv-from-flag').textContent = uFrom.flag;
+
+      document.getElementById('conv-to-sym').textContent = uTo.sym;
+      document.getElementById('conv-to-flag').textContent = uTo.flag;
+
+      let note1 = '', note2 = '';
+      if (currentToolKey === 'exchange') {
+        const rate1 = uFrom.rateToUSD / uTo.rateToUSD;
+        const rate2 = uTo.rateToUSD / uFrom.rateToUSD;
+        note1 = `1 ${uFrom.id} ≈ ${rate1.toFixed(4)} ${uTo.id}`;
+        note2 = `1 ${uTo.id} ≈ ${rate2.toFixed(3)} ${uFrom.id}`;
+      } else if (currentToolKey === 'temp') {
+        if (uFrom.id === 'C' && uTo.id === 'F') { note1 = '1 °C = 33.8 °F'; note2 = '1 °F = -17.222222222 °C'; }
+        else if (uFrom.id === 'F' && uTo.id === 'C') { note1 = '1 °F = -17.222222222 °C'; note2 = '1 °C = 33.8 °F'; }
+        else { note1 = `1 ${uFrom.sym} → ${uTo.sym}`; note2 = `1 ${uTo.sym} → ${uFrom.sym}`; }
+      } else {
+        const r1 = uFrom.toBase / uTo.toBase;
+        const r2 = uTo.toBase / uFrom.toBase;
+        note1 = `1 ${uFrom.sym} = ${r1 >= 1 ? r1 : r1.toFixed(6).replace(/\.?0+$/, '')} ${uTo.sym}`;
+        note2 = `1 ${uTo.sym} = ${r2 >= 1 ? r2 : r2.toFixed(6).replace(/\.?0+$/, '')} ${uFrom.sym}`;
+      }
+
+      document.getElementById('conv-from-note').textContent = note1;
+      document.getElementById('conv-to-note').textContent = note2;
+
+      liveConvert();
+    }
+
+    function liveConvert() {
+      const config = CONVERTER_CONFIGS[currentToolKey];
+      if (!config) return;
+
+      const val = parseFloat(document.getElementById('conv-from-val').value) || 0;
+      const fromId = document.getElementById('conv-from-select').value;
+      const toId = document.getElementById('conv-to-select').value;
+
+      const uFrom = config.units.find(u => u.id === fromId) || config.units[0];
+      const uTo = config.units.find(u => u.id === toId) || config.units[1];
+
+      let result = 0;
+      if (currentToolKey === 'exchange') {
+        result = (val * uFrom.rateToUSD) / uTo.rateToUSD;
+        document.getElementById('conv-to-val').value = result > 0 ? result.toFixed(4) : '0';
+      } else if (currentToolKey === 'temp') {
+        let c = val;
+        if (uFrom.id === 'F') c = (val - 32) * 5 / 9;
+        if (uFrom.id === 'K') c = val - 273.15;
+
+        if (uTo.id === 'C') result = c;
+        else if (uTo.id === 'F') result = c * 9 / 5 + 32;
+        else if (uTo.id === 'K') result = c + 273.15;
+
+        document.getElementById('conv-to-val').value = result.toFixed(2);
+      } else {
+        const baseVal = val * uFrom.toBase;
+        result = baseVal / uTo.toBase;
+        document.getElementById('conv-to-val').value = result >= 1000 ? result.toFixed(2) : (result >= 1 ? result.toFixed(4) : result.toFixed(6).replace(/\.?0+$/, ''));
+      }
+    }
+
+    function swapConverterUnits() {
+      const fromSel = document.getElementById('conv-from-select');
+      const toSel = document.getElementById('conv-to-select');
+      const tmp = fromSel.value;
+      fromSel.value = toSel.value;
+      toSel.value = tmp;
+      updateConverterUI();
+    }
+
+    function resetConverterFields() {
+      const config = CONVERTER_CONFIGS[currentToolKey];
+      if (!config) return;
+      document.getElementById('conv-from-val').value = config.defaultVal;
+      document.getElementById('conv-from-select').value = config.defaultFrom;
+      document.getElementById('conv-to-select').value = config.defaultTo;
+      updateConverterUI();
+    }
+
+    function onConvSelectChange() {
+      updateConverterUI();
+    }
+
+    /* ---------------- WORLD CLOCK LOGIC ---------------- */
+    function renderWorldClockList() {
+      const container = document.getElementById('world-clock-list');
+      if (userWorldClocks.length === 0) {
+        container.innerHTML = `
+      <div class="clock-empty-box">
+        <div class="clock-empty-img">📦</div>
+        <div class="clock-empty-title">Your clock are empty!</div>
+        <div class="clock-empty-desc">Looks like you haven't added anything yet.</div>
+      </div>
+    `;
+      } else {
+        container.innerHTML = userWorldClocks.map(c => `
+      <div class="clock-card">
+        <div>
+          <div class="clock-card-name">${c.city}</div>
+          <div class="clock-card-sub">${c.sub}</div>
+        </div>
+        <div class="clock-card-time">${c.time}</div>
+      </div>
+    `).join('');
+      }
+    }
+
+    function openAddClockModal() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-addclock').classList.add('active');
+      document.getElementById('heroTitle').textContent = 'World Clock';
+      document.getElementById('heroSub').textContent = '';
+      document.getElementById('clock-search-input').value = '';
+      filterCities();
+    }
+
+    function filterCities() {
+      const query = (document.getElementById('clock-search-input').value || '').toLowerCase();
+      const filtered = ALL_CITIES.filter(c => c.toLowerCase().includes(query));
+
+      const groups = {};
+      filtered.forEach(c => {
+        const letter = c[0].toUpperCase();
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push(c);
+      });
+
+      const container = document.getElementById('city-grouped-list');
+      let html = '';
+      Object.keys(groups).sort().forEach(letter => {
+        html += `<div class="city-group-title">${letter}</div>`;
+        groups[letter].forEach(city => {
+          html += `<div class="city-row" onclick="selectCity('${city}')">${city}</div>`;
+        });
+      });
+
+      container.innerHTML = html || '<div style="padding:16px; text-align:center; color:#5B7186;">No cities found.</div>';
+    }
+
+    function selectCity(cityName) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      userWorldClocks.push({
+        city: cityName,
+        sub: 'Today, (UTC+07:00)',
+        time: timeStr
+      });
+      openTool('clock');
+    }
+
+    /* ---------------- RESULT SCREEN RENDERER (Full Screen Matching Screenshots) ---------------- */
+    function showResultScreen(infoItems, calcItems, amortData, isMortgage = false, donutData = null) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-result').classList.add('active');
+
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('homeIconBtn').style.display = 'flex';
+      document.getElementById('bottomNav').style.display = 'none';
+
+
+      const title = CALC_META[currentCalc] ? CALC_META[currentCalc].title : 'Calculation Result';
+      document.getElementById('heroTitle').textContent = title;
+      document.getElementById('heroSub').textContent = '';
+
+      // Render Card 1: Loan Information
+      const infoBody = document.getElementById('res-info-body');
+      infoBody.innerHTML = infoItems.map(item => `
+    <div class="res-row">
+      <span class="res-label">${item.label}</span>
+      <span class="res-val">${item.val}</span>
+    </div>
+  `).join('');
+
+      // Render Card 2: Result after calculation
+      const calcBody = document.getElementById('res-calc-body');
+      if (isMortgage && donutData) {
+        calcBody.innerHTML = `
+      <div class="donut-box">
+        <div class="donut-graphic">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#E6F2F5" stroke-width="14" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#ECA328" stroke-width="14" stroke-dasharray="${donutData.p1} 251.2" stroke-dashoffset="0" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#00A6CE" stroke-width="14" stroke-dasharray="${donutData.p2} 251.2" stroke-dashoffset="-${donutData.p1}" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#10233A" stroke-width="14" stroke-dasharray="${donutData.p3} 251.2" stroke-dashoffset="-${donutData.p1 + donutData.p2}" />
+          </svg>
+          <div class="donut-center-text">
+            <div class="donut-center-sub">Total Payment</div>
+            <div class="donut-center-val">${donutData.totalMonthly}</div>
+            <div class="donut-center-unit">/ month</div>
+          </div>
+        </div>
+        <div class="legend-list">
+          <div class="legend-item">
+            <div class="legend-left"><span class="legend-dot" style="background:#ECA328;"></span> Principal & Interest</div>
+            <span class="res-val">${donutData.piVal}(${donutData.piPct}%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-left"><span class="legend-dot" style="background:#00A6CE;"></span> Property Tax</div>
+            <span class="res-val">${donutData.taxVal}(${donutData.taxPct}%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-left"><span class="legend-dot" style="background:#10233A;"></span> HOA Fees</div>
+            <span class="res-val">${donutData.hoaVal}(${donutData.hoaPct}%)</span>
+          </div>
+        </div>
+      </div>
+    `;
+      } else {
+        let html = calcItems.map(item => `
+      <div class="res-row">
+        <span class="res-label">${item.label}</span>
+        <span class="res-val">${item.val}</span>
+      </div>
+    `).join('');
+
+        if (currentCalc === 'personal' && amortData && amortData.length > 0) {
+          html += `
+        <button class="btn-amortization" onclick="toggleAmortCard()">
+          Amortization Table &nbsp;❯
+        </button>
+      `;
+        }
+        calcBody.innerHTML = html;
+      }
+
+      // Render Card 3: Amortization Table if available
+      const amortCard = document.getElementById('res-amort-card');
+      const amortTbody = document.getElementById('res-amort-tbody');
+      if (amortData && amortData.length > 0) {
+        amortTbody.innerHTML = amortData.map(row => `
+      <tr>
+        <td>${row.month}</td>
+        <td>${row.payment}</td>
+        <td>${row.interest}</td>
+        <td>${row.principal}</td>
+        <td>${row.balance}</td>
+      </tr>
+    `).join('');
+        amortCard.style.display = 'none';
+      } else {
+        amortCard.style.display = 'none';
+      }
+    }
+
+    function resetDepositForm() {
+      document.getElementById('dep-amount').value = '';
+      document.getElementById('dep-rate').value = '';
+      document.getElementById('dep-tenure').value = '';
+      const today = new Date().toISOString().split('T')[0];
+      const dateEl = document.getElementById('dep-startdate');
+      if (dateEl) dateEl.value = today;
+      document.getElementById('dep-result').classList.remove('show');
+      document.getElementById('dep-err').classList.remove('show');
+    }
+
+    function toggleAmortCard() {
+      const card = document.getElementById('res-amort-card');
+      if (card.style.display === 'none') {
+        card.style.display = 'block';
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        card.style.display = 'none';
+      }
+    }
+
+    function addToCompare() {
+      showToast('Added to compare list');
+    }
+
+    function sharePDF() {
+      showToast('Generating PDF report...');
+    }
+
+    /* ---------------- LOAN CALCULATOR (Personal / Business / Auto) ---------------- */
+    function resetLoanForm() {
+      document.getElementById('ln-amount').value = '';
+      document.getElementById('ln-rate').value = '';
+      document.getElementById('ln-term').value = '';
+      const today = new Date().toISOString().split('T')[0];
+      const dateEl = document.getElementById('ln-startdate');
+      if (dateEl) dateEl.value = today;
+      document.getElementById('ln-result').classList.remove('show');
+      document.getElementById('ln-err').classList.remove('show');
+    }
+
+    function calcLoan() {
+      const amount = parseFloat(document.getElementById('ln-amount').value);
+      const aprPct = parseFloat(document.getElementById('ln-rate').value);
+      const termRaw = parseFloat(document.getElementById('ln-term').value);
+      const unit = document.getElementById('ln-term-unit').value;
+      const err = document.getElementById('ln-err');
+
+      if (!amount || amount <= 0 || isNaN(aprPct) || aprPct < 0 || !termRaw || termRaw <= 0) {
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+
+      const months = unit === 'year' ? termRaw * 12 : termRaw;
+      const monthlyRate = (aprPct / 100) / 12;
+      let monthlyPay;
+      if (monthlyRate === 0) {
+        monthlyPay = amount / months;
+      } else {
+        monthlyPay = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+      }
+      const totalPaid = monthlyPay * months;
+      const totalInterest = totalPaid - amount;
+
+      // Generate Amortization Table data
+      const amortData = [];
+      let balance = amount;
+      for (let m = 1; m <= Math.min(months, 360); m++) {
+        const interestPay = balance * monthlyRate;
+        const principalPay = monthlyPay - interestPay;
+        balance = Math.max(0, balance - principalPay);
+        amortData.push({
+          month: m,
+          payment: monthlyPay.toFixed(2),
+          interest: interestPay.toFixed(2),
+          principal: principalPay.toFixed(2),
+          balance: balance.toFixed(2)
+        });
+      }
+
+      // Calculate Pay-Off Date
+      const today = new Date();
+      const payOffDate = new Date(today.getFullYear(), today.getMonth() + months, today.getDate());
+      const payOffStr = (payOffDate.getMonth() + 1) + '/' + payOffDate.getDate() + '/' + (payOffDate.getFullYear().toString().slice(-2));
+      const startStr = (today.getMonth() + 1) + '/' + today.getDate() + '/' + (today.getFullYear().toString().slice(-2));
+
+      let infoItems = [];
+      let calcItems = [];
+
+      if (currentCalc === 'business') {
+        infoItems = [
+          { label: 'Loan Amount', val: (amount).toFixed(2) + '£' },
+          { label: 'Interest Rate', val: aprPct + '%' },
+          { label: 'Loan Term', val: termRaw + ' ' + (unit === 'year' ? 'Year' : 'Month') },
+          { label: 'Payment Frequency', val: 'Month' }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: (monthlyPay).toFixed(4) + '£' }
+        ];
+      } else if (currentCalc === 'auto') {
+        infoItems = [
+          { label: 'Loan Amount', val: (amount).toFixed(2) + '£' },
+          { label: 'Interest Rate', val: aprPct + '%' },
+          { label: 'Loan Term', val: termRaw + ' ' + (unit === 'year' ? 'Year' : 'Month') },
+          { label: 'Start Date', val: startStr }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: (monthlyPay).toFixed(2) + '£' },
+          { label: 'Total Payment', val: (totalPaid).toFixed(3) + '£' },
+          { label: 'Total Interest Paid', val: (totalInterest).toFixed(3) + '£' },
+          { label: 'Pay-Off Date', val: payOffStr }
+        ];
+      } else {
+        // Personal loan
+        infoItems = [
+          { label: 'Loan Amount', val: (amount).toFixed(2) + '£' },
+          { label: 'Interest Rate', val: aprPct + '%' },
+          { label: 'Loan Term', val: termRaw + ' ' + (unit === 'year' ? 'Year' : 'Month') },
+          { label: 'Start Date', val: startStr }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: (monthlyPay).toFixed(2) + '£' },
+          { label: 'Total Payment', val: (totalPaid).toFixed(3) + '£' },
+          { label: 'Total Interest Paid', val: (totalInterest).toFixed(3) + '£' },
+          { label: 'Pay-Off Date', val: payOffStr }
+        ];
+      }
+
+      showResultScreen(infoItems, calcItems, amortData);
+
+      addHistory({
+        type: CALC_META[currentCalc] ? CALC_META[currentCalc].title : 'Loan',
+        stats: [
+          ['Interest', aprPct.toFixed(2) + '%'],
+          ['Duration', unit === 'year' ? termRaw + ' Year' + (termRaw > 1 ? 's' : '') : termRaw + ' Month' + (termRaw > 1 ? 's' : '')],
+          ['Loan Amount', fmt(amount)]
+        ]
+      });
+    }
+
+    /* ---------------- MORTGAGE CALCULATOR ---------------- */
+    function syncDownPct() {
+      const price = parseFloat(document.getElementById('mg-price').value);
+      const pct = parseFloat(document.getElementById('mg-down-pct').value);
+      if (price > 0 && !isNaN(pct)) {
+        document.getElementById('mg-down-amt').value = (price * pct / 100).toFixed(2);
+      }
+    }
+
+    function resetMortgageForm() {
+      ['mg-price', 'mg-down-amt', 'mg-down-pct', 'mg-term', 'mg-rate', 'mg-tax', 'mg-pmi', 'mg-hoa', 'mg-ins'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('mg-result').classList.remove('show');
+      document.getElementById('mg-err').classList.remove('show');
+    }
+
+    function calcMortgage() {
+      const price = parseFloat(document.getElementById('mg-price').value);
+      const downAmt = parseFloat(document.getElementById('mg-down-amt').value) || 0;
+      const term = parseFloat(document.getElementById('mg-term').value);
+      const aprPct = parseFloat(document.getElementById('mg-rate').value);
+      const tax = parseFloat(document.getElementById('mg-tax').value) || 0;
+      const pmi = parseFloat(document.getElementById('mg-pmi').value) || 0;
+      const hoa = parseFloat(document.getElementById('mg-hoa').value) || 0;
+      const ins = parseFloat(document.getElementById('mg-ins').value) || 0;
+      const err = document.getElementById('mg-err');
+
+      if (!price || price <= 0 || !term || term <= 0 || isNaN(aprPct) || aprPct < 0) {
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+
+      const principal = Math.max(price - downAmt, 0);
+      const months = term * 12;
+      const monthlyRate = (aprPct / 100) / 12;
+      let pi;
+      if (monthlyRate === 0) { pi = principal / months; }
+      else { pi = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1); }
+
+      const taxMonthly = tax / 12;
+      const hoaMonthly = hoa;
+      const extraMonthly = taxMonthly + (pmi / 12) + hoaMonthly + (ins / 12);
+      const totalMonthly = pi + extraMonthly;
+
+      const infoItems = [
+        { label: 'Home Price', val: (price).toFixed(2) + '£' },
+        { label: 'Interest Rate', val: aprPct + '%' },
+        { label: 'Loan Term', val: term + ' Year' },
+        { label: 'Down Payment', val: (downAmt).toFixed(2) + '£' },
+        { label: 'Property Tax', val: (tax).toFixed(2) + '£' },
+        { label: 'PMI', val: (pmi).toFixed(2) + '£' },
+        { label: 'Home insurance', val: (ins).toFixed(2) + '£' },
+        { label: 'HOA Fees', val: (hoa).toFixed(2) + '£' }
+      ];
+
+      const totalForDonut = Math.max(totalMonthly, 0.01);
+      const piPct = ((pi / totalForDonut) * 100).toFixed(2);
+      const taxPct = ((taxMonthly / totalForDonut) * 100).toFixed(2);
+      const hoaPct = ((hoaMonthly / totalForDonut) * 100).toFixed(2);
+
+      const donutData = {
+        totalMonthly: (totalMonthly).toFixed(2) + '£',
+        piVal: (pi).toFixed(2) + '£',
+        piPct: piPct,
+        taxVal: (taxMonthly).toFixed(2) + '£',
+        taxPct: taxPct,
+        hoaVal: (hoaMonthly).toFixed(2) + '£',
+        hoaPct: hoaPct,
+        p1: Math.round((pi / totalForDonut) * 251.2),
+        p2: Math.round((taxMonthly / totalForDonut) * 251.2),
+        p3: Math.round((hoaMonthly / totalForDonut) * 251.2)
+      };
+
+      showResultScreen(infoItems, [], [], true, donutData);
+
+      addHistory({
+        type: 'Mortgage',
+        stats: [
+          ['Interest', aprPct.toFixed(2) + '%'],
+          ['Duration', term + ' Year' + (term > 1 ? 's' : '')],
+          ['Home Price', fmt(price)]
+        ]
+      });
+    }
+
+    /* ---------------- FD / RD CALCULATOR ---------------- */
+    function resetDepositForm() {
+      ['dep-amount', 'dep-rate', 'dep-tenure'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('dep-compound').value = '4';
+      document.getElementById('dep-tenure-unit').value = 'month';
+      document.getElementById('dep-result').classList.remove('show');
+      document.getElementById('dep-err').classList.remove('show');
+    }
+
+    function calcDeposit() {
+      const amount = parseFloat(document.getElementById('dep-amount').value);
+      const ratePct = parseFloat(document.getElementById('dep-rate').value);
+      const tenureRaw = parseFloat(document.getElementById('dep-tenure').value);
+      const tenureUnit = document.getElementById('dep-tenure-unit').value;
+      const n = parseFloat(document.getElementById('dep-compound').value);
+      const err = document.getElementById('dep-err');
+
+      if (!amount || amount <= 0 || isNaN(ratePct) || ratePct < 0 || !tenureRaw || tenureRaw <= 0) {
+        err.classList.add('show');
+        return;
+      }
+      err.classList.remove('show');
+
+      const years = tenureUnit === 'year' ? tenureRaw : tenureRaw / 12;
+      const r = ratePct / 100;
+      let maturity, invested;
+
+      if (currentCalc === 'rd') {
+        const months = Math.round(years * 12);
+        const i = r / n;
+        maturity = 0;
+        for (let m = 1; m <= months; m++) {
+          const periodsLeft = (months - m + 1) / 12 * n;
+          maturity += amount * Math.pow(1 + i, periodsLeft);
+        }
+        invested = amount * months;
+      } else {
+        maturity = amount * Math.pow(1 + r / n, n * years);
+        invested = amount;
+      }
+      const interest = maturity - invested;
+
+      const today = new Date();
+      const monthsTotal = Math.round(years * 12);
+      const maturityDate = new Date(today.getFullYear(), today.getMonth() + monthsTotal, today.getDate());
+      const matDateStr = (maturityDate.getMonth() + 1) + '/' + maturityDate.getDate() + '/' + (maturityDate.getFullYear().toString().slice(-2));
+      const startStr = (today.getMonth() + 1) + '/' + today.getDate() + '/' + (today.getFullYear().toString().slice(-2));
+
+      const isRD = currentCalc === 'rd';
+      const infoItems = [
+        { label: isRD ? 'Monthly Deposit' : 'Investment Amount', val: (amount).toFixed(2) + '£' },
+        { label: 'Interest Rate', val: ratePct + '%' },
+        { label: 'Tenure', val: tenureRaw + ' ' + (tenureUnit === 'year' ? 'Year' : 'Month') },
+        { label: 'Start Date', val: startStr }
+      ];
+
+      const calcItems = [
+        { label: 'Maturity Value', val: (maturity).toFixed(2) + '£' },
+        { label: isRD ? 'Total Deposited' : 'Total Invested', val: (invested).toFixed(2) + '£' },
+        { label: 'Total Interest Earned', val: (interest).toFixed(2) + '£' },
+        { label: 'Maturity Date', val: matDateStr }
+      ];
+
+      showResultScreen(infoItems, calcItems, []);
+
+      saveHistory({
+        key: currentCalc,
+        type: isRD ? 'Recurring Deposit' : 'Fixed Deposit',
+        stats: [
+          ['Interest', ratePct.toFixed(2) + '%'],
+          ['Tenure', tenureUnit === 'year' ? tenureRaw + ' Year' + (tenureRaw > 1 ? 's' : '') : tenureRaw + ' Month' + (tenureRaw > 1 ? 's' : '')],
+          [isRD ? 'Monthly Deposit' : 'Investment', fmt(amount)]
+        ]
+      });
+    }
+
+    /* ---------------- HISTORY DATA & VIEW ALL LOGIC (Matching caculator.jpg & investment.jpg) ---------------- */
+    let history = [
+      {
+        key: 'business',
+        type: 'Business Loan',
+        category: 'calc',
+        date: '7/31/26',
+        icon: '🤝',
+        iconClass: 'ic-business',
+        stats: [
+          ['Interest', '10%'],
+          ['Duration', '1 Month'],
+          ['Loan Amount', '1000.00$']
+        ]
+      },
+      {
+        key: 'mortgage',
+        type: 'Mortgages',
+        category: 'calc',
+        date: '7/31/26',
+        icon: '🏦',
+        iconClass: 'ic-mortgage',
+        stats: [
+          ['Interest', '1%'],
+          ['Duration', '1 Year'],
+          ['Loan Amount', '2.00$']
+        ]
+      },
+      {
+        key: 'auto',
+        type: 'Auto Loan',
+        category: 'calc',
+        date: '7/31/26',
+        icon: '🚗',
+        iconClass: 'ic-auto',
+        stats: [
+          ['Interest', '2%'],
+          ['Duration', '1 Year'],
+          ['Loan Amount', '62662.00£']
+        ]
+      },
+      {
+        key: 'personal',
+        type: 'Personal Loan',
+        category: 'calc',
+        date: '7/31/26',
+        icon: '🐷',
+        iconClass: 'ic-personal',
+        stats: [
+          ['Interest', '8%'],
+          ['Duration', '1 Year'],
+          ['Loan Amount', '5655.00£']
+        ]
+      },
+      {
+        key: 'fd',
+        type: 'Fixed Deposit',
+        category: 'invest',
+        date: '7/31/26',
+        icon: '👛',
+        iconClass: 'ic-fd',
+        stats: [
+          ['Interest', '5.5%'],
+          ['Tenure', '1 Year'],
+          ['Investment Amount', '5000.00£']
+        ]
+      },
+      {
+        key: 'rd',
+        type: 'Recurring Deposit',
+        category: 'invest',
+        date: '7/31/26',
+        icon: '💳',
+        iconClass: 'ic-rd',
+        stats: [
+          ['Interest', '6.0%'],
+          ['Tenure', '6 Months'],
+          ['Monthly Deposit', '500.00£']
+        ]
+      }
+    ];
+
+    let currentHistorySegment = 'calc';
+
+    window.openHistoryViewAll = function () {
+      returnTab = currentTab;
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-history-viewall').classList.add('active');
+
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('homeIconBtn').style.display = 'none';
+      const pencil = document.getElementById('editPencilBtn'); if (pencil) pencil.style.display = 'flex';
+      document.getElementById('bottomNav').style.display = 'none';
+
+      const heroEl = document.getElementById('hero');
+      heroEl.classList.remove('hero-big');
+      document.getElementById('heroTitle').textContent = 'History';
+      document.getElementById('heroSub').style.display = 'none';
+
+      switchHistorySegment('calc');
+    };
+    function openHistoryViewAll() { window.openHistoryViewAll(); }
+
+    function switchHistorySegment(seg) {
+      currentHistorySegment = seg;
+      document.getElementById('seg-tab-calc').classList.toggle('active', seg === 'calc');
+      document.getElementById('seg-tab-invest').classList.toggle('active', seg === 'invest');
+
+      const listEl = document.getElementById('historyViewAllList');
+      const items = history.filter(h => h.category === seg);
+
+      if (items.length) {
+        listEl.innerHTML = items.map(viewAllHistoryCardHTML).join('');
+      } else {
+        listEl.innerHTML = `<div class="empty-hist" style="margin:20px 0;">No ${seg === 'calc' ? 'calculator' : 'investment'} history records yet.</div>`;
+      }
+    }
+
+    function openHistoryDetail(key) {
+      returnTab = 'history-viewall';
+      currentCalc = key;
+      let infoItems = [];
+      let calcItems = [];
+
+      if (key === 'business') {
+        infoItems = [
+          { label: 'Loan Amount', val: '1000.00$' },
+          { label: 'Interest Rate', val: '10%' },
+          { label: 'Loan Term', val: '1 Month' },
+          { label: 'Payment Frequency', val: 'Month' }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: '1100.0000$' }
+        ];
+      } else if (key === 'personal') {
+        infoItems = [
+          { label: 'Loan Amount', val: '5655.00£' },
+          { label: 'Interest Rate', val: '8%' },
+          { label: 'Loan Term', val: '1 Year' },
+          { label: 'Start Date', val: '7/31/26' }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: '491.92£' },
+          { label: 'Total Payment', val: '5903.040£' },
+          { label: 'Total Interest Paid', val: '248.040£' },
+          { label: 'Pay-Off Date', val: '7/31/27' }
+        ];
+      } else if (key === 'auto') {
+        infoItems = [
+          { label: 'Loan Amount', val: '62662.00£' },
+          { label: 'Interest Rate', val: '2%' },
+          { label: 'Loan Term', val: '1 Year' },
+          { label: 'Start Date', val: '7/31/26' }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: '5278.58£' },
+          { label: 'Total Payment', val: '63342.960£' },
+          { label: 'Total Interest Paid', val: '680.960£' },
+          { label: 'Pay-Off Date', val: '7/31/27' }
+        ];
+      } else if (key === 'mortgage') {
+        infoItems = [
+          { label: 'Home Price', val: '2.00$' },
+          { label: 'Interest Rate', val: '1%' },
+          { label: 'Loan Term', val: '1 Year' },
+          { label: 'Down Payment', val: '1.00$' },
+          { label: 'Property Tax', val: '11.00$' },
+          { label: 'PMI', val: '1.00$' },
+          { label: 'Home insurance', val: '1.00$' },
+          { label: 'HOA Fees', val: '1.00$' }
+        ];
+        calcItems = [
+          { label: 'Monthly Payment', val: '14.08$' },
+          { label: 'Total Payment', val: '168.96$' }
+        ];
+      } else if (key === 'fd') {
+        infoItems = [
+          { label: 'Investment Amount', val: '5000.00£' },
+          { label: 'Interest Rate', val: '5.5%' },
+          { label: 'Tenure', val: '1 Year' },
+          { label: 'Start Date', val: '7/31/26' }
+        ];
+        calcItems = [
+          { label: 'Maturity Value', val: '5282.46£' },
+          { label: 'Total Invested', val: '5000.00£' },
+          { label: 'Total Interest Earned', val: '282.46£' },
+          { label: 'Maturity Date', val: '7/31/27' }
+        ];
+      } else if (key === 'rd') {
+        infoItems = [
+          { label: 'Monthly Deposit', val: '500.00£' },
+          { label: 'Interest Rate', val: '6.0%' },
+          { label: 'Tenure', val: '6 Months' },
+          { label: 'Start Date', val: '7/31/26' }
+        ];
+        calcItems = [
+          { label: 'Maturity Value', val: '3052.88£' },
+          { label: 'Total Deposited', val: '3000.00£' },
+          { label: 'Total Interest Earned', val: '52.88£' },
+          { label: 'Maturity Date', val: '1/31/27' }
+        ];
+      }
+
+      showResultScreen(infoItems, calcItems, []);
+      const title = CALC_META[key] ? CALC_META[key].title : 'Calculation Result';
+      document.getElementById('heroTitle').textContent = title;
+    }
+
+    function viewAllHistoryCardHTML(h) {
+      return `
+    <div class="vhistory-card" onclick="openHistoryDetail('${h.key}')">
+      <div class="vhistory-head">
+        <div class="vhistory-icon ${h.iconClass}">${h.icon}</div>
+        <div>
+          <div class="vhistory-title">${h.type}</div>
+          <div class="vhistory-date">${h.date}</div>
+        </div>
+        <div class="vhistory-chev">➔</div>
+      </div>
+      <div class="vhistory-stats">
+        ${h.stats.map(s => `
+          <div class="vhistory-stat">
+            <div class="k">${s[0]}</div>
+            <div class="v">${s[1]}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+    }
+
+    function saveHistory(entry) {
+      entry.date = new Date().toLocaleDateString('en-GB', { month: 'numeric', day: 'numeric', year: '2-digit' });
+      if (!entry.category) entry.category = (entry.key === 'fd' || entry.key === 'rd') ? 'invest' : 'calc';
+      history.unshift(entry);
+      renderHistory();
+      showToast('Saved to history');
+    }
+    function clearHistory() {
+      history = [];
+      renderHistory();
+      showToast('History cleared');
+    }
+    function renderHistory() {
+      const calcShort = history.filter(h => h.category === 'calc' || !h.category).slice(0, 2);
+      const homeList = document.getElementById('historyList');
+      if (homeList) {
+        homeList.innerHTML = calcShort.length ? calcShort.map(viewAllHistoryCardHTML).join('') : '<div class="empty-hist">No calculations yet — try a loan or deposit calculator.</div>';
+      }
+    }
+
+    /* ---------------- COMPARE STORE & LOGIC (Matching Compare Screenshots) ---------------- */
+    let currentCompareKey = 'business';
+
+    const compareStore = {
+      business: [
+        {
+          id: 1,
+          info: [
+            { label: 'Loan Amount', val: '1000.00£' },
+            { label: 'Interest Rate', val: '4%' },
+            { label: 'Loan Term', val: '6 Month' },
+            { label: 'Payment Frequency', val: 'Month' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '1040.0000£' }
+          ]
+        },
+        {
+          id: 2,
+          info: [
+            { label: 'Loan Amount', val: '2000.00£' },
+            { label: 'Interest Rate', val: '4.5%' },
+            { label: 'Loan Term', val: '3 Month' },
+            { label: 'Payment Frequency', val: 'Month' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '2090.0000£' }
+          ]
+        },
+        {
+          id: 3,
+          info: [
+            { label: 'Loan Amount', val: '3000.00£' },
+            { label: 'Interest Rate', val: '5%' },
+            { label: 'Loan Term', val: '1 Month' },
+            { label: 'Payment Frequency', val: 'Month' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '3150.0000£' }
+          ]
+        }
+      ],
+      personal: [
+        {
+          id: 1,
+          info: [
+            { label: 'Loan Amount', val: '5655.00£' },
+            { label: 'Interest Rate', val: '8%' },
+            { label: 'Loan Term', val: '1 Year' },
+            { label: 'Start Date', val: '7/31/26' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '491.92£' },
+            { label: 'Total Payment', val: '5903.040£' },
+            { label: 'Total Interest Paid', val: '248.040£' },
+            { label: 'Pay-Off Date', val: '7/31/27' }
+          ]
+        }
+      ],
+      auto: [
+        {
+          id: 1,
+          info: [
+            { label: 'Loan Amount', val: '62662.00£' },
+            { label: 'Interest Rate', val: '2%' },
+            { label: 'Loan Term', val: '1 Year' },
+            { label: 'Start Date', val: '7/31/26' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '5278.58£' },
+            { label: 'Total Payment', val: '63342.960£' },
+            { label: 'Total Interest Paid', val: '680.960£' },
+            { label: 'Pay-Off Date', val: '7/31/27' }
+          ]
+        }
+      ],
+      mortgage: [
+        {
+          id: 1,
+          info: [
+            { label: 'Home Price', val: '2.00£' },
+            { label: 'Interest Rate', val: '1%' },
+            { label: 'Loan Term', val: '1 Year' },
+            { label: 'Down Payment', val: '1.00£' },
+            { label: 'Property Tax', val: '11.00£' },
+            { label: 'PMI', val: '1.00£' },
+            { label: 'Home insurance', val: '1.00£' },
+            { label: 'HOA Fees', val: '1.00£' }
+          ],
+          result: [
+            { label: 'Monthly Payment', val: '14.08£' },
+            { label: 'Total Payment', val: '168.96£' }
+          ]
+        }
+      ],
+      fd: [
+        {
+          id: 1,
+          info: [
+            { label: 'Investment Amount', val: '5000.00£' },
+            { label: 'Interest Rate', val: '4.2%' },
+            { label: 'Tenure', val: '12 Month' }
+          ],
+          result: [
+            { label: 'Maturity Value', val: '5210.00£' },
+            { label: 'Total Interest Earned', val: '210.00£' }
+          ]
+        }
+      ],
+      rd: [
+        {
+          id: 1,
+          info: [
+            { label: 'Monthly Deposit', val: '500.00£' },
+            { label: 'Interest Rate', val: '5%' },
+            { label: 'Tenure', val: '12 Month' }
+          ],
+          result: [
+            { label: 'Maturity Value', val: '6162.50£' },
+            { label: 'Total Interest Earned', val: '162.50£' }
+          ]
+        }
+      ]
+    };
+
+    function openCompareDetail(key) {
+      currentCompareKey = key;
+      returnTab = currentTab;
+
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-compare-detail').classList.add('active');
+
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('homeIconBtn').style.display = 'none';
+      document.getElementById('bottomNav').style.display = 'none';
+
+
+      const titles = {
+        business: 'Compare Business Loan',
+        personal: 'Compare Personal Loan',
+        auto: 'Compare Auto Loan',
+        mortgage: 'Compare Mortgages',
+        fd: 'Compare Fixed Deposit',
+        rd: 'Compare Recurring Deposit'
+      };
+
+      document.getElementById('heroTitle').textContent = titles[key] || 'Compare Loans';
+      document.getElementById('heroSub').textContent = '';
+
+      renderCompareCarousel();
+    }
+
+    function renderCompareCarousel() {
+      const container = document.getElementById('comp-cards-container');
+      const dotsBar = document.getElementById('comp-dots-bar');
+      const items = compareStore[currentCompareKey] || [];
+
+      if (items.length === 0) {
+        container.innerHTML = `
+      <div style="background:#fff; border-radius:20px; padding:30px 20px; text-align:center; width:100%; box-shadow:0 4px 16px rgba(11,46,79,0.05);">
+        <div style="font-size:48px; margin-bottom:12px;">📊</div>
+        <div style="font-weight:700; font-size:16px; color:#10233A;">No comparisons saved yet</div>
+        <div style="font-size:13.5px; color:#5B7186; margin-top:6px;">Calculate a loan and tap "+ Add to compare list" to compare items side by side.</div>
+      </div>
+    `;
+        dotsBar.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = items.map((item, idx) => `
+    <div class="comp-card" id="comp-card-${idx}">
+      <div class="comp-card-header">
+        <span>${idx + 1}</span>
+        <span class="comp-card-trash" onclick="removeCompareItem(${idx})" title="Delete">🗑️</span>
+      </div>
+      <div class="comp-card-body">
+        ${item.info.map(i => `
+          <div class="res-row">
+            <span class="res-label">${i.label}</span>
+            <span class="res-val">${i.val}</span>
+          </div>
+        `).join('')}
+        <div style="border-top:1px solid #EBF3F6; margin:8px 0;"></div>
+        ${item.result.map(r => `
+          <div class="res-row">
+            <span class="res-label">${r.label}</span>
+            <span class="res-val" style="font-size:16px;">${r.val}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+      dotsBar.innerHTML = items.map((_, idx) => `
+    <div class="comp-dot ${idx === 0 ? 'active' : ''}" id="comp-dot-${idx}"></div>
+  `).join('');
+
+      setTimeout(() => {
+        container.scrollLeft = container.scrollWidth;
+        updateCompDots();
+      }, 100);
+    }
+
+    function updateCompDots() {
+      const container = document.getElementById('comp-cards-container');
+      const items = compareStore[currentCompareKey] || [];
+      if (items.length === 0) return;
+
+      const cardWidth = container.offsetWidth * 0.9;
+      const activeIdx = Math.min(Math.round(container.scrollLeft / cardWidth), items.length - 1);
+
+      items.forEach((_, idx) => {
+        const dot = document.getElementById('comp-dot-' + idx);
+        if (dot) {
+          if (idx === activeIdx) dot.classList.add('active');
+          else dot.classList.remove('active');
+        }
+      });
+    }
+
+    function removeCompareItem(idx) {
+      if (compareStore[currentCompareKey]) {
+        compareStore[currentCompareKey].splice(idx, 1);
+        renderCompareCarousel();
+        showToast('Removed from compare list');
+      }
+    }
+
+    function addAnotherToCompare() {
+      openCalc(currentCompareKey);
+    }
+
+    function addToCompare() {
+      const infoNodes = document.querySelectorAll('#res-info-body .res-row');
+      const calcNodes = document.querySelectorAll('#res-calc-body .res-row');
+
+      const infoData = [];
+      infoNodes.forEach(n => {
+        const l = n.querySelector('.res-label')?.textContent || '';
+        const v = n.querySelector('.res-val')?.textContent || '';
+        if (l && v) infoData.push({ label: l, val: v });
+      });
+
+      const calcData = [];
+      calcNodes.forEach(n => {
+        const l = n.querySelector('.res-label')?.textContent || '';
+        const v = n.querySelector('.res-val')?.textContent || '';
+        if (l && v) calcData.push({ label: l, val: v });
+      });
+
+      const targetKey = currentCalc || 'business';
+      if (!compareStore[targetKey]) compareStore[targetKey] = [];
+      compareStore[targetKey].push({
+        id: compareStore[targetKey].length + 1,
+        info: infoData,
+        result: calcData
+      });
+
+      showToast('Added to compare list');
+      openCompareDetail(targetKey);
+    }
+
+    /* init */
+    renderHistory();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+# Android and Gradle build output
+.gradle/
+**/build/
+captures/
+
+# Local machine configuration
+local.properties
+*.iml
+
+# Android Studio and Kotlin caches
+.idea/
+.kotlin/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Temporary files and generated review artifacts
+.tmp-*
+*.log
+
+# Signing keys and local secrets
+*.jks
+*.keystore
+app/google-services.json
+
