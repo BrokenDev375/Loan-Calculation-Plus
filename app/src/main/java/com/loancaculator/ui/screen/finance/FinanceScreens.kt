@@ -113,11 +113,11 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
                         .fillMaxWidth()
                         .height(48.dp)
                         .background(
-                            Brush.horizontalGradient(listOf(Color(0xFFD18A00), Gold, Color(0xFFFFD96A), Gold, Color(0xFFD18A00))),
+                            Brush.horizontalGradient(listOf(Color(0xFFF2B632), Color(0xFFFFD76A), Color(0xFFFFF0A6), Color(0xFFFFD76A), Color(0xFFF2B632))),
                             RoundedCornerShape(24.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF4A2B00)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF5B3A00)),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 2.dp),
                 ) {
                     Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(18.dp))
