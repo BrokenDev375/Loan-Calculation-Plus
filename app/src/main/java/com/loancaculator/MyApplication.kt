@@ -2,10 +2,12 @@ package com.loancaculator
 
 import android.app.Activity
 import com.loancaculator.core.InstallReferrerHelper
+import com.loancaculator.core.AppStorage
 import com.loancaculator.core.LocaleHelper
 import com.loancaculator.core.MainActivity
 import com.loancaculator.firebase.Remote
 import com.brian.base_application.BaseApplication
+import com.brian.base_application.language.LanguageRouter
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
@@ -28,6 +30,7 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
+        LanguageRouter.customActivityClass = com.loancaculator.ui.screen.language.MyLanguageActivity::class.java
         super.onCreate()   // lib init ads/consent/IAP/notification + set default `ads_config` + tự fetch RC
 
         // Đăng ký default Remote Config của app (KHÔNG gọi setDefaultsAsync trực tiếp — sẽ xoá `ads_config`).
@@ -72,8 +75,7 @@ class MyApplication : BaseApplication() {
     // per-app locale của AndroidX để AppCompat recreate MainActivity theo ngôn ngữ mới
     // (nếu không, đổi ngôn ngữ trong Settings sẽ không đổi chuỗi các màn app).
     override fun notifyLanguageSaved(languageCode: String) {
-        getSharedPreferences("AppStorage", MODE_PRIVATE).edit()
-            .putString("language", languageCode).apply()
+        AppStorage.setLanguageCode(this, languageCode)
         LocaleHelper.updateLocale(this, languageCode)
     }
 

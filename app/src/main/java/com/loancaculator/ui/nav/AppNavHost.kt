@@ -60,7 +60,7 @@ fun AppNavHost(startRoute: String, navController: NavHostController = rememberNa
                 onConverter = { navController.navigate(Screen.converter(it)) }, onWorldClock = { navController.navigate(Screen.WorldClock.route) })
         }
         composable(Screen.Compare.route) {
-            CompareScreen(onNavigate = ::navigateTab, onOpen = { navController.navigate(Screen.result(it)) })
+            CompareScreen(onNavigate = ::navigateTab, onOpen = { type -> navController.navigate(Screen.compareDetail(type.key)) })
         }
         composable(Screen.Setting.route) {
             FinanceSettingsScreen(onNavigate = ::navigateTab, viewModel = hiltViewModel())
@@ -73,7 +73,16 @@ fun AppNavHost(startRoute: String, navController: NavHostController = rememberNa
             val id = entry.arguments?.getLong(Screen.ARG_ID) ?: 0L
             val viewModel: FinanceViewModel = hiltViewModel()
             val context = LocalContext.current
-            ResultScreen(id = id, onBack = back, onCompare = { viewModel.addCompare(id); navController.navigate(Screen.Compare.route) }, onShare = { title, summary -> PdfShare.shareResult(context, title, summary) })
+            ResultScreen(
+                id = id,
+                onBack = back,
+                onCompare = { type ->
+                    viewModel.addCompare(id)
+                    type?.let { navController.navigate(Screen.compareDetail(it.key)) }
+                        ?: navController.navigate(Screen.Compare.route)
+                },
+                onShare = { title, summary -> PdfShare.shareResult(context, title, summary) },
+            )
         }
         composable(Screen.History.route) { FinanceHistoryScreen(onBack = back, onOpen = { navController.navigate(Screen.result(it)) }) }
         composable("${Screen.Converter.route}/{${Screen.ARG_TYPE}}", arguments = listOf(navArgument(Screen.ARG_TYPE) { type = NavType.StringType })) { entry ->
@@ -82,8 +91,9 @@ fun AppNavHost(startRoute: String, navController: NavHostController = rememberNa
         }
         composable(Screen.WorldClock.route) { WorldClockScreen(onBack = back, onAdd = { navController.navigate(Screen.AddClock.route) }) }
         composable(Screen.AddClock.route) { AddClockScreen(onBack = back) }
-        composable("${Screen.HistoryDetail.route}/{${Screen.ARG_ID}}", arguments = listOf(navArgument(Screen.ARG_ID) { type = NavType.LongType })) { entry ->
-            CompareDetailScreen(entry.arguments?.getLong(Screen.ARG_ID) ?: 0L, back)
+        composable("${Screen.CompareDetail.route}/{${Screen.ARG_TYPE}}", arguments = listOf(navArgument(Screen.ARG_TYPE) { type = NavType.StringType })) { entry ->
+            val type = CalculatorType.fromKey(entry.arguments?.getString(Screen.ARG_TYPE).orEmpty())
+            CompareDetailScreen(type, onBack = back)
         }
     }
 }

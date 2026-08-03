@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Đã có bản cập nhật mới cho Loan Calculation Plus</string>
+    <string name="baseapp_screenshot_title">Đã chụp màn hình</string>
+    <string name="baseapp_recent_title">Ứng dụng vừa được cập nhật</string>
+    <string name="baseapp_open">Mở</string>
+    <string name="baseapp_scan">Kiểm tra ngay</string>
+    <string name="baseapp_daily_open_content">Xem lại các phép tính vay và tiền gửi gần đây</string>
+    <string name="baseapp_check_now">Kiểm tra ngay</string>
+    <string name="baseapp_fullscreen_1">Đã có phiên bản mới</string>
+    <string name="baseapp_fullscreen_2">Chạm để mở Loan Calculation Plus</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">Mở ứng dụng để xem lại các phép tính tài chính</string>
+    <string name="baseapp_noti_title">Bật thông báo</string>
+    <string name="baseapp_noti_content">Nhận lời nhắc về các phép tính đã lưu</string>
+    <string name="baseapp_feature1">Tính toán không quảng cáo</string>
+    <string name="baseapp_feature2">So sánh không giới hạn</string>
+    <string name="baseapp_feature3">Đầy đủ công cụ vay và tiền gửi</string>
+    <string name="baseapp_feature4">Công cụ đổi tỷ giá</string>
+    <string name="baseapp_feature5">Hỗ trợ ưu tiên</string>
+    <string-array name="notification_title2"><item>Xem lại phép tính</item><item>Lên kế hoạch thanh toán</item><item>Kiểm tra kết quả đã lưu</item><item>So sánh các lựa chọn</item><item>Quản lý tài chính gọn gàng</item></string-array>
+    <string-array name="notification_message2"><item>Mở Loan Calculation Plus để xem kết quả mới nhất</item><item>Dùng dữ liệu đã lưu để lên kế hoạch</item><item>Lịch sử tính toán của bạn đã sẵn sàng</item><item>So sánh các khoản vay đã lưu cạnh nhau</item><item>Lưu kế hoạch vay và tiền gửi ở một nơi</item></string-array>
+    <string-array name="notification_button2"><item>Mở</item><item>Lên kế hoạch</item><item>Xem</item><item>So sánh</item><item>Mở</item></string-array>
+</resources>
