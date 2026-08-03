@@ -1,172 +1,228 @@
 package com.loancaculator.ui.screen.finance
 
-import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.loancaculator.advertisement.NativeAdSlot
-import com.loancaculator.data.finance.CalculatorType
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
+import androidx.compose.ui.unit.sp
+import com.loancaculator.R
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-private data class ToolDefinition(val key: String, val title: String, val description: String, val tint: Color)
+data class FinanceTab(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
 
-private val tools = listOf(
-    ToolDefinition("currency", "Exchange Rate", "Easily convert between currencies", Color(0xFFE0F2FE)),
-    ToolDefinition("temperature", "Temperature", "Celsius, Fahrenheit and Kelvin", Color(0xFFFCE7F3)),
-    ToolDefinition("mass", "Mass Convert", "Grams, pounds and ounces", Color(0xFFE0F2FE)),
-    ToolDefinition("speed", "Speed Convert", "Kilometers and miles per hour", Color(0xFFFFEDD5)),
-    ToolDefinition("length", "Length Convert", "Inches, meters and more", Color(0xFFDCFCE7)),
-    ToolDefinition("clock", "World Clock", "Track time in saved cities", Color(0xFFFEF3C7)),
+data class LoanCurrency(val code: String, val symbol: String, val name: String, val flag: String)
+
+val loanCurrencies = listOf(
+    LoanCurrency("GBP", "\u00A3", "British Pound", "\uD83C\uDDEC\uD83C\uDDE7"),
+    LoanCurrency("USD", "$", "US Dollar", "\uD83C\uDDFA\uD83C\uDDF8"),
+    LoanCurrency("EUR", "\u20AC", "Euro", "\uD83C\uDDEA\uD83C\uDDFA"),
+    LoanCurrency("VND", "\u20AB", "Vietnamese Dong", "\uD83C\uDDFB\uD83C\uDDF3"),
+    LoanCurrency("JPY", "\u00A5", "Japanese Yen", "\uD83C\uDDEF\uD83C\uDDF5"),
+    LoanCurrency("AUD", "A$", "Australian Dollar", "\uD83C\uDDE6\uD83C\uDDFA"),
+    LoanCurrency("CAD", "C$", "Canadian Dollar", "\uD83C\uDDE8\uD83C\uDDE6"),
+    LoanCurrency("CHF", "CHF", "Swiss Franc", "\uD83C\uDDE8\uD83C\uDDED"),
+    LoanCurrency("CNY", "CN\u00A5", "Chinese Yuan", "\uD83C\uDDE8\uD83C\uDDF3"),
+    LoanCurrency("HKD", "HK$", "Hong Kong Dollar", "\uD83C\uDDED\uD83C\uDDF0"),
+    LoanCurrency("INR", "\u20B9", "Indian Rupee", "\uD83C\uDDEE\uD83C\uDDF3"),
+    LoanCurrency("IDR", "Rp", "Indonesian Rupiah", "\uD83C\uDDEE\uD83C\uDDE9"),
+    LoanCurrency("KRW", "\u20A9", "South Korean Won", "\uD83C\uDDF0\uD83C\uDDF7"),
+    LoanCurrency("MYR", "RM", "Malaysian Ringgit", "\uD83C\uDDF2\uD83C\uDDFE"),
+    LoanCurrency("PHP", "\u20B1", "Philippine Peso", "\uD83C\uDDF5\uD83C\uDDED"),
+    LoanCurrency("SGD", "S$", "Singapore Dollar", "\uD83C\uDDF8\uD83C\uDDEC"),
+    LoanCurrency("THB", "\u0E3F", "Thai Baht", "\uD83C\uDDF9\uD83C\uDDED"),
+    LoanCurrency("ZAR", "R", "South African Rand", "\uD83C\uDDE6\uD83C\uDDFF"),
+)
+
+fun loanCurrency(code: String): LoanCurrency = loanCurrencies.firstOrNull { it.code == code } ?: loanCurrencies.first()
+
+fun loanCurrencyCode(input: String): String = input.split(";")
+    .firstOrNull { it.startsWith("currency=") }
+    ?.substringAfter("=")
+    ?.let(::loanCurrency)
+    ?.code
+    ?: "GBP"
+
+private val financeTabs = listOf(
+    FinanceTab("Home", Icons.Default.Home),
+    FinanceTab("Tools", Icons.Default.Build),
+    FinanceTab("Compare", Icons.Default.List),
+    FinanceTab("Setting", Icons.Default.Settings),
 )
 
 @Composable
-fun ToolsScreen(onNavigate: (String) -> Unit, onOpenCalculator: (CalculatorType) -> Unit, onConverter: (String) -> Unit, onWorldClock: () -> Unit) {
-    Scaffold(topBar = { FinanceTopBar("Tools", "Converters and utilities", compact = true) }, bottomBar = { FinanceBottomBar("tools", onNavigate) }) { padding ->
-        LazyColumn(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 18.dp)) {
-            item { NativeAdSlot("native_tools", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(), isSmall = true) }
-            item {
-                Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    tools.chunked(2).forEach { row ->
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            row.forEach { tool -> Box(Modifier.weight(1f)) { ToolTile(tool) { if (tool.key == "clock") onWorldClock() else onConverter(tool.key) } } }
-                            if (row.size == 1) Spacer(Modifier.weight(1f))
-                        }
+fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Modifier = Modifier) {
+    NavigationBar(modifier = modifier, containerColor = Color.White, tonalElevation = 0.dp) {
+        financeTabs.forEach { tab ->
+            val route = if (tab.label == "Setting") "setting" else tab.label.lowercase()
+            val selected = current == route
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onNavigate(route) },
+                icon = {
+                    Box(Modifier.size(40.dp).background(if (selected) Color(0xFFE4F5FA) else Color(0xFFF1F4F5), CircleShape), contentAlignment = Alignment.Center) {
+                        Icon(tab.icon, contentDescription = tab.label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(22.dp))
                     }
-                }
-            }
-            item {
-                Card(onClick = { onOpenCalculator(CalculatorType.PERSONAL) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(), shape = RoundedCornerShape(18.dp)) {
-                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.Build, null, tint = MaterialTheme.colorScheme.secondary); Column(Modifier.weight(1f).padding(start = 12.dp)) { Text("Quick calculator", style = MaterialTheme.typography.titleMedium); Text("Jump straight to a loan estimate", color = MaterialTheme.colorScheme.onSurfaceVariant) } }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ToolTile(tool: ToolDefinition, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().height(142.dp), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            ToolSpriteIcon(tool.key)
-            Column { Text(tool.title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary); Text(tool.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        }
-    }
-}
-
-@Composable
-private fun ToolSpriteIcon(key: String) {
-    val index = when (key) { "currency" -> 0; "temperature" -> 1; "mass" -> 2; "speed" -> 3; "length" -> 4; else -> 5 }
-    val context = LocalContext.current
-    val sprite = remember {
-        BitmapFactory.decodeResource(context.resources, com.loancaculator.R.drawable.finance_tools).asImageBitmap()
-    }
-    val sourceSize = IntSize(sprite.width / 2, sprite.height / 3)
-    val sourceOffset = IntOffset(
-        x = sourceSize.width * (index % 2),
-        y = sourceSize.height * (index / 2)
-    )
-    Box(Modifier.size(54.dp).clip(RoundedCornerShape(14.dp))) {
-        Canvas(Modifier.fillMaxWidth().height(54.dp)) {
-            drawImage(
-                image = sprite,
-                srcOffset = sourceOffset,
-                srcSize = sourceSize,
-                dstSize = IntSize(size.width.roundToInt(), size.height.roundToInt())
+                },
+                label = { Text(tab.label, fontSize = 12.sp) },
+                colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF18A9D0), selectedTextColor = Color(0xFF18A9D0), unselectedIconColor = Color.Transparent, unselectedTextColor = Color(0xFF9BA7AD), indicatorColor = Color.Transparent),
             )
         }
     }
 }
 
-@androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
-fun ConverterScreen(kind: String, onBack: () -> Unit) {
-    var value by remember { mutableStateOf("1") }
-    var result by remember { mutableStateOf("-") }
-    val title = when (kind) { "currency" -> "Exchange Rate"; "temperature" -> "Temperature"; "mass" -> "Mass Convert"; "speed" -> "Speed Convert"; "length" -> "Length Convert"; else -> "Unit Converter" }
-    val hint = when (kind) { "currency" -> "Offline reference rate: 1 USD = 25,000 VND"; "temperature" -> "Convert Celsius to Fahrenheit"; "mass" -> "Convert kilograms to pounds"; "speed" -> "Convert km/h to mph"; else -> "Convert meters to feet" }
-    Scaffold(topBar = { FinanceTopBar(title, hint, onBack, compact = true) }) { padding ->
-        Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text(hint, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedTextField(value = value, onValueChange = { value = it }, label = { Text("Amount") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-            Button(onClick = {
-                val input = value.toDoubleOrNull() ?: 0.0
-                result = when (kind) { "currency" -> "%.2f VND".format(input * 25000); "temperature" -> "%.2f F".format(input * 9 / 5 + 32); "mass" -> "%.2f lb".format(input * 2.20462); "speed" -> "%.2f mph".format(input * 0.621371); else -> "%.2f ft".format(input * 3.28084) }
-            }, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.Build, null); Spacer(Modifier.size(8.dp)); Text("Convert") }
-            Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F6F3))) { Text("Result: $result", Modifier.padding(18.dp), style = MaterialTheme.typography.titleLarge, color = Color(0xFF0B2E4F)) }
-        }
+fun FinanceHero(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxWidth().height(176.dp)) {
+        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
     }
 }
 
-@androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
-fun WorldClockScreen(onBack: () -> Unit, onAdd: () -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
-    val clocks by viewModel.clocks.collectAsState()
-    Scaffold(topBar = { FinanceTopBar("World Clock", "Track time across cities", onBack, compact = true, actions = { IconButton(onClick = onAdd) { Icon(Icons.Default.Add, "Add city", tint = Color.White) } }) }) { padding ->
-        LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (clocks.isEmpty()) item { Text("Add a city to track its local time.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-            clocks.forEach { entry ->
-                item {
-                    val now = ZonedDateTime.now(ZoneId.of(entry.zoneId)).format(DateTimeFormatter.ofPattern("EEE, dd MMM  HH:mm"))
-                    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) { Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(entry.city, style = MaterialTheme.typography.titleMedium); Text(entry.zoneId, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall); Text(now, style = MaterialTheme.typography.headlineSmall) }; IconButton(onClick = { viewModel.removeClock(entry) }) { Icon(Icons.Default.Delete, "Remove") } } }
-                }
+fun FinanceTopBar(
+    title: String,
+    subtitle: String? = null,
+    onBack: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+    compact: Boolean = false
+) {
+    val barHeight = if (compact) 70.dp else 138.dp
+    val backSize = if (compact) 36.dp else 48.dp
+    val iconSize = if (compact) 20.dp else 24.dp
+    val titleSize = if (compact) 20.sp else 24.sp
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(barHeight)
+            .background(Color(0xFF12A9D0))
+    ) {
+        Image(
+            painter = painterResource(R.drawable.finance_hero),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
+        )
+
+        onBack?.let { callback ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = if (compact) 12.dp else 16.dp)
+                    .size(backSize)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .clickable(onClick = callback),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color(0xFF18A9D0),
+                    modifier = Modifier.size(iconSize)
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(if (compact) 6.dp else 10.dp),
+            horizontalArrangement = Arrangement.End,
+            content = actions
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = if (compact) 8.dp else 22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = titleSize,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            subtitle?.let {
+                Text(
+                    text = it,
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
 }
 
-@androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
-fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
-    var city by remember { mutableStateOf("Ho Chi Minh City") }
-    var zone by remember { mutableStateOf("Asia/Ho_Chi_Minh") }
-    Scaffold(topBar = { FinanceTopBar("Add City", "Save a local time zone", onBack, compact = true) }) { padding ->
-        Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedTextField(city, { city = it }, label = { Text("City") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(zone, { zone = it }, label = { Text("Time zone ID") }, modifier = Modifier.fillMaxWidth())
-            Button(onClick = { viewModel.addClock(city, zone); onBack() }, modifier = Modifier.fillMaxWidth()) { Text("Add city") }
-        }
-    }
+fun FinanceArrow() { Icon(Icons.Default.ArrowForward, contentDescription = "Open", tint = Color(0xFFB7CBD3), modifier = Modifier.size(20.dp)) }
+
+fun money(value: Double): String = NumberFormat.getCurrencyInstance(Locale.UK).apply { maximumFractionDigits = 2 }.format(value)
+
+fun money(value: Double, currencyCode: String): String {
+    val currency = loanCurrency(currencyCode)
+    return "${currency.symbol}${String.format(Locale.US, "%,.2f", value)}"
+}
+
+fun summaryEntries(summary: String): List<Pair<String, String>> = summary.split("|").mapNotNull { item ->
+    val parts = item.split("=", limit = 2)
+    if (parts.size == 2) parts[0] to parts[1] else null
+}
+
+fun inputValue(input: String, key: String): String? = input.split(";")
+    .firstOrNull { it.startsWith("$key=") }
+    ?.substringAfter("=")
+
+fun formatDate(millis: Long): String = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(Date(millis))
+
+fun payoffDate(startMillis: Long, months: Int): String = Calendar.getInstance().apply {
+    timeInMillis = startMillis
+    add(Calendar.MONTH, months)
+}.timeInMillis.let(::formatDate)
+
+fun resultValue(label: String, raw: String, currencyCode: String = "GBP"): String = when {
+    label.contains("rate", ignoreCase = true) -> "$raw%"
+    label.equals("Loan Term", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let { if (it % 12 == 0) "${it / 12} Year" else "$it months" } ?: raw
+    label.contains("months", ignoreCase = true) -> "${raw.toDoubleOrNull()?.toInt() ?: raw} months"
+    else -> raw.toDoubleOrNull()?.let { money(it, currencyCode) } ?: raw
 }

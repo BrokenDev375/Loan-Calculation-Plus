@@ -2,6 +2,7 @@ package com.loancaculator.ui.screen.finance
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,9 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,7 +22,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -38,8 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.loancaculator.R
-import java.text.SimpleDateFormat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -119,20 +120,76 @@ fun FinanceTopBar(
     title: String,
     subtitle: String? = null,
     onBack: (() -> Unit)? = null,
-    compact: Boolean = false,
     actions: @Composable RowScope.() -> Unit = {},
+    compact: Boolean = false
 ) {
-    val bannerHeight = if (compact) 69.dp else 138.dp
-    val bannerScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
-    Box(Modifier.fillMaxWidth().height(bannerHeight).background(Color(0xFF12A9D0))) {
-        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = bannerScale)
+    val barHeight = if (compact) 70.dp else 138.dp
+    val backSize = if (compact) 36.dp else 48.dp
+    val iconSize = if (compact) 20.dp else 24.dp
+    val titleSize = if (compact) 20.sp else 24.sp
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(barHeight)
+            .background(Color(0xFF12A9D0))
+    ) {
+        Image(
+            painter = painterResource(R.drawable.finance_hero),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
+        )
+
         onBack?.let { callback ->
-            IconButton(onClick = callback, modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp).background(Color.White, CircleShape)) { Icon(Icons.Default.ArrowBack, "Back", tint = Color(0xFF18A9D0)) }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = if (compact) 12.dp else 16.dp)
+                    .size(backSize)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .clickable(onClick = callback),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color(0xFF18A9D0),
+                    modifier = Modifier.size(iconSize)
+                )
+            }
         }
-        Row(Modifier.align(Alignment.TopEnd).padding(if (compact) 4.dp else 10.dp), horizontalArrangement = Arrangement.End, content = actions)
-        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = if (compact) 6.dp else 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, color = Color.White, fontSize = if (compact) 18.sp else 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            subtitle?.let { Text(it, color = Color.White.copy(alpha = .9f), fontSize = if (compact) 10.sp else 12.sp, textAlign = TextAlign.Center) }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(if (compact) 6.dp else 10.dp),
+            horizontalArrangement = Arrangement.End,
+            content = actions
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = if (compact) 8.dp else 22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = titleSize,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            subtitle?.let {
+                Text(
+                    text = it,
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
