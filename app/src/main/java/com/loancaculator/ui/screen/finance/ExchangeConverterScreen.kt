@@ -19,16 +19,19 @@ private val supportedCurrencies = listOf("EUR", "USD", "GBP", "JPY", "VND")
 fun ApiConverterScreen(onBack: () -> Unit, viewModel: ExchangeRateViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     var amount by remember { mutableStateOf("") }
+    
     LaunchedEffect(Unit) { viewModel.loadBase("EUR") }
 
     val units = supportedCurrencies.map { code ->
         val currency = loanCurrency(code)
         ToolUnit(code, code, currency.symbol, currency.flag)
     }
+
     val fromUnit = units.firstOrNull { it.id == state.base } ?: units.first()
     val toUnit = units.firstOrNull { it.id == state.target } ?: units[1]
     val rate = state.rates[state.target]
     val output = amount.toDoubleOrNull()?.let { value -> rate?.let { value * it } }
+    
     val footer = buildString {
         state.error?.let { append(it) }
         state.lastUpdatedAt?.let {

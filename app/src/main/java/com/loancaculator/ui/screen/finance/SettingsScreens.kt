@@ -31,7 +31,7 @@ import com.loancaculator.advertisement.NativeAdSlot
 @Composable
 fun FinanceSettingsScreen(onNavigate: (String) -> Unit, viewModel: FinanceViewModel) {
     val context = LocalContext.current
-    Scaffold(topBar = { FinanceTopBar("Settings", "Preferences and account") }, bottomBar = { FinanceBottomBar("setting", onNavigate) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("Settings", "Preferences and account", compact = true) }, bottomBar = { FinanceBottomBar("setting", onNavigate) }) { padding ->
         Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             NativeAdSlot("native_settings", modifier = Modifier.fillMaxWidth(), isSmall = true)
             SettingRow("Premium", "Remove ads and unlock every feature") { IapOpener.open(context, "settings") }
