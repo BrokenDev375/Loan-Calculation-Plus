@@ -68,15 +68,15 @@ object FinancialCalculator {
     fun deposit(input: DepositInput): DepositResult {
         val months = input.termMonths.coerceAtLeast(1)
         val periods = input.compounding.coerceAtLeast(1)
-        val monthlyRate = input.annualRate / 100.0 / periods
-        val cycles = (months / 12.0 * periods).toInt().coerceAtLeast(1)
-        val contributionGrowth = if (input.annualRate == 0.0) {
-            input.monthlyContribution * months
-        } else {
-            input.monthlyContribution * ((1 + input.annualRate / 100.0 / 12.0).pow(months) - 1) /
-                (input.annualRate / 100.0 / 12.0)
+        val annualRate = input.annualRate / 100.0
+        val periodicRate = annualRate / periods
+        val principalGrowth = input.principal * (1 + periodicRate).pow(months / 12.0 * periods)
+        var contributionGrowth = 0.0
+        for (month in 1..months) {
+            val periodsLeft = (months - month + 1) / 12.0 * periods
+            contributionGrowth += input.monthlyContribution * (1 + periodicRate).pow(periodsLeft)
         }
-        val maturity = input.principal * (1 + monthlyRate).pow(cycles) + contributionGrowth
+        val maturity = principalGrowth + contributionGrowth
         val deposited = input.principal + input.monthlyContribution * months
         return DepositResult(maturity, deposited, maturity - deposited)
     }

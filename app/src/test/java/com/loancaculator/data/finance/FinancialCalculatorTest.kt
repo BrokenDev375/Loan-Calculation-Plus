@@ -33,4 +33,11 @@ class FinancialCalculatorTest {
         assertEquals(1_200_000.0, result.maturityValue, 0.01)
         assertEquals(1_200_000.0, result.totalDeposited, 0.01)
     }
+
+    @Test
+    fun recurringDepositUsesSelectedCompoundingFrequency() {
+        val result = FinancialCalculator.deposit(DepositInput(0.0, 12.0, 12, monthlyContribution = 100.0, compounding = 4))
+        assertEquals(1_280.11, result.maturityValue, 0.01)
+        assertEquals(1_200.0, result.totalDeposited, 0.01)
+    }
 }

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
@@ -292,7 +291,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                         }, suffix = "%", modifier = Modifier.weight(1f), showInfo = false)
                     }
                 }
-                item { MortgageTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }) }
+                item { MortgageTermField(months, { months = it }) }
                 item { FinanceField("Interest Rate", rate, { rate = it }, suffix = "%") }
                 item {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -324,7 +323,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
-                    val m = (months.toIntOrNull() ?: 1) * if (termUnit == "Year") 12 else 1
+                    val m = (months.toIntOrNull() ?: 1) * if (type == CalculatorType.MORTGAGE || termUnit == "Year") 12 else 1
                     if (p <= 0 || r < 0 || m <= 0) {
                         error = "Enter a valid amount, rate and term."
                     } else if (type == CalculatorType.MORTGAGE) {
@@ -335,8 +334,14 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                         } else {
                             error = null
                             val result = FinancialCalculator.loan(LoanInput(financed, r, m))
-                            val fees = (propertyTax.toDoubleOrNull() ?: 0.0) + (pmi.toDoubleOrNull() ?: 0.0) + (hoaFees.toDoubleOrNull() ?: 0.0) + (homeInsurance.toDoubleOrNull() ?: 0.0)
-                            val summary = "Home Price=$p|Down Payment=$down|Interest Rate=$r|Loan Term=$m|Property Tax=${propertyTax.toDoubleOrNull() ?: 0.0}|PMI=${pmi.toDoubleOrNull() ?: 0.0}|HOA Fees=${hoaFees.toDoubleOrNull() ?: 0.0}|Home insurance=${homeInsurance.toDoubleOrNull() ?: 0.0}|Monthly payment=${result.monthlyPayment}|Total payment=${result.totalPayment + fees}|Total interest=${result.totalInterest}|Payoff months=${result.payoffMonths}"
+                            val taxMonthly = (propertyTax.toDoubleOrNull() ?: 0.0) / 12.0
+                            val pmiMonthly = (pmi.toDoubleOrNull() ?: 0.0) / 12.0
+                            val hoaMonthly = hoaFees.toDoubleOrNull() ?: 0.0
+                            val insuranceMonthly = (homeInsurance.toDoubleOrNull() ?: 0.0) / 12.0
+                            val extraMonthly = taxMonthly + pmiMonthly + hoaMonthly + insuranceMonthly
+                            val totalMonthly = result.monthlyPayment + extraMonthly
+                            val totalPayment = result.totalPayment + extraMonthly * m
+                            val summary = "Home Price=$p|Down Payment=$down|Interest Rate=$r|Loan Term=$m|Property Tax=${propertyTax.toDoubleOrNull() ?: 0.0}|PMI=${pmi.toDoubleOrNull() ?: 0.0}|HOA Fees=${hoaFees.toDoubleOrNull() ?: 0.0}|Home insurance=${homeInsurance.toDoubleOrNull() ?: 0.0}|Principal & Interest=${result.monthlyPayment}|Monthly payment=$totalMonthly|Total payment=$totalPayment|Total interest=${result.totalInterest}"
                             viewModel.save(type, "homePrice=$p;downPayment=$down;months=$m;propertyTax=$propertyTax;pmi=$pmi;hoaFees=$hoaFees;homeInsurance=$homeInsurance;currency=${currency.code}", summary, onSaved)
                         }
                     } else if (type.category == "Loans") {
@@ -481,33 +486,14 @@ private fun DepositCompoundingField(value: String, onValueChange: (String) -> Un
 }
 
 @Composable
-private fun MortgageTermField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    unit: String,
-    onUnitChange: (String) -> Unit,
-    menuOpen: Boolean,
-    onMenuOpenChange: (Boolean) -> Unit,
-) {
+private fun MortgageTermField(value: String, onValueChange: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         FieldLabel("Loan Term")
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter(Char::isDigit)) },
             placeholder = { Text("Loan Term", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
-            trailingIcon = {
-                Box(Modifier.clickable { onMenuOpenChange(true) }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(unit, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA))
-                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose term unit", tint = Color(0xFF6E777B))
-                    }
-                    DropdownMenu(expanded = menuOpen, onDismissRequest = { onMenuOpenChange(false) }) {
-                        listOf("Year", "Month").forEach { option ->
-                            DropdownMenuItem(text = { Text(option) }, onClick = { onUnitChange(option); onMenuOpenChange(false) })
-                        }
-                    }
-                }
-            },
+            suffix = { Text("Year", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
             modifier = Modifier.fillMaxWidth().height(64.dp),
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyLarge,
