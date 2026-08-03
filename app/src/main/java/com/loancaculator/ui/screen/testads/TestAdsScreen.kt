@@ -25,7 +25,7 @@ fun TestAdsScreen(onBack: () -> Unit) {
     val remote = Remote.instance
 
     val placements = listOf(
-        "open_splash", "inter_splash", "native_language", "native_home", "inter_home",
+        "open_splash", "inter_splash", "native_language", "native_home", "native_calculator", "inter_home",
         "native_scan_update", "native_update_available", "native_user_app", "native_history",
         "native_device_info", "inter_uninstall",
     )

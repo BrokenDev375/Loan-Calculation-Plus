@@ -108,23 +108,31 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
 
 @Composable
 fun FinanceHero(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().height(196.dp)) {
-        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 34.dp), color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+    Box(modifier.fillMaxWidth().height(176.dp)) {
+        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
     }
 }
 
 @Composable
-fun FinanceTopBar(title: String, subtitle: String? = null, onBack: (() -> Unit)? = null, actions: @Composable RowScope.() -> Unit = {}) {
-    Box(Modifier.fillMaxWidth().height(138.dp)) {
-        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+fun FinanceTopBar(
+    title: String,
+    subtitle: String? = null,
+    onBack: (() -> Unit)? = null,
+    compact: Boolean = false,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    val bannerHeight = if (compact) 69.dp else 138.dp
+    val bannerScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
+    Box(Modifier.fillMaxWidth().height(bannerHeight).background(Color(0xFF12A9D0))) {
+        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = bannerScale)
         onBack?.let { callback ->
             IconButton(onClick = callback, modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp).background(Color.White, CircleShape)) { Icon(Icons.Default.ArrowBack, "Back", tint = Color(0xFF18A9D0)) }
         }
-        Row(Modifier.align(Alignment.TopEnd).padding(10.dp), horizontalArrangement = Arrangement.End, content = actions)
-        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            subtitle?.let { Text(it, color = Color.White.copy(alpha = .9f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center) }
+        Row(Modifier.align(Alignment.TopEnd).padding(if (compact) 4.dp else 10.dp), horizontalArrangement = Arrangement.End, content = actions)
+        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = if (compact) 6.dp else 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(title, color = Color.White, fontSize = if (compact) 18.sp else 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            subtitle?.let { Text(it, color = Color.White.copy(alpha = .9f), fontSize = if (compact) 10.sp else 12.sp, textAlign = TextAlign.Center) }
         }
     }
 }

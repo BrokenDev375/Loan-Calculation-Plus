@@ -64,7 +64,7 @@ private val tools = listOf(
 
 @Composable
 fun ToolsScreen(onNavigate: (String) -> Unit, onOpenCalculator: (CalculatorType) -> Unit, onConverter: (String) -> Unit, onWorldClock: () -> Unit) {
-    Scaffold(topBar = { FinanceTopBar("Tools", "Converters and utilities") }, bottomBar = { FinanceBottomBar("tools", onNavigate) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("Tools", "Converters and utilities", compact = true) }, bottomBar = { FinanceBottomBar("tools", onNavigate) }) { padding ->
         LazyColumn(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 18.dp)) {
             item { NativeAdSlot("native_tools", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(), isSmall = true) }
             item {
@@ -127,7 +127,7 @@ fun ConverterScreen(kind: String, onBack: () -> Unit) {
     var result by remember { mutableStateOf("-") }
     val title = when (kind) { "currency" -> "Exchange Rate"; "temperature" -> "Temperature"; "mass" -> "Mass Convert"; "speed" -> "Speed Convert"; "length" -> "Length Convert"; else -> "Unit Converter" }
     val hint = when (kind) { "currency" -> "Offline reference rate: 1 USD = 25,000 VND"; "temperature" -> "Convert Celsius to Fahrenheit"; "mass" -> "Convert kilograms to pounds"; "speed" -> "Convert km/h to mph"; else -> "Convert meters to feet" }
-    Scaffold(topBar = { FinanceTopBar(title, hint, onBack) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar(title, hint, onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(hint, color = MaterialTheme.colorScheme.onSurfaceVariant)
             OutlinedTextField(value = value, onValueChange = { value = it }, label = { Text("Amount") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
@@ -144,7 +144,7 @@ fun ConverterScreen(kind: String, onBack: () -> Unit) {
 @Composable
 fun WorldClockScreen(onBack: () -> Unit, onAdd: () -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val clocks by viewModel.clocks.collectAsState()
-    Scaffold(topBar = { FinanceTopBar("World Clock", "Track time across cities", onBack, actions = { IconButton(onClick = onAdd) { Icon(Icons.Default.Add, "Add city", tint = Color.White) } }) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("World Clock", "Track time across cities", onBack, compact = true, actions = { IconButton(onClick = onAdd) { Icon(Icons.Default.Add, "Add city", tint = Color.White) } }) }) { padding ->
         LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (clocks.isEmpty()) item { Text("Add a city to track its local time.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             clocks.forEach { entry ->
@@ -162,7 +162,7 @@ fun WorldClockScreen(onBack: () -> Unit, onAdd: () -> Unit, viewModel: FinanceVi
 fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     var city by remember { mutableStateOf("Ho Chi Minh City") }
     var zone by remember { mutableStateOf("Asia/Ho_Chi_Minh") }
-    Scaffold(topBar = { FinanceTopBar("Add City", "Save a local time zone", onBack) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar("Add City", "Save a local time zone", onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(city, { city = it }, label = { Text("City") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(zone, { zone = it }, label = { Text("Time zone ID") }, modifier = Modifier.fillMaxWidth())
