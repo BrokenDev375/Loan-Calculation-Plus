@@ -240,20 +240,18 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
         isLoan -> "Loan Amount"
         else -> "Investment Amount"
     }
-    val loanAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
+    val calculatorAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
     Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
-            if (isLoan) {
-                NativeAdSlot(
-                    "native_calculator",
-                    modifier = Modifier.fillMaxWidth().height(loanAdHeight),
-                    isSmall = type != CalculatorType.MORTGAGE,
-                )
-            }
+            NativeAdSlot(
+                "native_calculator",
+                modifier = Modifier.fillMaxWidth().height(calculatorAdHeight),
+                isSmall = type != CalculatorType.MORTGAGE,
+            )
             LazyColumn(
                 Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(vertical = 12.dp),
             ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
@@ -385,23 +383,23 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
 @Composable
 private fun FieldLabel(label: String, showInfo: Boolean = true) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        if (showInfo) Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF18A9D0), modifier = Modifier.padding(start = 5.dp).size(19.dp))
+        Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+        if (showInfo) Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF18A9D0), modifier = Modifier.padding(start = 4.dp).size(17.dp))
     }
 }
 
 @Composable
 private fun StartDateField(startDateMillis: Long, onClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("Start Date", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text("Start Date", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
         OutlinedButton(
             onClick = onClick,
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(30.dp),
             border = BorderStroke(1.dp, Color.White),
             colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
         ) {
-            Text(DateFormat.format("dd/MM/yyyy", startDateMillis).toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+            Text(DateFormat.format("dd/MM/yyyy", startDateMillis).toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Icon(Icons.Default.DateRange, contentDescription = "Choose start date", tint = Color(0xFF6E777B))
         }
     }
@@ -423,10 +421,10 @@ private fun LoanTermField(
             OutlinedTextField(
                 value = value,
                 onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-                placeholder = { Text(label, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
-                modifier = Modifier.weight(1f).height(64.dp),
+                placeholder = { Text(label, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+                modifier = Modifier.weight(1f).height(56.dp),
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyLarge,
+                textStyle = MaterialTheme.typography.bodyMedium,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -440,12 +438,12 @@ private fun LoanTermField(
             Box(Modifier.weight(1f)) {
                 OutlinedButton(
                     onClick = { onMenuOpenChange(true) },
-                    modifier = Modifier.fillMaxWidth().height(64.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(30.dp),
                     border = BorderStroke(1.dp, Color.White),
                     colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
                 ) {
-                    Text(unit, style = MaterialTheme.typography.bodyLarge)
+                    Text(unit, style = MaterialTheme.typography.bodyMedium)
                     Spacer(Modifier.weight(1f))
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose term unit", tint = Color(0xFF6E777B))
                 }
@@ -467,12 +465,12 @@ private fun DepositCompoundingField(value: String, onValueChange: (String) -> Un
         Box {
             OutlinedButton(
                 onClick = { menuOpen = true },
-                modifier = Modifier.fillMaxWidth().height(64.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(30.dp),
                 border = BorderStroke(1.dp, Color.White),
                 colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
             ) {
-                Text(value, style = MaterialTheme.typography.bodyLarge)
+                Text(value, style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.weight(1f))
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose compounding frequency", tint = Color(0xFF6E777B))
             }
@@ -492,11 +490,11 @@ private fun MortgageTermField(value: String, onValueChange: (String) -> Unit) {
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-            placeholder = { Text("Loan Term", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
-            suffix = { Text("Year", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            placeholder = { Text("Loan Term", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            suffix = { Text("Year", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(30.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -525,12 +523,12 @@ private fun FinanceField(
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter { char -> char.isDigit() || char == '.' }) },
-            placeholder = { Text(label, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) },
-            prefix = { prefix?.let { Text(it, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) } },
-            suffix = { suffix?.let { Text(it, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF8BA1AA)) } },
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            placeholder = { Text(label, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            prefix = { prefix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
+            suffix = { suffix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(30.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
