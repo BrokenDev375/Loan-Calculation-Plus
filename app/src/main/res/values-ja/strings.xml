@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Loan Calculation Plus の新しいアップデートがあります</string>
+    <string name="baseapp_screenshot_title">スクリーンショットを保存しました</string>
+    <string name="baseapp_recent_title">最近更新されたアプリ</string>
+    <string name="baseapp_open">開く</string>
+    <string name="baseapp_scan">今すぐ確認</string>
+    <string name="baseapp_daily_open_content">最新のローンと預金の計算結果を確認</string>
+    <string name="baseapp_check_now">今すぐ確認</string>
+    <string name="baseapp_fullscreen_1">新しいバージョンがあります</string>
+    <string name="baseapp_fullscreen_2">タップして Loan Calculation Plus を開く</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">アプリを開いて金融計算を確認</string>
+    <string name="baseapp_noti_title">通知を有効にする</string>
+    <string name="baseapp_noti_content">保存した計算のリマインダーを受け取る</string>
+    <string name="baseapp_feature1">広告なしの計算</string>
+    <string name="baseapp_feature2">無制限の比較</string>
+    <string name="baseapp_feature3">ローンと預金のすべてのツール</string>
+    <string name="baseapp_feature4">為替レート換算</string>
+    <string name="baseapp_feature5">優先サポート</string>
+    <string-array name="notification_title2"><item>計算結果を確認</item><item>次回の支払いを計画</item><item>保存した結果を確認</item><item>選択肢を比較</item><item>資産を整理</item></string-array>
+    <string-array name="notification_message2"><item>Loan Calculation Plus を開いて最新結果を確認</item><item>保存データを使って計画を立てる</item><item>計算履歴を確認できます</item><item>保存したローン計算を比較</item><item>ローンと預金の計画を一か所で管理</item></string-array>
+    <string-array name="notification_button2"><item>開く</item><item>計画</item><item>表示</item><item>比較</item><item>開く</item></string-array>
+</resources>

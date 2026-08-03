@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,8 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.loancaculator.R
 
 @Composable
 fun FinanceHistoryScreen(
@@ -71,7 +74,7 @@ fun FinanceHistoryScreen(
         containerColor = Color(0xFFD0EFFF),
         topBar = {
             FinanceTopBar(
-                title = "History",
+                title = stringResource(R.string.history),
                 onBack = onBack,
                 actions = {
                     IconButton(
@@ -80,7 +83,7 @@ fun FinanceHistoryScreen(
                     ) {
                         Icon(
                             imageVector = if (selectionMode) Icons.Default.Close else Icons.Default.Edit,
-                            contentDescription = if (selectionMode) "Exit selection mode" else "Select history",
+                            contentDescription = stringResource(if (selectionMode) R.string.exit_selection else R.string.select_history),
                             tint = Color(0xFF18A9D0),
                         )
                     }
@@ -95,13 +98,14 @@ fun FinanceHistoryScreen(
                         selectedIds = emptySet()
                         selectionMode = false
                     },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp).height(52.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp).heightIn(min = 52.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     shape = RoundedCornerShape(26.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC24545)),
                 ) {
                     Icon(Icons.Default.Delete, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
-                    Text("Delete selected (${selectedIds.size})")
+                    Text(stringResource(R.string.delete_selected, selectedIds.size))
                 }
             }
         },
@@ -119,8 +123,8 @@ fun FinanceHistoryScreen(
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 ) {
                     Row(Modifier.padding(5.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        HistorySegment("Calculator", segment == "Calculator") { changeSegment("Calculator") }
-                        HistorySegment("Investment", segment == "Investment") { changeSegment("Investment") }
+                        HistorySegment(stringResource(R.string.calculator), segment == "Calculator") { changeSegment("Calculator") }
+                        HistorySegment(stringResource(R.string.investment_history), segment == "Investment") { changeSegment("Investment") }
                     }
                 }
             }
@@ -137,7 +141,7 @@ fun FinanceHistoryScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                if (segment == "Investment") "No investment history records yet." else "No calculator history records yet.",
+                                if (segment == "Investment") stringResource(R.string.no_investment_history) else stringResource(R.string.no_calculator_history),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center,
                             )
@@ -166,7 +170,7 @@ fun FinanceHistoryScreen(
 private fun RowScope.HistorySegment(label: String, selected: Boolean, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = Modifier.weight(1f).height(44.dp),
+        modifier = Modifier.weight(1f).heightIn(min = 44.dp),
         shape = RoundedCornerShape(22.dp),
         contentPadding = PaddingValues(horizontal = 8.dp),
         colors = if (selected) {
@@ -175,6 +179,6 @@ private fun RowScope.HistorySegment(label: String, selected: Boolean, onClick: (
             ButtonDefaults.textButtonColors(contentColor = Color(0xFF10233A))
         },
     ) {
-        Text(label)
+        Text(label, textAlign = TextAlign.Center, maxLines = 2)
     }
 }

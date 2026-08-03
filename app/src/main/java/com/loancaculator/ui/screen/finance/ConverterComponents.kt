@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -49,6 +50,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.loancaculator.advertisement.NativeAdSlot
+import com.loancaculator.R
+import androidx.compose.ui.res.stringResource
 
 internal data class ToolUnit(
     val id: String,
@@ -56,7 +59,11 @@ internal data class ToolUnit(
     val symbol: String,
     val flag: String,
     val toBase: Double? = null,
+    @androidx.annotation.StringRes val labelRes: Int? = null,
 )
+
+@Composable
+internal fun toolUnitLabel(unit: ToolUnit): String = unit.labelRes?.let { stringResource(it) } ?: unit.label
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
@@ -90,14 +97,14 @@ internal fun ToolConverterLayout(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 ConverterActionButton(
-                    text = "Reset Fields",
+                    text = stringResource(R.string.reset_fields),
                     icon = { Icon(Icons.Default.Refresh, contentDescription = null) },
                     background = Color(0xFFFFBD19),
                     contentColor = Color(0xFF10233A),
                     onClick = onReset,
                 )
                 ConverterActionButton(
-                    text = "Calculate",
+                    text = stringResource(R.string.calculate),
                     icon = { Icon(Icons.Default.Build, contentDescription = null) },
                     background = Color(0xFF00A6CE),
                     contentColor = Color.White,
@@ -238,15 +245,14 @@ private fun UnitMenu(selected: ToolUnit, options: List<ToolUnit>, onSelected: (S
                 contentAlignment = Alignment.Center,
             ) { Text(selected.flag, style = MaterialTheme.typography.titleMedium) }
             Spacer(Modifier.width(10.dp))
-            Text(selected.label, style = MaterialTheme.typography.titleMedium, color = Color(0xFF10233A), fontWeight = FontWeight.Bold)
-            Spacer(Modifier.weight(1f))
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose unit", tint = Color(0xFF6A8696))
+            Text(toolUnitLabel(selected), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = Color(0xFF10233A), fontWeight = FontWeight.Bold, maxLines = 2)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.currency), tint = Color(0xFF6A8696))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { option ->
                 DropdownMenuItem(
                     leadingIcon = { Text(option.flag) },
-                    text = { Text(option.label) },
+                    text = { Text(toolUnitLabel(option)) },
                     onClick = { expanded = false; onSelected(option.id) },
                 )
             }
@@ -285,13 +291,14 @@ private fun RowScope.ConverterActionButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = Modifier.weight(1f).height(52.dp),
+        modifier = Modifier.weight(1f).heightIn(min = 52.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 8.dp),
         shape = RoundedCornerShape(28.dp),
         colors = ButtonDefaults.buttonColors(containerColor = background, contentColor = contentColor),
     ) {
         icon()
         Spacer(Modifier.width(6.dp))
-        Text(text, maxLines = 1)
+        Text(text, maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
     }
 }
 

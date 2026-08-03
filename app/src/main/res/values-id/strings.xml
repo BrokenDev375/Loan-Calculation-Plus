@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Pembaruan Loan Calculation Plus tersedia</string>
+    <string name="baseapp_screenshot_title">Tangkapan layar diambil</string>
+    <string name="baseapp_recent_title">Aplikasi yang baru diperbarui</string>
+    <string name="baseapp_open">Buka</string>
+    <string name="baseapp_scan">Periksa sekarang</string>
+    <string name="baseapp_daily_open_content">Tinjau perhitungan pinjaman dan deposito terbaru</string>
+    <string name="baseapp_check_now">Periksa sekarang</string>
+    <string name="baseapp_fullscreen_1">Versi baru tersedia</string>
+    <string name="baseapp_fullscreen_2">Ketuk untuk membuka Loan Calculation Plus</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">Buka aplikasi untuk meninjau perhitungan keuangan</string>
+    <string name="baseapp_noti_title">Aktifkan notifikasi</string>
+    <string name="baseapp_noti_content">Dapatkan pengingat tentang perhitungan tersimpan</string>
+    <string name="baseapp_feature1">Perhitungan tanpa iklan</string>
+    <string name="baseapp_feature2">Perbandingan tanpa batas</string>
+    <string name="baseapp_feature3">Semua alat pinjaman dan deposito</string>
+    <string name="baseapp_feature4">Konverter nilai tukar</string>
+    <string name="baseapp_feature5">Dukungan prioritas</string>
+    <string-array name="notification_title2"><item>Tinjau perhitungan Anda</item><item>Rencanakan pembayaran berikutnya</item><item>Periksa hasil tersimpan</item><item>Bandingkan pilihan Anda</item><item>Atur keuangan Anda</item></string-array>
+    <string-array name="notification_message2"><item>Buka Loan Calculation Plus untuk melihat hasil terbaru</item><item>Gunakan data tersimpan untuk merencanakan ke depan</item><item>Riwayat perhitungan Anda siap dilihat</item><item>Bandingkan perhitungan pinjaman tersimpan</item><item>Simpan rencana pinjaman dan deposito di satu tempat</item></string-array>
+    <string-array name="notification_button2"><item>Buka</item><item>Rencanakan</item><item>Lihat</item><item>Bandingkan</item><item>Buka</item></string-array>
+</resources>

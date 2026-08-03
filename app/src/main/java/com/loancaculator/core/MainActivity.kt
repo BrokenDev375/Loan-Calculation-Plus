@@ -1,5 +1,6 @@
 package com.loancaculator.core
 
+import android.content.Context
 import android.os.Bundle
 import android.graphics.Color as AndroidColor
 import androidx.activity.compose.setContent
@@ -26,6 +27,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private var appliedLanguageCode: String = ""
+
+    override fun attachBaseContext(newBase: Context) {
+        appliedLanguageCode = AppStorage.languageCode(newBase)
+        super.attachBaseContext(LocaleHelper.wrap(newBase, appliedLanguageCode))
+    }
+
     @androidx.compose.material3.ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +55,15 @@ class MainActivity : AppCompatActivity() {
                 // Overlay hiển thị native-interstitial (fallback sau inter) khi AdManager yêu cầu.
                 NativeInterHost()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val currentLanguageCode = AppStorage.languageCode(this)
+        if (currentLanguageCode != appliedLanguageCode) {
+            appliedLanguageCode = currentLanguageCode
+            recreate()
         }
     }
 

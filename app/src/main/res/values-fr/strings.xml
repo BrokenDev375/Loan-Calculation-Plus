@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Une nouvelle mise à jour de Loan Calculation Plus est disponible</string>
+    <string name="baseapp_screenshot_title">Capture d’écran enregistrée</string>
+    <string name="baseapp_recent_title">Application récemment mise à jour</string>
+    <string name="baseapp_open">Ouvrir</string>
+    <string name="baseapp_scan">Vérifier</string>
+    <string name="baseapp_daily_open_content">Consultez vos derniers calculs de prêts et de dépôts</string>
+    <string name="baseapp_check_now">Vérifier</string>
+    <string name="baseapp_fullscreen_1">Une nouvelle version est disponible</string>
+    <string name="baseapp_fullscreen_2">Touchez pour ouvrir Loan Calculation Plus</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">Ouvrez l’application pour consulter vos calculs financiers</string>
+    <string name="baseapp_noti_title">Activer les notifications</string>
+    <string name="baseapp_noti_content">Recevez des rappels pour vos calculs enregistrés</string>
+    <string name="baseapp_feature1">Calculs sans publicité</string>
+    <string name="baseapp_feature2">Comparaisons illimitées</string>
+    <string name="baseapp_feature3">Tous les outils de prêt et de dépôt</string>
+    <string name="baseapp_feature4">Convertisseur de taux de change</string>
+    <string name="baseapp_feature5">Assistance prioritaire</string>
+    <string-array name="notification_title2"><item>Revoir vos calculs</item><item>Planifier votre prochain paiement</item><item>Vérifier vos résultats enregistrés</item><item>Comparer vos options</item><item>Organiser vos finances</item></string-array>
+    <string-array name="notification_message2"><item>Ouvrez Loan Calculation Plus pour revoir vos derniers résultats</item><item>Utilisez vos données enregistrées pour planifier</item><item>Votre historique de calculs est prêt</item><item>Comparez vos calculs de prêts enregistrés</item><item>Conservez vos plans de prêts et de dépôts au même endroit</item></string-array>
+    <string-array name="notification_button2"><item>Ouvrir</item><item>Planifier</item><item>Voir</item><item>Comparer</item><item>Ouvrir</item></string-array>
+</resources>

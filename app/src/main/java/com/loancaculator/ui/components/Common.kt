@@ -1,5 +1,8 @@
 package com.loancaculator.ui.components
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,10 +29,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.loancaculator.R
 import com.loancaculator.ui.theme.Primary
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
+}
 
 /**
  * Header khớp RN: nền sáng (KHÔNG phải thanh gradient xanh), back đen + tiêu đề đen.
@@ -46,12 +62,12 @@ fun AppHeader(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .height(56.dp)
+            .heightIn(min = 56.dp)
             .padding(horizontal = 6.dp),
     ) {
         if (onBack != null) {
             IconButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterStart)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.Black)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = Color.Black)
             }
         }
         Text(
@@ -59,8 +75,9 @@ fun AppHeader(
             color = titleColor,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
             modifier = if (centerTitle) {
                 Modifier.align(Alignment.Center).padding(horizontal = 48.dp)
             } else {
@@ -106,7 +123,7 @@ fun PillTabs(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(46.dp)
+                    .heightIn(min = 46.dp)
                     .clip(RoundedCornerShape(24.dp))
                     .background(if (sel) Primary else Color.White)
                     .border(1.5.dp, Primary, RoundedCornerShape(24.dp))
@@ -117,8 +134,9 @@ fun PillTabs(
                     label,
                     color = if (sel) Color.White else Primary,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
                 )
             }
         }

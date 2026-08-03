@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">มีอัปเดตใหม่สำหรับ Loan Calculation Plus</string>
+    <string name="baseapp_screenshot_title">บันทึกภาพหน้าจอแล้ว</string>
+    <string name="baseapp_recent_title">แอปที่อัปเดตล่าสุด</string>
+    <string name="baseapp_open">เปิด</string>
+    <string name="baseapp_scan">ตรวจสอบตอนนี้</string>
+    <string name="baseapp_daily_open_content">ตรวจสอบการคำนวณสินเชื่อและเงินฝากล่าสุด</string>
+    <string name="baseapp_check_now">ตรวจสอบตอนนี้</string>
+    <string name="baseapp_fullscreen_1">มีเวอร์ชันใหม่พร้อมใช้งาน</string>
+    <string name="baseapp_fullscreen_2">แตะเพื่อเปิด Loan Calculation Plus</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">เปิดแอปเพื่อตรวจสอบการคำนวณทางการเงิน</string>
+    <string name="baseapp_noti_title">เปิดการแจ้งเตือน</string>
+    <string name="baseapp_noti_content">รับการแจ้งเตือนเกี่ยวกับการคำนวณที่บันทึกไว้</string>
+    <string name="baseapp_feature1">คำนวณโดยไม่มีโฆษณา</string>
+    <string name="baseapp_feature2">เปรียบเทียบได้ไม่จำกัด</string>
+    <string name="baseapp_feature3">เครื่องมือสินเชื่อและเงินฝากทั้งหมด</string>
+    <string name="baseapp_feature4">ตัวแปลงอัตราแลกเปลี่ยน</string>
+    <string name="baseapp_feature5">การสนับสนุนแบบพิเศษ</string>
+    <string-array name="notification_title2"><item>ตรวจสอบการคำนวณ</item><item>วางแผนการชำระเงินครั้งถัดไป</item><item>ตรวจสอบผลลัพธ์ที่บันทึกไว้</item><item>เปรียบเทียบตัวเลือก</item><item>จัดการการเงินให้เป็นระเบียบ</item></string-array>
+    <string-array name="notification_message2"><item>เปิด Loan Calculation Plus เพื่อตรวจสอบผลลัพธ์ล่าสุด</item><item>ใช้ข้อมูลที่บันทึกไว้เพื่อวางแผนล่วงหน้า</item><item>ประวัติการคำนวณพร้อมให้ดูแล้ว</item><item>เปรียบเทียบการคำนวณสินเชื่อที่บันทึกไว้</item><item>เก็บแผนสินเชื่อและเงินฝากไว้ในที่เดียว</item></string-array>
+    <string-array name="notification_button2"><item>เปิด</item><item>วางแผน</item><item>ดู</item><item>เปรียบเทียบ</item><item>เปิด</item></string-array>
+</resources>

@@ -32,18 +32,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.loancaculator.R
+import com.loancaculator.data.finance.CalculatorType
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-data class FinanceTab(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
+data class FinanceTab(val route: String, val labelRes: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector)
 
 data class LoanCurrency(val code: String, val symbol: String, val name: String, val flag: String)
 
@@ -70,6 +74,43 @@ val loanCurrencies = listOf(
 
 fun loanCurrency(code: String): LoanCurrency = loanCurrencies.firstOrNull { it.code == code } ?: loanCurrencies.first()
 
+@Composable
+fun currencyName(code: String): String = stringResource(
+    when (code) {
+        "GBP" -> R.string.currency_gbp
+        "USD" -> R.string.currency_usd
+        "EUR" -> R.string.currency_eur
+        "VND" -> R.string.currency_vnd
+        "JPY" -> R.string.currency_jpy
+        "AUD" -> R.string.currency_aud
+        "CAD" -> R.string.currency_cad
+        "CHF" -> R.string.currency_chf
+        "CNY" -> R.string.currency_cny
+        "HKD" -> R.string.currency_hkd
+        "INR" -> R.string.currency_inr
+        "IDR" -> R.string.currency_idr
+        "KRW" -> R.string.currency_krw
+        "MYR" -> R.string.currency_myr
+        "PHP" -> R.string.currency_php
+        "SGD" -> R.string.currency_sgd
+        "THB" -> R.string.currency_thb
+        "ZAR" -> R.string.currency_zar
+        else -> R.string.currency_gbp
+    },
+)
+
+@Composable
+fun calculatorLabel(type: CalculatorType): String = stringResource(
+    when (type) {
+        CalculatorType.PERSONAL -> R.string.personal_loan
+        CalculatorType.BUSINESS -> R.string.business_loan
+        CalculatorType.AUTO -> R.string.auto_loan
+        CalculatorType.MORTGAGE -> R.string.mortgage
+        CalculatorType.FD -> R.string.fixed_deposit
+        CalculatorType.RD -> R.string.recurring_deposit
+    },
+)
+
 fun loanCurrencyCode(input: String): String = input.split(";")
     .firstOrNull { it.startsWith("currency=") }
     ?.substringAfter("=")
@@ -78,10 +119,10 @@ fun loanCurrencyCode(input: String): String = input.split(";")
     ?: "GBP"
 
 private val financeTabs = listOf(
-    FinanceTab("Home", Icons.Default.Home),
-    FinanceTab("Tools", Icons.Default.Build),
-    FinanceTab("Compare", Icons.Default.List),
-    FinanceTab("Setting", Icons.Default.Settings),
+    FinanceTab("home", R.string.nav_home, Icons.Default.Home),
+    FinanceTab("tools", R.string.nav_tools, Icons.Default.Build),
+    FinanceTab("compare", R.string.nav_compare, Icons.Default.List),
+    FinanceTab("setting", R.string.nav_settings, Icons.Default.Settings),
 )
 
 @Composable
@@ -126,7 +167,7 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
 fun FinanceHero(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth().height(176.dp)) {
         Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
-        Text("Loan Calculation Plus", modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.app_name), modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
     }
 }
 
@@ -135,10 +176,13 @@ fun FinanceTopBar(
     title: String,
     subtitle: String? = null,
     onBack: (() -> Unit)? = null,
+    compact: Boolean = false,
+    heightOverride: Dp? = null,
     actions: @Composable RowScope.() -> Unit = {},
-    compact: Boolean = false
 ) {
-    val barHeight = if (compact) 70.dp else 138.dp
+    val barHeight = heightOverride ?: if (compact) {
+        if (title.length > 22 || (subtitle?.length ?: 0) > 28) 104.dp else 88.dp
+    } else 138.dp
     val backSize = if (compact) 36.dp else 48.dp
     val iconSize = if (compact) 20.dp else 24.dp
     val titleSize = if (compact) 20.sp else 24.sp
@@ -153,9 +197,8 @@ fun FinanceTopBar(
             painter = painterResource(R.drawable.finance_hero),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
+            contentScale = if (compact || heightOverride != null) ContentScale.FillBounds else ContentScale.Crop
         )
-
         onBack?.let { callback ->
             Box(
                 modifier = Modifier
@@ -169,7 +212,7 @@ fun FinanceTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back),
                     tint = Color(0xFF18A9D0),
                     modifier = Modifier.size(iconSize)
                 )
@@ -187,7 +230,12 @@ fun FinanceTopBar(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = if (compact) 8.dp else 22.dp),
+                .fillMaxWidth()
+                .padding(
+                    start = if (onBack != null) 58.dp else 24.dp,
+                    end = 58.dp,
+                    bottom = if (compact) 8.dp else 22.dp,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -195,14 +243,18 @@ fun FinanceTopBar(
                 color = Color.White,
                 fontSize = titleSize,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             subtitle?.let {
                 Text(
                     text = it,
                     color = Color.White.copy(alpha = 0.9f),
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -210,7 +262,7 @@ fun FinanceTopBar(
 }
 
 @Composable
-fun FinanceArrow() { Icon(Icons.Default.ArrowForward, contentDescription = "Open", tint = Color(0xFFB7CBD3), modifier = Modifier.size(20.dp)) }
+fun FinanceArrow() { Icon(Icons.Default.ArrowForward, contentDescription = stringResource(R.string.open), tint = Color(0xFFB7CBD3), modifier = Modifier.size(20.dp)) }
 
 fun money(value: Double): String = NumberFormat.getCurrencyInstance(Locale.UK).apply { maximumFractionDigits = 2 }.format(value)
 
@@ -235,9 +287,13 @@ fun payoffDate(startMillis: Long, months: Int): String = Calendar.getInstance().
     add(Calendar.MONTH, months)
 }.timeInMillis.let(::formatDate)
 
+@Composable
 fun resultValue(label: String, raw: String, currencyCode: String = "GBP"): String = when {
     label.contains("rate", ignoreCase = true) -> "$raw%"
-    label.equals("Loan Term", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let { if (it % 12 == 0) "${it / 12} Year" else "$it months" } ?: raw
-    label.contains("months", ignoreCase = true) -> "${raw.toDoubleOrNull()?.toInt() ?: raw} months"
+    label.equals("Loan Term", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let {
+        if (it % 12 == 0) stringResource(R.string.duration_years, it / 12)
+        else stringResource(R.string.duration_months, it)
+    } ?: raw
+    label.contains("months", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let { stringResource(R.string.duration_months, it) } ?: raw
     else -> raw.toDoubleOrNull()?.let { money(it, currencyCode) } ?: raw
 }

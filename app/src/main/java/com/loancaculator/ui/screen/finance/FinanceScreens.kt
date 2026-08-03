@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.Canvas
@@ -66,7 +67,9 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -74,6 +77,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.loancaculator.advertisement.AdManager
 import com.loancaculator.advertisement.NativeAdSlot
 import com.loancaculator.core.IapOpener
+import com.loancaculator.R
 import com.loancaculator.ui.components.findActivity
 import com.loancaculator.ui.theme.Gold
 import com.loancaculator.ui.theme.Primary
@@ -101,7 +105,7 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
         LazyColumn(modifier = Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(bottom = 10.dp)) {
             item { FinanceHero() }
             item { CalculatorGrid(listOf(CalculatorType.PERSONAL, CalculatorType.BUSINESS, CalculatorType.MORTGAGE, CalculatorType.AUTO), ::openCalculator) }
-            item { HomeSectionTitle("Investment") }
+            item { HomeSectionTitle(stringResource(R.string.investment)) }
             item { NativeAdSlot("native_home", modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(240.dp), isSmall = false) }
             item { InvestmentRow(CalculatorType.FD, ::openCalculator) }
             item { InvestmentRow(CalculatorType.RD, ::openCalculator) }
@@ -111,7 +115,7 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .heightIn(min = 48.dp)
                         .background(
                             Brush.horizontalGradient(listOf(Color(0xFFF2B632), Color(0xFFFFD76A), Color(0xFFFFF0A6), Color(0xFFFFD76A), Color(0xFFF2B632))),
                             RoundedCornerShape(24.dp),
@@ -122,21 +126,27 @@ fun FinanceHomeScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> 
                 ) {
                     Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.size(8.dp))
-                    Text("Remove ads and unlock premium", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.premium_cta),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        maxLines = 2,
+                    )
                 }
             }
             item {
-                Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("History", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.history), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     TextButton(onClick = { onNavigate("history") }, contentPadding = PaddingValues(0.dp)) {
-                        Text("View all \u2192", color = Color(0xFF16B2D7), style = MaterialTheme.typography.bodyMedium)
+                        Text(stringResource(R.string.view_all), color = Color(0xFF16B2D7), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End, maxLines = 2)
                     }
                 }
             }
             if (recentHistory.isEmpty()) {
                 item {
                     Text(
-                        "No calculations yet \u2014 try a loan or deposit calculator.",
+                        stringResource(R.string.no_calculations),
                         Modifier.padding(horizontal = 20.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -183,7 +193,7 @@ internal fun FinanceHistoryCard(
                 }
                 Column(Modifier.weight(1f).padding(start = 12.dp)) {
                     Text(
-                        if (type == CalculatorType.MORTGAGE) "Mortgages" else item.title,
+                        calculatorLabel(type),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                     )
@@ -216,8 +226,8 @@ internal fun FinanceHistoryCard(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 stats.forEach { (label, value) ->
                     Column(Modifier.weight(1f)) {
-                        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 2.dp))
+                        Text(financeStatLabel(label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(localizedHistoryValue(value), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 2.dp))
                     }
                 }
             }
@@ -247,6 +257,26 @@ internal fun financeHistoryStats(item: CalculationHistoryEntity, type: Calculato
     return listOf("Interest" to rate, durationLabel to duration, amountLabel to amount)
 }
 
+@Composable
+private fun financeStatLabel(label: String): String = when (label) {
+    "Interest" -> stringResource(R.string.interest)
+    "Tenure" -> stringResource(R.string.tenure)
+    "Duration" -> stringResource(R.string.duration)
+    "Monthly Deposit" -> stringResource(R.string.monthly_deposit)
+    "Investment Amount" -> stringResource(R.string.investment_amount)
+    else -> stringResource(R.string.loan_amount)
+}
+
+@Composable
+private fun localizedHistoryValue(value: String): String {
+    val duration = Regex("^(\\d+) (Year|Years|Month|Months)$").matchEntire(value.trim())
+    return when (duration?.groupValues?.get(2)) {
+        "Year", "Years" -> stringResource(R.string.duration_years, duration.groupValues[1].toInt())
+        "Month", "Months" -> stringResource(R.string.duration_months, duration.groupValues[1].toInt())
+        else -> value
+    }
+}
+
 private fun historyDuration(months: Int): String {
     return if (months % 12 == 0) {
         val years = months / 12
@@ -273,10 +303,13 @@ private fun CalculatorGrid(types: List<CalculatorType>, onClick: (CalculatorType
 
 @Composable
 private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Unit) {
-    Card(onClick = { onClick(type) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().height(66.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+    Card(onClick = { onClick(type) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 66.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(46.dp))
-            Column(Modifier.weight(1f).padding(start = 12.dp)) { Text(if (type == CalculatorType.FD) "FD" else "RD", fontWeight = FontWeight.Bold); Text(type.label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall) }
+            Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                Text(if (type == CalculatorType.FD) "FD" else "RD", fontWeight = FontWeight.Bold)
+                Text(calculatorLabel(type), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+            }
             FinanceArrow()
         }
     }
@@ -284,13 +317,13 @@ private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Uni
 
 @Composable
 private fun CalculatorCard(type: CalculatorType, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().height(116.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 116.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 FinanceLoanIcon(type.iconIndex(), Modifier.size(58.dp))
                 FinanceArrow()
             }
-            Text(type.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+            Text(calculatorLabel(type), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -363,7 +396,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
     var error by remember { mutableStateOf<String?>(null) }
     var currencyCode by remember { mutableStateOf("GBP") }
     var currencyMenuOpen by remember { mutableStateOf(false) }
-    var termUnit by remember { mutableStateOf(if (type.category == "Deposits") "Month" else "Year") }
+    var termUnit by remember { mutableStateOf(if (type.category == "Deposits" || type == CalculatorType.BUSINESS) "Month" else "Year") }
     var termMenuOpen by remember { mutableStateOf(false) }
     var startDateMillis by remember { mutableStateOf(System.currentTimeMillis()) }
     var datePickerOpen by remember { mutableStateOf(false) }
@@ -371,13 +404,15 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
     val isLoan = type.category == "Loans"
     val isDeposit = type.category == "Deposits"
     val amountLabel = when {
-        type == CalculatorType.MORTGAGE -> "Home Price"
-        type == CalculatorType.RD -> "Monthly Deposit"
-        isLoan -> "Loan Amount"
-        else -> "Investment Amount"
+        type == CalculatorType.MORTGAGE -> stringResource(R.string.home_price)
+        type == CalculatorType.RD -> stringResource(R.string.monthly_deposit)
+        isLoan -> stringResource(R.string.loan_amount)
+        else -> stringResource(R.string.investment_amount)
     }
+    val invalidInputError = stringResource(R.string.valid_amount_rate_term)
+    val downPaymentError = stringResource(R.string.down_payment_lower)
     val calculatorAdHeight = if (type == CalculatorType.MORTGAGE) 260.dp else 140.dp
-    Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack, compact = true) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar(calculatorLabel(type), stringResource(R.string.enter_details), onBack, compact = true) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
             NativeAdSlot(
                 "native_calculator",
@@ -391,7 +426,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    FieldLabel(amountLabel)
+                    FieldLabel(amountLabel, modifier = Modifier.weight(1f).padding(end = 8.dp))
                     Box {
                         OutlinedButton(onClick = { currencyMenuOpen = true }, shape = RoundedCornerShape(24.dp), colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF10233A))) {
                             Text("${currency.flag}  ${currency.code}")
@@ -401,7 +436,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                             loanCurrencies.forEach { option ->
                                 DropdownMenuItem(
                                     leadingIcon = { Text(option.flag) },
-                                    text = { Text("${option.symbol}  ${option.code} - ${option.name}") },
+                                    text = { Text("${option.symbol}  ${option.code} - ${currencyName(option.code)}") },
                                     onClick = { currencyCode = option.code; currencyMenuOpen = false }
                                 )
                             }
@@ -411,7 +446,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             }
             if (type == CalculatorType.MORTGAGE) {
                 item {
-                    FinanceField("Home Price", principal, {
+                    FinanceField(stringResource(R.string.home_price), principal, {
                         principal = it
                         val home = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
                         val currentDown = downPayment.toDoubleOrNull()?.coerceAtLeast(0.0)
@@ -432,11 +467,11 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                                 }
                             }
                         }
-                    }, prefix = "${currency.symbol} ")
+                        }, prefix = "${currency.symbol} ")
                 }
                 item {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        FinanceField("Down Payment", downPayment, {
+                        FinanceField(stringResource(R.string.down_payment), downPayment, {
                             val home = principal.toDoubleOrNull() ?: 0.0
                             val requestedDown = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
                             if (it.isEmpty()) {
@@ -451,7 +486,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                                 downPaymentPercent = ""
                             }
                         }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
-                        FinanceField("Down Payment", downPaymentPercent, {
+                        FinanceField(stringResource(R.string.down_payment), downPaymentPercent, {
                             val home = principal.toDoubleOrNull() ?: 0.0
                             val requestedPercent = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
                             val clampedPercent = requestedPercent.coerceIn(0.0, 100.0)
@@ -465,23 +500,23 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     }
                 }
                 item { MortgageTermField(months, { months = it }) }
-                item { FinanceField("Interest Rate", rate, { rate = it }, suffix = "%") }
+                item { FinanceField(stringResource(R.string.interest_rate), rate, { rate = it }, suffix = "%") }
                 item {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        FinanceField("Property Tax", propertyTax, { propertyTax = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
-                        FinanceField("PMI", pmi, { pmi = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                        FinanceField(stringResource(R.string.property_tax), propertyTax, { propertyTax = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                        FinanceField(stringResource(R.string.pmi), pmi, { pmi = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
                     }
                 }
                 item {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        FinanceField("HOA Fees", hoaFees, { hoaFees = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
-                        FinanceField("Home insurance", homeInsurance, { homeInsurance = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                        FinanceField(stringResource(R.string.hoa_fees), hoaFees, { hoaFees = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                        FinanceField(stringResource(R.string.home_insurance), homeInsurance, { homeInsurance = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
                     }
                 }
             } else {
                 item { FinanceField(amountLabel, principal, { principal = it }, prefix = "${currency.symbol} ") }
-                item { FinanceField("Interest Rate", rate, { rate = it }, suffix = "%") }
-                item { LoanTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }, label = if (isDeposit) "Tenure" else "Loan Term") }
+                item { FinanceField(stringResource(R.string.interest_rate), rate, { rate = it }, suffix = "%") }
+                item { LoanTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }, label = if (isDeposit) stringResource(R.string.tenure) else stringResource(R.string.loan_term)) }
                 if (type == CalculatorType.FD) {
                     item { DepositCompoundingField(compounding, { compounding = it }) }
                 }
@@ -492,18 +527,18 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
             item { error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) } }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = { principal = ""; rate = ""; months = ""; termUnit = if (isDeposit) "Month" else "Year"; compounding = "1"; downPayment = ""; downPaymentPercent = ""; propertyTax = ""; pmi = ""; hoaFees = ""; homeInsurance = ""; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text("Reset Fields") }
+                    Button(onClick = { principal = ""; rate = ""; months = ""; termUnit = if (isDeposit || type == CalculatorType.BUSINESS) "Month" else "Year"; compounding = "1"; downPayment = ""; downPaymentPercent = ""; propertyTax = ""; pmi = ""; hoaFees = ""; homeInsurance = ""; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).heightIn(min = 54.dp), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 10.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text(stringResource(R.string.reset_fields), textAlign = TextAlign.Center, maxLines = 2) }
                     Button(onClick = {
                     val p = principal.toDoubleOrNull() ?: 0.0
                     val r = rate.toDoubleOrNull() ?: 0.0
                     val m = (months.toIntOrNull() ?: 1) * if (type == CalculatorType.MORTGAGE || termUnit == "Year") 12 else 1
                     if (p <= 0 || r < 0 || m <= 0) {
-                        error = "Enter a valid amount, rate and term."
+                        error = invalidInputError
                     } else if (type == CalculatorType.MORTGAGE) {
                         val down = (downPayment.toDoubleOrNull() ?: 0.0).coerceIn(0.0, p)
                         val financed = (p - down).coerceAtLeast(0.0)
                         if (financed <= 0.0) {
-                            error = "Down payment must be lower than the home price."
+                            error = downPaymentError
                         } else {
                             error = null
                             val result = FinancialCalculator.loan(LoanInput(financed, r, m))
@@ -521,7 +556,8 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                         error = null
                         val result = FinancialCalculator.loan(LoanInput(p, r, m))
                         val startDatePart = if (type == CalculatorType.PERSONAL || type == CalculatorType.AUTO) ";startDate=$startDateMillis" else ""
-                        viewModel.save(type, "principal=$p;rate=$r;months=$m$startDatePart;currency=${currency.code}", FinancialCalculator.summary(type, loan = result), onSaved)
+                        val frequencyPart = if (type == CalculatorType.BUSINESS) ";frequency=$termUnit" else ""
+                        viewModel.save(type, "principal=$p;rate=$r;months=$m$startDatePart$frequencyPart;currency=${currency.code}", FinancialCalculator.summary(type, loan = result), onSaved)
                     } else {
                         error = null
                         val compoundPeriods = compounding.toIntOrNull() ?: 4
@@ -534,7 +570,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                         val amountKey = if (type == CalculatorType.RD) "monthlyContribution" else "principal"
                         viewModel.save(type, "$amountKey=$p;rate=$r;months=$m;compounding=$compoundPeriods;startDate=$startDateMillis;currency=${currency.code}", FinancialCalculator.summary(type, deposit = result), onSaved)
                     }
-                    }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text("Calculate") }
+                    }, modifier = Modifier.weight(1f).heightIn(min = 54.dp), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 10.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text(stringResource(R.string.calculate), textAlign = TextAlign.Center, maxLines = 2) }
                 }
             }
             }
@@ -548,17 +584,17 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { startDateMillis = it }
                     datePickerOpen = false
-                }) { Text("OK") }
+                }) { Text(stringResource(R.string.ok)) }
             },
-            dismissButton = { TextButton(onClick = { datePickerOpen = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { datePickerOpen = false }) { Text(stringResource(R.string.cancel)) } },
         ) { DatePicker(state = datePickerState) }
     }
 }
 
 @Composable
-private fun FieldLabel(label: String, showInfo: Boolean = true) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+private fun FieldLabel(label: String, showInfo: Boolean = true, modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
         if (showInfo) Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF18A9D0), modifier = Modifier.padding(start = 4.dp).size(17.dp))
     }
 }
@@ -570,7 +606,7 @@ private fun formatMortgagePercent(value: Double): String = String.format(Locale.
 @Composable
 private fun StartDateField(startDateMillis: Long, onClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("Start Date", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.start_date), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
         OutlinedButton(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -579,10 +615,15 @@ private fun StartDateField(startDateMillis: Long, onClick: () -> Unit) {
             colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
         ) {
             Text(DateFormat.format("dd/MM/yyyy", startDateMillis).toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Icon(Icons.Default.DateRange, contentDescription = "Choose start date", tint = Color(0xFF6E777B))
+            Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.choose_start_date), tint = Color(0xFF6E777B))
         }
     }
 }
+
+@Composable
+private fun termUnitLabel(unit: String): String = stringResource(
+    if (unit == "Year") R.string.year else R.string.month,
+)
 
 @Composable
 private fun LoanTermField(
@@ -592,7 +633,7 @@ private fun LoanTermField(
     onUnitChange: (String) -> Unit,
     menuOpen: Boolean,
     onMenuOpenChange: (Boolean) -> Unit,
-    label: String = "Loan Term",
+    label: String = "",
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         FieldLabel(label)
@@ -622,13 +663,13 @@ private fun LoanTermField(
                     border = BorderStroke(1.dp, Color.White),
                     colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor = Color(0xFF8BA1AA)),
                 ) {
-                    Text(unit, style = MaterialTheme.typography.bodyMedium)
+                    Text(termUnitLabel(unit), style = MaterialTheme.typography.bodyMedium)
                     Spacer(Modifier.weight(1f))
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose term unit", tint = Color(0xFF6E777B))
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.choose_term_unit), tint = Color(0xFF6E777B))
                 }
                 DropdownMenu(expanded = menuOpen, onDismissRequest = { onMenuOpenChange(false) }) {
                     listOf("Year", "Month").forEach { option ->
-                        DropdownMenuItem(text = { Text(option) }, onClick = { onUnitChange(option); onMenuOpenChange(false) })
+                        DropdownMenuItem(text = { Text(termUnitLabel(option)) }, onClick = { onUnitChange(option); onMenuOpenChange(false) })
                     }
                 }
             }
@@ -640,7 +681,7 @@ private fun LoanTermField(
 private fun DepositCompoundingField(value: String, onValueChange: (String) -> Unit) {
     var menuOpen by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        FieldLabel("The number of times interest")
+        FieldLabel(stringResource(R.string.compounding_frequency))
         Box {
             OutlinedButton(
                 onClick = { menuOpen = true },
@@ -651,7 +692,7 @@ private fun DepositCompoundingField(value: String, onValueChange: (String) -> Un
             ) {
                 Text(value, style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.weight(1f))
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Choose compounding frequency", tint = Color(0xFF6E777B))
+                Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.choose_compounding), tint = Color(0xFF6E777B))
             }
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                 listOf("1", "2", "4", "12").forEach { option ->
@@ -665,12 +706,12 @@ private fun DepositCompoundingField(value: String, onValueChange: (String) -> Un
 @Composable
 private fun MortgageTermField(value: String, onValueChange: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        FieldLabel("Loan Term")
+        FieldLabel(stringResource(R.string.loan_term))
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it.filter(Char::isDigit)) },
             placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
-            suffix = { Text("Year", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
+            suffix = { Text(stringResource(R.string.year), style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium,
@@ -723,7 +764,7 @@ private fun FinanceField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (String, String) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
+fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: (CalculatorType?) -> Unit, onShare: (String, String) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val history by viewModel.history.collectAsState()
     val item = history.firstOrNull { it.id == id }
     val entries = summaryEntries(item?.resultSummary.orEmpty())
@@ -731,57 +772,77 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: () -> Unit, onShare: (
     val startDate = inputValue(item?.inputJson.orEmpty(), "startDate")?.toLongOrNull()
     val termMonths = inputValue(item?.inputJson.orEmpty(), "months")?.toIntOrNull()
     val payoffMonths = entries.firstOrNull { it.first.equals("Payoff months", ignoreCase = true) }?.second?.toDoubleOrNull()?.toInt()
-    Scaffold(topBar = { FinanceTopBar("Calculation result", item?.title, onBack, compact = true) }) { padding ->
+    val calculatorTitle = item?.let { calculatorLabel(CalculatorType.fromKey(it.calculatorType)) }
+    Scaffold(topBar = { FinanceTopBar(stringResource(R.string.calculation_result), calculatorTitle, onBack, compact = true) }) { padding ->
         LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            item { Text("Result after calculation", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
+            item { Text(stringResource(R.string.result_after_calculation), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
             item {
                 Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                         if ((item?.category == "Loans" || item?.category == "Deposits") && startDate != null) {
-                            ResultDateRow("Start Date", formatDate(startDate))
+                            ResultDateRow(stringResource(R.string.start_date), formatDate(startDate))
                         }
                         entries.forEachIndexed { index, (label, value) ->
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(label, color = Color(0xFF17A8CD), style = MaterialTheme.typography.titleMedium)
-                                Text(resultValue(label, value, currencyCode), color = Color(0xFF10233A), fontWeight = FontWeight.Bold)
+                            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                Text(resultLabel(label), modifier = Modifier.weight(0.52f).padding(end = 12.dp), color = Color(0xFF17A8CD), style = MaterialTheme.typography.titleMedium)
+                                Text(resultValue(label, value, currencyCode), modifier = Modifier.weight(0.48f), color = Color(0xFF10233A), fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
                             }
                         }
                         if (item?.category == "Loans" && startDate != null && payoffMonths != null) {
                             Divider(color = Color(0xFFD7E2E6))
-                            ResultDateRow("Pay-off Date", payoffDate(startDate, payoffMonths))
+                            ResultDateRow(stringResource(R.string.payoff_date), payoffDate(startDate, payoffMonths))
                         } else if (item?.category == "Deposits" && startDate != null && termMonths != null) {
                             Divider(color = Color(0xFFD7E2E6))
-                            ResultDateRow("Maturity Date", payoffDate(startDate, termMonths))
+                            ResultDateRow(stringResource(R.string.maturity_date), payoffDate(startDate, termMonths))
                         }
                     }
                 }
             }
             item {
-                Button(onClick = onCompare, modifier = Modifier.fillMaxWidth().height(58.dp), shape = RoundedCornerShape(30.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text("Add to compare list") }
+                Button(onClick = { onCompare(item?.let { CalculatorType.fromKey(it.calculatorType) }) }, modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp), shape = RoundedCornerShape(30.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text(stringResource(R.string.add_to_compare), textAlign = TextAlign.Center, maxLines = 2) }
             }
             item {
-                Button(onClick = { item?.let { onShare(it.title, it.resultSummary) } }, modifier = Modifier.fillMaxWidth().height(58.dp), shape = RoundedCornerShape(30.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Icon(Icons.Default.Share, null); Spacer(Modifier.size(8.dp)); Text("Share PDF") }
+                Button(onClick = { item?.let { onShare(calculatorTitle ?: it.title, it.resultSummary) } }, modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp), shape = RoundedCornerShape(30.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Icon(Icons.Default.Share, null); Spacer(Modifier.size(8.dp)); Text(stringResource(R.string.share_pdf), textAlign = TextAlign.Center, maxLines = 2) }
             }
         }
     }
 }
 
 @Composable
+private fun resultLabel(label: String): String = when (label.lowercase(Locale.US)) {
+    "monthly payment" -> stringResource(R.string.monthly_payment)
+    "total payment" -> stringResource(R.string.total_payment)
+    "total interest" -> stringResource(R.string.total_interest_paid)
+    "principal & interest" -> stringResource(R.string.principal_interest)
+    "interest earned" -> stringResource(R.string.interest_earned)
+    "maturity value" -> stringResource(R.string.maturity_value)
+    "total deposited" -> stringResource(R.string.total_deposited)
+    "total invested" -> stringResource(R.string.total_invested)
+    "payoff months" -> stringResource(R.string.duration)
+    else -> label
+}
+
+@Composable
 private fun ResultDateRow(label: String, value: String) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, color = Color(0xFF17A8CD), style = MaterialTheme.typography.titleMedium)
-        Text(value, color = Color(0xFF10233A), fontWeight = FontWeight.Bold)
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, modifier = Modifier.weight(0.52f).padding(end = 12.dp), color = Color(0xFF17A8CD), style = MaterialTheme.typography.titleMedium)
+        Text(value, modifier = Modifier.weight(0.48f), color = Color(0xFF10233A), fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
     }
 }
 
 @Composable
 fun HistoryScreen(onBack: () -> Unit, onOpen: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val history by viewModel.history.collectAsState()
-    Scaffold(topBar = { SimpleTopBar("History", onBack) }) { padding ->
-        if (history.isEmpty()) Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text("No saved calculations yet") }
+    Scaffold(topBar = { SimpleTopBar(stringResource(R.string.history), onBack) }) { padding ->
+        if (history.isEmpty()) Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(stringResource(R.string.no_saved_calculations)) }
         else LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(history) { item ->
-                Card(onClick = { onOpen(item.id) }, modifier = Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) { Text(item.title, fontWeight = FontWeight.Bold); Text(item.resultSummary.replace("|", "  •  "), color = MaterialTheme.colorScheme.onSurfaceVariant) } }
+                Card(onClick = { onOpen(item.id) }, modifier = Modifier.fillMaxWidth()) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(calculatorLabel(CalculatorType.fromKey(item.calculatorType)), fontWeight = FontWeight.Bold)
+                        Text(localizedSummary(item.resultSummary), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
             }
         }
     }
@@ -789,4 +850,28 @@ fun HistoryScreen(onBack: () -> Unit, onOpen: (Long) -> Unit, viewModel: Finance
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SimpleTopBar(title: String, onBack: () -> Unit) { TopAppBar(title = { Text(title) }, navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back") } }) }
+fun SimpleTopBar(title: String, onBack: () -> Unit) { TopAppBar(title = { Text(title) }, navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, stringResource(R.string.back)) } }) }
+
+@Composable
+private fun localizedSummary(summary: String): String {
+    val result = StringBuilder()
+    for ((index, entry) in summaryEntries(summary).withIndex()) {
+        if (index > 0) result.append("  •  ")
+        result.append(localizedSummaryLabel(entry.first)).append('=').append(entry.second)
+    }
+    return result.toString()
+}
+
+@Composable
+private fun localizedSummaryLabel(label: String): String = when (label.lowercase(Locale.US)) {
+    "monthly payment" -> stringResource(R.string.monthly_payment)
+    "total payment" -> stringResource(R.string.total_payment)
+    "total interest" -> stringResource(R.string.total_interest_paid)
+    "principal & interest" -> stringResource(R.string.principal_interest)
+    "maturity value" -> stringResource(R.string.maturity_value)
+    "total deposited" -> stringResource(R.string.total_deposited)
+    "total invested" -> stringResource(R.string.total_invested)
+    "interest earned" -> stringResource(R.string.interest_earned)
+    "payoff months" -> stringResource(R.string.duration)
+    else -> label
+}

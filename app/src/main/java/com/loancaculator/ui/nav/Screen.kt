@@ -16,6 +16,7 @@ enum class Screen(val route: String) {
     Compare("compare"),
     Calculator("calculator"),
     Result("result"),
+    CompareDetail("compare_detail"),
     HistoryDetail("history_detail"),
     Converter("converter"),
     WorldClock("world_clock"),
@@ -51,6 +52,7 @@ enum class Screen(val route: String) {
         fun detailManagerApp(pkg: String) = "${DetailManagerApp.route}/$pkg"
         fun calculator(type: String) = "${Calculator.route}/$type"
         fun result(id: Long) = "${Result.route}/$id"
+        fun compareDetail(type: String) = "${CompareDetail.route}/$type"
         fun converter(type: String) = "${Converter.route}/$type"
         fun historyDetail(id: Long) = "${HistoryDetail.route}/$id"
     }

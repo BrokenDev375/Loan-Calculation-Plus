@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Uma nova atualização do Loan Calculation Plus está disponível</string>
+    <string name="baseapp_screenshot_title">Captura de tela registrada</string>
+    <string name="baseapp_recent_title">Aplicativo atualizado recentemente</string>
+    <string name="baseapp_open">Abrir</string>
+    <string name="baseapp_scan">Verificar agora</string>
+    <string name="baseapp_daily_open_content">Revise seus cálculos recentes de empréstimos e depósitos</string>
+    <string name="baseapp_check_now">Verificar agora</string>
+    <string name="baseapp_fullscreen_1">Uma nova versão está disponível</string>
+    <string name="baseapp_fullscreen_2">Toque para abrir o Loan Calculation Plus</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">Abra o aplicativo para revisar seus cálculos financeiros</string>
+    <string name="baseapp_noti_title">Ativar notificações</string>
+    <string name="baseapp_noti_content">Receba lembretes sobre seus cálculos salvos</string>
+    <string name="baseapp_feature1">Cálculos sem anúncios</string>
+    <string name="baseapp_feature2">Comparações ilimitadas</string>
+    <string name="baseapp_feature3">Todas as ferramentas de empréstimos e depósitos</string>
+    <string name="baseapp_feature4">Conversor de taxas de câmbio</string>
+    <string name="baseapp_feature5">Suporte prioritário</string>
+    <string-array name="notification_title2"><item>Revise seus cálculos</item><item>Planeje o próximo pagamento</item><item>Confira os resultados salvos</item><item>Compare suas opções</item><item>Organize suas finanças</item></string-array>
+    <string-array name="notification_message2"><item>Abra o Loan Calculation Plus para revisar os resultados mais recentes</item><item>Use seus dados salvos para planejar com antecedência</item><item>Seu histórico de cálculos está pronto</item><item>Compare os cálculos de empréstimos salvos</item><item>Mantenha planos de empréstimos e depósitos em um só lugar</item></string-array>
+    <string-array name="notification_button2"><item>Abrir</item><item>Planejar</item><item>Ver</item><item>Comparar</item><item>Abrir</item></string-array>
+</resources>
