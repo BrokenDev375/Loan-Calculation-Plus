@@ -123,8 +123,9 @@ fun FinanceTopBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val bannerHeight = if (compact) 69.dp else 138.dp
-    Box(Modifier.fillMaxWidth().height(bannerHeight)) {
-        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+    val bannerScale = if (compact) ContentScale.FillBounds else ContentScale.Crop
+    Box(Modifier.fillMaxWidth().height(bannerHeight).background(Color(0xFF12A9D0))) {
+        Image(painterResource(R.drawable.finance_hero), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = bannerScale)
         onBack?.let { callback ->
             IconButton(onClick = callback, modifier = Modifier.align(Alignment.CenterStart).padding(start = 16.dp).background(Color.White, CircleShape)) { Icon(Icons.Default.ArrowBack, "Back", tint = Color(0xFF18A9D0)) }
         }
