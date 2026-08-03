@@ -234,8 +234,22 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
     var startDateMillis by remember { mutableStateOf(System.currentTimeMillis()) }
     var datePickerOpen by remember { mutableStateOf(false) }
     val currency = loanCurrency(currencyCode)
+    val isLoan = type.category == "Loans"
+    val loanAdHeight = if (type == CalculatorType.MORTGAGE) 220.dp else 104.dp
     Scaffold(topBar = { FinanceTopBar(type.label, "Enter details to estimate your result", onBack) }) { padding ->
-        LazyColumn(Modifier.padding(padding).padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 16.dp)) {
+        Column(Modifier.padding(padding).fillMaxSize()) {
+            if (isLoan) {
+                NativeAdSlot(
+                    "native_calculator",
+                    modifier = Modifier.fillMaxWidth().height(loanAdHeight),
+                    isSmall = type != CalculatorType.MORTGAGE,
+                )
+            }
+            LazyColumn(
+                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 16.dp),
+            ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     FieldLabel(if (type == CalculatorType.MORTGAGE) "Home Price" else if (type.category == "Loans") "Loan Amount" else "Investment Amount")
@@ -331,6 +345,7 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                     }
                     }, modifier = Modifier.weight(1f).height(54.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF16B2D7))) { Text("Calculate") }
                 }
+            }
             }
         }
     }
