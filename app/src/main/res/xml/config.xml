@@ -27,6 +27,8 @@
     <entry><key>native_device_info_enable</key><value>true</value></entry>
     <entry><key>native_history_enable</key><value>true</value></entry>
     <entry><key>native_setting_enable</key><value>true</value></entry>
+    <entry><key>native_compare_enable</key><value>true</value></entry>
+    <entry><key>native_compare_detail_enable</key><value>true</value></entry>
     <!-- Inter: bật/tắt + tỉ lệ (showCount % ratio == 0) + max/ngày (port kịch bản RN vga31b:
          inter_screen ratio=4 max=20; inter_splash ratio=3; native_inter ratio=2 max=20) -->
     <entry><key>inter_home_enable</key><value>true</value></entry>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Loan Calculation Plus का नया अपडेट उपलब्ध है</string>
+    <string name="baseapp_screenshot_title">स्क्रीनशॉट लिया गया</string>
+    <string name="baseapp_recent_title">हाल ही में अपडेट किया गया ऐप</string>
+    <string name="baseapp_open">खोलें</string>
+    <string name="baseapp_scan">अभी जांचें</string>
+    <string name="baseapp_daily_open_content">अपने नवीनतम ऋण और जमा गणना देखें</string>
+    <string name="baseapp_check_now">अभी जांचें</string>
+    <string name="baseapp_fullscreen_1">नया संस्करण उपलब्ध है</string>
+    <string name="baseapp_fullscreen_2">Loan Calculation Plus खोलने के लिए टैप करें</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">अपनी वित्तीय गणनाएं देखने के लिए ऐप खोलें</string>
+    <string name="baseapp_noti_title">सूचनाएं चालू करें</string>
+    <string name="baseapp_noti_content">अपनी सहेजी गई गणनाओं के अनुस्मारक पाएं</string>
+    <string name="baseapp_feature1">विज्ञापन-मुक्त गणना</string>
+    <string name="baseapp_feature2">असीमित तुलना</string>
+    <string name="baseapp_feature3">सभी ऋण और जमा उपकरण</string>
+    <string name="baseapp_feature4">विनिमय दर कैलकुलेटर</string>
+    <string name="baseapp_feature5">प्राथमिकता सहायता</string>
+    <string-array name="notification_title2"><item>अपनी गणनाएं देखें</item><item>अगले भुगतान की योजना बनाएं</item><item>सहेजे परिणाम देखें</item><item>विकल्पों की तुलना करें</item><item>अपने वित्त को व्यवस्थित रखें</item></string-array>
+    <string-array name="notification_message2"><item>नवीनतम परिणाम देखने के लिए Loan Calculation Plus खोलें</item><item>आगे की योजना के लिए सहेजे डेटा का उपयोग करें</item><item>आपका गणना इतिहास देखने के लिए तैयार है</item><item>सहेजे गए ऋणों की साथ-साथ तुलना करें</item><item>ऋण और जमा योजनाएं एक ही जगह रखें</item></string-array>
+    <string-array name="notification_button2"><item>खोलें</item><item>योजना बनाएं</item><item>देखें</item><item>तुलना करें</item><item>खोलें</item></string-array>
+</resources>

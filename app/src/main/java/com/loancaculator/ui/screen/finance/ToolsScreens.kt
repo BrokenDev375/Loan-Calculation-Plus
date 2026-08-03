@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.loancaculator.advertisement.NativeAdSlot
+import com.loancaculator.R
 import java.util.Locale
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -58,20 +61,25 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-private data class ToolDefinition(val key: String, val title: String, val description: String, val tint: Color)
+private data class ToolDefinition(
+    val key: String,
+    @androidx.annotation.StringRes val titleRes: Int,
+    @androidx.annotation.StringRes val descriptionRes: Int,
+    val tint: Color,
+)
 
 private val tools = listOf(
-    ToolDefinition("currency", "Exchange Rate", "Easily convert between currencies", Color(0xFFE0F2FE)),
-    ToolDefinition("temperature", "Temperature", "Celsius, Fahrenheit and Kelvin", Color(0xFFFCE7F3)),
-    ToolDefinition("mass", "Mass Convert", "Grams, pounds and ounces", Color(0xFFE0F2FE)),
-    ToolDefinition("speed", "Speed Convert", "Kilometers and miles per hour", Color(0xFFFFEDD5)),
-    ToolDefinition("length", "Length Convert", "Inches, meters and more", Color(0xFFDCFCE7)),
-    ToolDefinition("clock", "World Clock", "Track time in saved cities", Color(0xFFFEF3C7)),
+    ToolDefinition("currency", R.string.exchange_rate, R.string.tool_currency_desc, Color(0xFFE0F2FE)),
+    ToolDefinition("temperature", R.string.temperature, R.string.tool_temperature_desc, Color(0xFFFCE7F3)),
+    ToolDefinition("mass", R.string.mass_convert, R.string.tool_mass_desc, Color(0xFFE0F2FE)),
+    ToolDefinition("speed", R.string.speed_convert, R.string.tool_speed_desc, Color(0xFFFFEDD5)),
+    ToolDefinition("length", R.string.length_convert, R.string.tool_length_desc, Color(0xFFDCFCE7)),
+    ToolDefinition("clock", R.string.world_clock, R.string.tool_clock_desc, Color(0xFFFEF3C7)),
 )
 
 @Composable
 fun ToolsScreen(onNavigate: (String) -> Unit, onConverter: (String) -> Unit, onWorldClock: () -> Unit) {
-    Scaffold(topBar = { FinanceTopBar("Tools", compact = true) }, bottomBar = { FinanceBottomBar("tools", onNavigate) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar(stringResource(R.string.tools), compact = true) }, bottomBar = { FinanceBottomBar("tools", onNavigate) }) { padding ->
         LazyColumn(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 18.dp)) {
             item {
                 NativeAdSlot(
@@ -96,10 +104,13 @@ fun ToolsScreen(onNavigate: (String) -> Unit, onConverter: (String) -> Unit, onW
 
 @Composable
 private fun ToolTile(tool: ToolDefinition, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().height(142.dp), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 142.dp), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
             ToolSpriteIcon(tool.key)
-            Column { Text(tool.title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary); Text(tool.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            Column {
+                Text(stringResource(tool.titleRes), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(tool.descriptionRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 }
@@ -129,7 +140,7 @@ private fun ToolSpriteIcon(key: String) {
 }
 
 private data class ToolConverterConfig(
-    val title: String,
+    @androidx.annotation.StringRes val titleRes: Int,
     val units: List<ToolUnit>,
     val defaultFrom: String,
     val defaultTo: String,
@@ -138,31 +149,31 @@ private data class ToolConverterConfig(
 
 private val converterConfigs = mapOf(
     "temperature" to ToolConverterConfig(
-        title = "Temperature",
+        titleRes = R.string.temperature,
         units = listOf(
-            ToolUnit("C", "Celsius", "\u00B0C", "\uD83C\uDF21\uFE0F"),
-            ToolUnit("F", "Fahrenheit", "\u00B0F", "\uD83C\uDF21\uFE0F"),
-            ToolUnit("K", "Kelvin", "K", "\uD83C\uDF21\uFE0F"),
+            ToolUnit("C", "Celsius", "\u00B0C", "\uD83C\uDF21\uFE0F", labelRes = R.string.unit_celsius),
+            ToolUnit("F", "Fahrenheit", "\u00B0F", "\uD83C\uDF21\uFE0F", labelRes = R.string.unit_fahrenheit),
+            ToolUnit("K", "Kelvin", "K", "\uD83C\uDF21\uFE0F", labelRes = R.string.unit_kelvin),
         ),
         defaultFrom = "C",
         defaultTo = "F",
     ),
     "mass" to ToolConverterConfig(
-        title = "Mass Convert",
+        titleRes = R.string.mass_convert,
         units = listOf(
-            ToolUnit("g", "Gam", "g", "\u2696\uFE0F", 0.001),
-            ToolUnit("kg", "Kilogram", "kg", "\u2696\uFE0F", 1.0),
-            ToolUnit("lb", "Pound", "lb", "\u2696\uFE0F", 0.453592),
-            ToolUnit("oz", "Ounce", "oz", "\u2696\uFE0F", 0.0283495),
+            ToolUnit("g", "Gram", "g", "\u2696\uFE0F", 0.001, R.string.unit_gram),
+            ToolUnit("kg", "Kilogram", "kg", "\u2696\uFE0F", 1.0, R.string.unit_kilogram),
+            ToolUnit("lb", "Pound", "lb", "\u2696\uFE0F", 0.453592, R.string.unit_pound),
+            ToolUnit("oz", "Ounce", "oz", "\u2696\uFE0F", 0.0283495, R.string.unit_ounce),
         ),
         defaultFrom = "g",
         defaultTo = "kg",
     ),
     "speed" to ToolConverterConfig(
-        title = "Speed Convert",
+        titleRes = R.string.speed_convert,
         units = listOf(
-            ToolUnit("C", "Speed of light", "C", "\uD83C\uDFCE\uFE0F", 299_792_458.0),
-            ToolUnit("ma", "Mach", "ma", "\uD83C\uDFCE\uFE0F", 340.29),
+            ToolUnit("C", "Speed of light", "C", "\uD83C\uDFCE\uFE0F", 299_792_458.0, R.string.unit_speed_of_light),
+            ToolUnit("ma", "Mach", "ma", "\uD83C\uDFCE\uFE0F", 340.29, R.string.unit_mach),
             ToolUnit("kmh", "km/h", "km/h", "\uD83C\uDFCE\uFE0F", 1.0 / 3.6),
             ToolUnit("mph", "mph", "mph", "\uD83C\uDFCE\uFE0F", 0.44704),
         ),
@@ -170,14 +181,14 @@ private val converterConfigs = mapOf(
         defaultTo = "ma",
     ),
     "length" to ToolConverterConfig(
-        title = "Length Convert",
+        titleRes = R.string.length_convert,
         units = listOf(
-            ToolUnit("cm", "Centimeter", "cm", "\uD83D\uDCCF", 0.01),
-            ToolUnit("mm", "Millimeter", "mm", "\uD83D\uDCCF", 0.001),
-            ToolUnit("m", "Meter", "m", "\uD83D\uDCCF", 1.0),
-            ToolUnit("km", "Kilometer", "km", "\uD83D\uDCCF", 1000.0),
-            ToolUnit("in", "Inch", "in", "\uD83D\uDCCF", 0.0254),
-            ToolUnit("ft", "Foot", "ft", "\uD83D\uDCCF", 0.3048),
+            ToolUnit("cm", "Centimeter", "cm", "\uD83D\uDCCF", 0.01, R.string.unit_centimeter),
+            ToolUnit("mm", "Millimeter", "mm", "\uD83D\uDCCF", 0.001, R.string.unit_millimeter),
+            ToolUnit("m", "Meter", "m", "\uD83D\uDCCF", 1.0, R.string.unit_meter),
+            ToolUnit("km", "Kilometer", "km", "\uD83D\uDCCF", 1000.0, R.string.unit_kilometer),
+            ToolUnit("in", "Inch", "in", "\uD83D\uDCCF", 0.0254, R.string.unit_inch),
+            ToolUnit("ft", "Foot", "ft", "\uD83D\uDCCF", 0.3048, R.string.unit_foot),
         ),
         defaultFrom = "cm",
         defaultTo = "mm",
@@ -197,7 +208,7 @@ fun ConverterScreen(kind: String, onBack: () -> Unit) {
     val output = convertToolValue(kind, input, fromUnit, toUnit)
 
     ToolConverterLayout(
-        title = config.title,
+        title = stringResource(config.titleRes),
         onBack = onBack,
         fromValue = value,
         onFromValueChange = { value = it },
@@ -303,7 +314,7 @@ private val financeBackground = Color(0xFFD0EFFF)
 fun WorldClockScreen(onBack: () -> Unit, onAdd: () -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val clocks by viewModel.clocks.collectAsState()
     Scaffold(
-        topBar = { FinanceTopBar("World Clock", onBack = onBack, compact = true) },
+        topBar = { FinanceTopBar(stringResource(R.string.world_clock), onBack = onBack, compact = true) },
         bottomBar = { AddClockButton(onClick = onAdd) },
     ) { padding ->
         LazyColumn(
@@ -340,9 +351,9 @@ private fun ClockEmptyState() {
             modifier = Modifier.size(140.dp).background(Color(0xFFE1EFF5), androidx.compose.foundation.shape.CircleShape),
             contentAlignment = Alignment.Center,
         ) { Text("\uD83D\uDCE6", fontSize = 58.sp) }
-        Text("Your clock are empty!", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10233A))
+        Text(stringResource(R.string.empty_clocks_title), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10233A))
         Text(
-            "Looks like you haven't added anything yet.",
+            stringResource(R.string.empty_clocks_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
@@ -369,7 +380,7 @@ private fun ClockCard(city: String, zoneId: String) {
         ) {
             Column(Modifier.weight(1f)) {
                 Text(city, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF10233A))
-                Text("Today, (UTC$offset)", style = MaterialTheme.typography.bodySmall, color = Color(0xFF5B7186))
+                Text(stringResource(R.string.today_utc, offset), style = MaterialTheme.typography.bodySmall, color = Color(0xFF5B7186))
             }
             Text(time, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = Color(0xFF10233A))
         }
@@ -383,13 +394,13 @@ private fun AddClockButton(onClick: () -> Unit) {
     ) {
         Button(
             onClick = onClick,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
             shape = RoundedCornerShape(28.dp),
             colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFF00A6CE)),
         ) {
             Icon(Icons.Default.Add, contentDescription = null)
             Spacer(Modifier.size(8.dp))
-            Text("Add Clock", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.add_clock), fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -407,7 +418,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
     Scaffold(
         topBar = {
             FinanceTopBar(
-                "World Clock",
+                stringResource(R.string.world_clock),
                 onBack = onBack,
                 compact = true,
                 actions = {
@@ -426,7 +437,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
                     ) {
                         Icon(
                             Icons.Default.Check,
-                            contentDescription = "Confirm city",
+                            contentDescription = stringResource(R.string.confirm_city),
                             tint = Color(0xFF18A9D0).copy(alpha = if (selectedCity != null) 1f else .38f),
                             modifier = Modifier.size(20.dp),
                         )
@@ -458,7 +469,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
             ) {
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     if (groupedCities.isEmpty()) {
-                        Text("No cities found.", modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp), textAlign = TextAlign.Center, color = Color(0xFF5B7186))
+                        Text(stringResource(R.string.no_cities_found), modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp), textAlign = TextAlign.Center, color = Color(0xFF5B7186))
                     } else {
                         groupedCities.forEach { (letter, cities) ->
                             Text(letter.toString(), modifier = Modifier.padding(top = 2.dp, bottom = 4.dp), color = Color(0xFF00A6CE), fontWeight = FontWeight.Bold)
@@ -474,7 +485,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
                                     Text(city.name, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF10233A), fontWeight = FontWeight.SemiBold)
                                     if (selectedCity == city) {
                                         Spacer(Modifier.weight(1f))
-                                        Icon(Icons.Default.Check, contentDescription = "Selected", tint = Color(0xFF00A6CE))
+                                        Icon(Icons.Default.Check, contentDescription = stringResource(R.string.selected), tint = Color(0xFF00A6CE))
                                     }
                                 }
                                 Box(Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFEBF3F6)))
@@ -500,7 +511,7 @@ private fun CitySearchField(query: String, onQueryChange: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.weight(1f)) {
-                if (query.isEmpty()) Text("search", color = Color(0xFF8BA8B8), style = MaterialTheme.typography.bodyLarge)
+                if (query.isEmpty()) Text(stringResource(R.string.search), color = Color(0xFF8BA8B8), style = MaterialTheme.typography.bodyLarge)
                 BasicTextField(
                     value = query,
                     onValueChange = onQueryChange,
@@ -509,7 +520,7 @@ private fun CitySearchField(query: String, onQueryChange: (String) -> Unit) {
                     textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF10233A)),
                 )
             }
-            Icon(Icons.Default.Search, contentDescription = "Search city", tint = Color(0xFF00A6CE))
+            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search), tint = Color(0xFF00A6CE))
         }
     }
 }

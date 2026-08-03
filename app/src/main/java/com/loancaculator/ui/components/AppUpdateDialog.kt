@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.UpdateAvailability
+import androidx.compose.ui.res.stringResource
+import com.loancaculator.R
 
 /**
  * Kiểm tra bản cập nhật CỦA CHÍNH APP (port RN expo-in-app-updates → theo cách vga_48).
@@ -68,18 +73,18 @@ private fun AppUpdateDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().heightIn(max = 620.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text("🔄", fontSize = 56.sp)
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "New version available",
+                    stringResource(R.string.baseapp_fullscreen_1),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
@@ -87,7 +92,7 @@ private fun AppUpdateDialog(onDismiss: () -> Unit) {
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Please update the app to the latest version to continue.",
+                    stringResource(R.string.baseapp_fullscreen_2),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
@@ -110,14 +115,14 @@ private fun AppUpdateDialog(onDismiss: () -> Unit) {
                         }
                         onDismiss()
                     },
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
                     shape = RoundedCornerShape(24.dp),
                 ) {
-                    Text("Update now", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.baseapp_check_now), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Maybe later",
+                    stringResource(R.string.cancel),
                     fontSize = 14.sp,
                     color = Color.Black,
                     modifier = Modifier.clickable { onDismiss() }.padding(8.dp),

@@ -46,6 +46,13 @@ object AppStorage {
     fun language(context: Context): String? =
         prefs(context).getString(KEY_LANGUAGE, null)
 
+    fun languageCode(context: Context): String =
+        language(context) ?: "vi"
+
+    fun setLanguageCode(context: Context, languageCode: String) {
+        prefs(context).edit().putString(KEY_LANGUAGE, languageCode.ifBlank { "vi" }).apply()
+    }
+
     // ── Gate hiện Intro (port RN AppNavigation.js) ────────────────────────────
 
     /** Lần mở hiện tại (goToHomeNumber). Mặc định 1 = lần đầu. */

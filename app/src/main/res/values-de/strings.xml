@@ -1,0 +1,23 @@
+<resources>
+    <string name="baseapp_new_file_content">Ein neues Update für Loan Calculation Plus ist verfügbar</string>
+    <string name="baseapp_screenshot_title">Screenshot aufgenommen</string>
+    <string name="baseapp_recent_title">Kürzlich aktualisierte App</string>
+    <string name="baseapp_open">Öffnen</string>
+    <string name="baseapp_scan">Jetzt prüfen</string>
+    <string name="baseapp_daily_open_content">Sehen Sie Ihre neuesten Kredit- und Einlagenberechnungen an</string>
+    <string name="baseapp_check_now">Jetzt prüfen</string>
+    <string name="baseapp_fullscreen_1">Eine neue Version ist verfügbar</string>
+    <string name="baseapp_fullscreen_2">Tippen, um Loan Calculation Plus zu öffnen</string>
+    <string name="baseapp_outapp_title">Loan Calculation Plus</string>
+    <string name="baseapp_outapp_content">Öffnen Sie die App, um Ihre Finanzberechnungen zu prüfen</string>
+    <string name="baseapp_noti_title">Benachrichtigungen aktivieren</string>
+    <string name="baseapp_noti_content">Erhalten Sie Erinnerungen an gespeicherte Berechnungen</string>
+    <string name="baseapp_feature1">Berechnungen ohne Werbung</string>
+    <string name="baseapp_feature2">Unbegrenzte Vergleiche</string>
+    <string name="baseapp_feature3">Alle Kredit- und Einlagenwerkzeuge</string>
+    <string name="baseapp_feature4">Wechselkursrechner</string>
+    <string name="baseapp_feature5">Priorisierter Support</string>
+    <string-array name="notification_title2"><item>Berechnungen prüfen</item><item>Nächste Zahlung planen</item><item>Gespeicherte Ergebnisse prüfen</item><item>Optionen vergleichen</item><item>Finanzen organisieren</item></string-array>
+    <string-array name="notification_message2"><item>Öffnen Sie Loan Calculation Plus für Ihre neuesten Ergebnisse</item><item>Nutzen Sie gespeicherte Daten zur Planung</item><item>Ihr Berechnungsverlauf ist verfügbar</item><item>Vergleichen Sie gespeicherte Kredite direkt</item><item>Bewahren Sie Kredit- und Einlagenpläne an einem Ort auf</item></string-array>
+    <string-array name="notification_button2"><item>Öffnen</item><item>Planen</item><item>Anzeigen</item><item>Vergleichen</item><item>Öffnen</item></string-array>
+</resources>

@@ -24,14 +24,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.loancaculator.R
 import kotlinx.coroutines.launch
 
 @Composable
 fun FinanceIntroScreen(onFinish: () -> Unit) {
     val pages = listOf(
-        "Understand every payment" to "Calculate monthly payments, total interest and payoff time.",
-        "Plan your savings" to "Compare fixed and recurring deposits with clear maturity values.",
-        "Keep your decisions close" to "Save results offline, compare options and share a PDF when ready.",
+        R.string.intro1 to R.string.intro1Sub,
+        R.string.intro2 to R.string.intro2Sub,
+        R.string.intro4 to R.string.intro4Sub,
     )
     val pager = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
@@ -41,8 +43,8 @@ fun FinanceIntroScreen(onFinish: () -> Unit) {
         HorizontalPager(state = pager, modifier = Modifier.fillMaxWidth()) { page ->
             Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 Text("LC+", fontSize = 64.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1368CE))
-                Text(pages[page].first, fontSize = 26.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                Text(pages[page].second, textAlign = TextAlign.Center, color = Color.Gray)
+                Text(stringResource(pages[page].first), fontSize = 26.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text(stringResource(pages[page].second), textAlign = TextAlign.Center, color = Color.Gray)
             }
         }
         Row(Modifier.padding(vertical = 28.dp), horizontalArrangement = Arrangement.Center) {
@@ -51,7 +53,7 @@ fun FinanceIntroScreen(onFinish: () -> Unit) {
             }
         }
         Button(onClick = { if (last) onFinish() else scope.launch { pager.animateScrollToPage(pager.currentPage + 1) } }, modifier = Modifier.fillMaxWidth()) {
-            Text(if (last) "Start calculating" else "Continue")
+            Text(stringResource(if (last) R.string.start else R.string.continue_btn))
         }
     }
 }
