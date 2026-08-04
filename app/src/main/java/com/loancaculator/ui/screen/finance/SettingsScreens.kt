@@ -1,5 +1,6 @@
 package com.loancaculator.ui.screen.finance
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,9 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.loancaculator.core.IapOpener
 import com.loancaculator.core.AppStorage
-import com.loancaculator.core.MainActivity
 import com.loancaculator.ui.components.findActivity
 import com.loancaculator.advertisement.NativeAdSlot
+import com.loancaculator.ui.screen.language.MyLanguageActivity
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -79,7 +80,12 @@ fun FinanceSettingsScreen(onNavigate: (String) -> Unit, viewModel: FinanceViewMo
                     }
                 }
             }
-            SettingRow(Icons.Default.Settings, "Language", "System language") { (context.findActivity() as? FragmentActivity)?.let { LanguageActivity.start(it, MainActivity::class.java) } }
+            SettingRow(Icons.Default.Settings, "Language", "System language") {
+                context.findActivity()?.startActivity(
+                    Intent(context, MyLanguageActivity::class.java)
+                        .putExtra(MyLanguageActivity.EXTRA_FROM_SETTINGS, true),
+                )
+            }
             SettingRow(Icons.Default.Notifications, "Notifications", "Calculation reminders are enabled")
             SettingRow(Icons.Default.Lock, "Privacy", "Your calculations stay on this device")
             Button(onClick = { viewModel.clearHistory() }, modifier = Modifier.fillMaxWidth()) {

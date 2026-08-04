@@ -47,6 +47,15 @@ object AppStorage {
     fun language(context: Context): String? =
         prefs(context).getString(KEY_LANGUAGE, null)
 
+    fun languageCode(context: Context): String =
+        language(context) ?: "en"
+
+    fun setLanguageCode(context: Context, languageCode: String) {
+        prefs(context).edit()
+            .putString(KEY_LANGUAGE, languageCode)
+            .apply()
+    }
+
     fun exchangeBaseCurrency(context: Context): String =
         prefs(context).getString(KEY_EXCHANGE_BASE_CURRENCY, "GBP")?.uppercase() ?: "GBP"
 

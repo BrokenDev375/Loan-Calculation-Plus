@@ -137,7 +137,8 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
         verticalAlignment = Alignment.CenterVertically,
     ) {
         financeTabs.forEach { tab ->
-            val route = if (tab.label == "Setting") "setting" else tab.label.lowercase()
+            val label = stringResource(tab.labelRes)
+            val route = tab.route
             val selected = current == route
             Column(
                 modifier = Modifier
@@ -149,10 +150,10 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
                 verticalArrangement = Arrangement.Center,
             ) {
                 Box(Modifier.size(22.dp).background(if (selected) Color(0xFFE4F5FA) else Color(0xFFF1F4F5), CircleShape), contentAlignment = Alignment.Center) {
-                    Icon(tab.icon, contentDescription = tab.label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(15.dp))
+                    Icon(tab.icon, contentDescription = label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(15.dp))
                 }
                 Text(
-                    tab.label,
+                    label,
                     fontSize = 9.sp,
                     lineHeight = 9.sp,
                     color = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD),
