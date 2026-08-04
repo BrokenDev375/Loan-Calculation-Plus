@@ -3,6 +3,7 @@ package com.loancaculator.ui.screen.finance
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -125,6 +128,15 @@ private val financeTabs = listOf(
     FinanceTab("setting", R.string.nav_settings, Icons.Default.Settings),
 )
 
+fun Modifier.noRippleClickable(enabled: Boolean = true, onClick: () -> Unit): Modifier = composed {
+    clickable(
+        enabled = enabled,
+        interactionSource = remember { MutableInteractionSource() },
+        indication = null,
+        onClick = onClick,
+    )
+}
+
 @Composable
 fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Modifier = Modifier) {
     Row(
@@ -137,22 +149,23 @@ fun FinanceBottomBar(current: String, onNavigate: (String) -> Unit, modifier: Mo
         verticalAlignment = Alignment.CenterVertically,
     ) {
         financeTabs.forEach { tab ->
-            val route = if (tab.label == "Setting") "setting" else tab.label.lowercase()
+            val label = stringResource(tab.labelRes)
+            val route = tab.route
             val selected = current == route
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onNavigate(route) }
+                    .noRippleClickable { onNavigate(route) }
                     .offset(y = 1.dp)
                     .padding(vertical = 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Box(Modifier.size(22.dp).background(if (selected) Color(0xFFE4F5FA) else Color(0xFFF1F4F5), CircleShape), contentAlignment = Alignment.Center) {
-                    Icon(tab.icon, contentDescription = tab.label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(15.dp))
+                    Icon(tab.icon, contentDescription = label, tint = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD), modifier = Modifier.size(15.dp))
                 }
                 Text(
-                    tab.label,
+                    label,
                     fontSize = 9.sp,
                     lineHeight = 9.sp,
                     color = if (selected) Color(0xFF18A9D0) else Color(0xFF9BA7AD),
@@ -180,11 +193,9 @@ fun FinanceTopBar(
     heightOverride: Dp? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    val barHeight = heightOverride ?: if (compact) {
-        if (title.length > 22 || (subtitle?.length ?: 0) > 28) 104.dp else 88.dp
-    } else 138.dp
-    val backSize = if (compact) 36.dp else 48.dp
-    val iconSize = if (compact) 20.dp else 24.dp
+    val barHeight = heightOverride ?: if (compact) 88.dp else 138.dp
+    val backSize = if (compact) 32.dp else 40.dp
+    val iconSize = if (compact) 18.dp else 22.dp
     val titleSize = if (compact) 20.sp else 24.sp
 
     Box(
@@ -202,12 +213,15 @@ fun FinanceTopBar(
         onBack?.let { callback ->
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = if (compact) 12.dp else 16.dp)
+                    .align(Alignment.TopStart)
+                    .padding(
+                        start = if (compact) 10.dp else 16.dp,
+                        top = if (compact) 8.dp else 16.dp,
+                    )
                     .size(backSize)
                     .clip(CircleShape)
                     .background(Color.White)
-                    .clickable(onClick = callback),
+                    .noRippleClickable(onClick = callback),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -222,19 +236,23 @@ fun FinanceTopBar(
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(if (compact) 6.dp else 10.dp),
+                .padding(
+                    start = if (compact) 10.dp else 16.dp,
+                    top = if (compact) 8.dp else 16.dp,
+                    end = if (compact) 10.dp else 16.dp,
+                ),
             horizontalArrangement = Arrangement.End,
             content = actions
         )
 
         Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.TopCenter)
                 .fillMaxWidth()
                 .padding(
-                    start = if (onBack != null) 58.dp else 24.dp,
-                    end = 58.dp,
-                    bottom = if (compact) 8.dp else 22.dp,
+                    start = if (onBack != null) 52.dp else 24.dp,
+                    end = 52.dp,
+                    top = if (compact) 14.dp else 24.dp,
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -247,16 +265,6 @@ fun FinanceTopBar(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            subtitle?.let {
-                Text(
-                    text = it,
-                    color = Color.White.copy(alpha = 0.9f),
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
         }
     }
 }

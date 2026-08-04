@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.loancaculator.R
+import com.loancaculator.ui.components.dismissKeyboardOnTap
 
 @Composable
 fun LanguageScreen(
@@ -63,7 +64,11 @@ fun LanguageScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 20.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .dismissKeyboardOnTap()
+            .background(Color.White)
+            .padding(horizontal = 20.dp),
     ) {
         Spacer(Modifier.height(24.dp))
         Row(

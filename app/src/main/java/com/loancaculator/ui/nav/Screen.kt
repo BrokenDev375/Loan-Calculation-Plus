@@ -42,6 +42,7 @@ enum class Screen(val route: String) {
     // Cài đặt
     Setting("setting"),
     LanguageSetting("language_setting"),
+    CurrencySetting("currency_setting"),
     TestAds("test_ads");
 
     companion object {

@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">打开应用查看您的财务计算</string>
     <string name="baseapp_noti_title">启用通知</string>
     <string name="baseapp_noti_content">获取已保存计算的提醒</string>
-    <string name="baseapp_feature1">无广告计算</string>
+    <string name="baseapp_feature1">无广告</string>
     <string name="baseapp_feature2">无限比较</string>
-    <string name="baseapp_feature3">完整的贷款和存款工具</string>
-    <string name="baseapp_feature4">汇率换算器</string>
+    <string name="baseapp_feature3">贷款和存款工具</string>
+    <string name="baseapp_feature4">汇率换算</string>
     <string name="baseapp_feature5">优先支持</string>
     <string-array name="notification_title2"><item>查看计算结果</item><item>规划下一笔还款</item><item>检查已保存的结果</item><item>比较您的选项</item><item>整理您的财务</item></string-array>
     <string-array name="notification_message2"><item>打开 Loan Calculation Plus 查看最新结果</item><item>使用保存的数据提前规划</item><item>您的计算历史记录已准备好</item><item>并排比较已保存的贷款计算</item><item>将贷款和存款计划保存在一处</item></string-array>

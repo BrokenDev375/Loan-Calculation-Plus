@@ -43,9 +43,9 @@
         <item>Open</item>
     </string-array>
 
-    <string name="baseapp_feature1">Ad-free calculations</string>
-    <string name="baseapp_feature2">Unlimited comparisons</string>
-    <string name="baseapp_feature3">All loan and deposit tools</string>
-    <string name="baseapp_feature4">Exchange-rate converter</string>
+    <string name="baseapp_feature1">Ad-free</string>
+    <string name="baseapp_feature2">Unlimited compare</string>
+    <string name="baseapp_feature3">Loan &amp; deposit tools</string>
+    <string name="baseapp_feature4">Exchange rates</string>
     <string name="baseapp_feature5">Priority support</string>
 </resources>

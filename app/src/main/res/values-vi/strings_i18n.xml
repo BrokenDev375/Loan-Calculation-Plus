@@ -1,4 +1,7 @@
 <resources>
+    <string name="currency_description">Chọn loại tiền tệ dùng cho các phép tính của bạn.</string>
+    <string name="currency_search_hint">Tìm kiếm tiền tệ</string>
+    <string name="swap_units">Đổi chiều đơn vị</string>
     <string name="language_title">Đổi ngôn ngữ</string>
     <string name="language_description">Chọn ngôn ngữ bạn muốn sử dụng.</string>
     <string name="language_done">Xong</string>

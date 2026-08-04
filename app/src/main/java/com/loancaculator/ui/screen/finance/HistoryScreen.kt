@@ -27,7 +27,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -76,15 +75,20 @@ fun FinanceHistoryScreen(
             FinanceTopBar(
                 title = stringResource(R.string.history),
                 onBack = onBack,
+                compact = true,
                 actions = {
-                    IconButton(
-                        onClick = ::toggleSelectionMode,
-                        modifier = Modifier.background(Color.White, CircleShape),
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(Color.White, CircleShape)
+                            .noRippleClickable { toggleSelectionMode() },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = if (selectionMode) Icons.Default.Close else Icons.Default.Edit,
                             contentDescription = stringResource(if (selectionMode) R.string.exit_selection else R.string.select_history),
                             tint = Color(0xFF18A9D0),
+                            modifier = Modifier.size(18.dp),
                         )
                     }
                 },

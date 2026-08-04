@@ -79,6 +79,7 @@ import com.loancaculator.advertisement.NativeAdSlot
 import com.loancaculator.core.IapOpener
 import com.loancaculator.R
 import com.loancaculator.ui.components.findActivity
+import com.loancaculator.ui.components.dismissKeyboardOnTap
 import com.loancaculator.ui.theme.Gold
 import com.loancaculator.ui.theme.Primary
 import com.loancaculator.data.db.CalculationHistoryEntity
@@ -175,8 +176,10 @@ internal fun FinanceHistoryCard(
     val stats = financeHistoryStats(item, type)
 
     Card(
-        onClick = { if (selectionMode) onToggleSelected() else onOpen() },
-        modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .noRippleClickable { if (selectionMode) onToggleSelected() else onOpen() },
         shape = RoundedCornerShape(if (viewAllStyle) 20.dp else 16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = if (selected) BorderStroke(2.dp, Color(0xFF16B2D7)) else null,
@@ -303,21 +306,44 @@ private fun CalculatorGrid(types: List<CalculatorType>, onClick: (CalculatorType
 
 @Composable
 private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Unit) {
-    Card(onClick = { onClick(type) }, modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 66.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(46.dp))
-            Column(Modifier.weight(1f).padding(start = 12.dp)) {
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .heightIn(min = 78.dp)
+            .noRippleClickable { onClick(type) },
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            DepositSpriteIcon(if (type == CalculatorType.FD) 0 else 1, Modifier.size(56.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
                 Text(if (type == CalculatorType.FD) "FD" else "RD", fontWeight = FontWeight.Bold)
                 Text(calculatorLabel(type), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
             }
-            FinanceArrow()
+            Box(
+                modifier = Modifier.size(42.dp).background(Color(0xFFE1EFF5), CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                FinanceArrow()
+            }
         }
     }
 }
 
 @Composable
 private fun CalculatorCard(type: CalculatorType, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 116.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+    Card(modifier = Modifier.fillMaxWidth().heightIn(min = 116.dp).noRippleClickable(onClick = onClick), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 FinanceLoanIcon(type.iconIndex(), Modifier.size(58.dp))
@@ -412,7 +438,10 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
     val invalidInputError = stringResource(R.string.valid_amount_rate_term)
     val downPaymentError = stringResource(R.string.down_payment_lower)
     val calculatorAdHeight = if (type == CalculatorType.MORTGAGE) 260.dp else 140.dp
-    Scaffold(topBar = { FinanceTopBar(calculatorLabel(type), stringResource(R.string.enter_details), onBack, compact = true) }) { padding ->
+    Scaffold(
+        modifier = Modifier.dismissKeyboardOnTap(),
+        topBar = { FinanceTopBar(calculatorLabel(type), stringResource(R.string.enter_details), onBack, compact = true) },
+    ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
             NativeAdSlot(
                 "native_calculator",
@@ -837,7 +866,7 @@ fun HistoryScreen(onBack: () -> Unit, onOpen: (Long) -> Unit, viewModel: Finance
         if (history.isEmpty()) Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(stringResource(R.string.no_saved_calculations)) }
         else LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(history) { item ->
-                Card(onClick = { onOpen(item.id) }, modifier = Modifier.fillMaxWidth()) {
+                Card(modifier = Modifier.fillMaxWidth().noRippleClickable { onOpen(item.id) }) {
                     Column(Modifier.padding(16.dp)) {
                         Text(calculatorLabel(CalculatorType.fromKey(item.calculatorType)), fontWeight = FontWeight.Bold)
                         Text(localizedSummary(item.resultSummary), color = MaterialTheme.colorScheme.onSurfaceVariant)

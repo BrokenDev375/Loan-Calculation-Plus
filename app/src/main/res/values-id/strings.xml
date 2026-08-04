@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">Buka aplikasi untuk meninjau perhitungan keuangan</string>
     <string name="baseapp_noti_title">Aktifkan notifikasi</string>
     <string name="baseapp_noti_content">Dapatkan pengingat tentang perhitungan tersimpan</string>
-    <string name="baseapp_feature1">Perhitungan tanpa iklan</string>
+    <string name="baseapp_feature1">Tanpa iklan</string>
     <string name="baseapp_feature2">Perbandingan tanpa batas</string>
-    <string name="baseapp_feature3">Semua alat pinjaman dan deposito</string>
-    <string name="baseapp_feature4">Konverter nilai tukar</string>
+    <string name="baseapp_feature3">Alat pinjaman &amp; deposito</string>
+    <string name="baseapp_feature4">Nilai tukar</string>
     <string name="baseapp_feature5">Dukungan prioritas</string>
     <string-array name="notification_title2"><item>Tinjau perhitungan Anda</item><item>Rencanakan pembayaran berikutnya</item><item>Periksa hasil tersimpan</item><item>Bandingkan pilihan Anda</item><item>Atur keuangan Anda</item></string-array>
     <string-array name="notification_message2"><item>Buka Loan Calculation Plus untuk melihat hasil terbaru</item><item>Gunakan data tersimpan untuk merencanakan ke depan</item><item>Riwayat perhitungan Anda siap dilihat</item><item>Bandingkan perhitungan pinjaman tersimpan</item><item>Simpan rencana pinjaman dan deposito di satu tempat</item></string-array>

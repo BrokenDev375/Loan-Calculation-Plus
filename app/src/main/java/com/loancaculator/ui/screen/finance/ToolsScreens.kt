@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.loancaculator.advertisement.NativeAdSlot
 import com.loancaculator.R
+import com.loancaculator.ui.components.dismissKeyboardOnTap
 import java.util.Locale
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -104,7 +105,14 @@ fun ToolsScreen(onNavigate: (String) -> Unit, onConverter: (String) -> Unit, onW
 
 @Composable
 private fun ToolTile(tool: ToolDefinition, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 142.dp), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 142.dp)
+            .noRippleClickable( onClick = onClick),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+    ) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
             ToolSpriteIcon(tool.key)
             Column {
@@ -416,6 +424,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
     val groupedCities = filteredCities.groupBy { it.name.first().uppercaseChar() }.toSortedMap()
 
     Scaffold(
+        modifier = Modifier.dismissKeyboardOnTap(),
         topBar = {
             FinanceTopBar(
                 stringResource(R.string.world_clock),
@@ -424,10 +433,10 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
                 actions = {
                     Box(
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(32.dp)
                             .clip(androidx.compose.foundation.shape.CircleShape)
                             .background(Color.White)
-                            .clickable(enabled = selectedCity != null) {
+                            .noRippleClickable(enabled = selectedCity != null) {
                             selectedCity?.let { city ->
                                 viewModel.addClock(city.name, city.zoneId)
                                 onBack()
@@ -439,7 +448,7 @@ fun AddClockScreen(onBack: () -> Unit, viewModel: FinanceViewModel = hiltViewMod
                             Icons.Default.Check,
                             contentDescription = stringResource(R.string.confirm_city),
                             tint = Color(0xFF18A9D0).copy(alpha = if (selectedCity != null) 1f else .38f),
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(18.dp),
                         )
                     }
                 },

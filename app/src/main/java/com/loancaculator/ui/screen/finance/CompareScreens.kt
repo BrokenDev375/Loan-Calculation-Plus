@@ -83,8 +83,11 @@ fun CompareScreen(onNavigate: (String) -> Unit, onOpen: (CalculatorType) -> Unit
 @Composable
 private fun CompareLoanCard(type: CalculatorType, onClick: () -> Unit) {
     Card(
-        onClick = onClick,
-        modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth().heightIn(min = 74.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+            .heightIn(min = 74.dp)
+            .noRippleClickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {

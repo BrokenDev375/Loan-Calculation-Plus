@@ -25,9 +25,13 @@ fun TestAdsScreen(onBack: () -> Unit) {
     val remote = Remote.instance
 
     val placements = listOf(
-        "open_splash", "inter_splash", "native_language", "native_home", "native_calculator", "inter_home",
-        "native_scan_update", "native_update_available", "native_user_app", "native_history",
-        "native_device_info", "inter_uninstall",
+        // Placements dùng bởi base-application.
+        "open_splash", "inter_splash", "splash_uninstall", "open_all",
+        "native_language", "native_keep_user", "native_survey_user", "native_exit_app",
+        // Placements của Loan Calculator.
+        "native_intro1", "native_intro2", "native_intro3", "native_intro4", "native_permission",
+        "native_home", "native_calculator", "native_tools", "native_compare", "native_compare_detail",
+        "native_settings", "inter_home", "native_inter_home",
     )
 
     AppScreen(title = "Test Ads", onBack = onBack) { m ->

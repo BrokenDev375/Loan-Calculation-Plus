@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">アプリを開いて金融計算を確認</string>
     <string name="baseapp_noti_title">通知を有効にする</string>
     <string name="baseapp_noti_content">保存した計算のリマインダーを受け取る</string>
-    <string name="baseapp_feature1">広告なしの計算</string>
+    <string name="baseapp_feature1">広告なし</string>
     <string name="baseapp_feature2">無制限の比較</string>
-    <string name="baseapp_feature3">ローンと預金のすべてのツール</string>
-    <string name="baseapp_feature4">為替レート換算</string>
+    <string name="baseapp_feature3">ローン・預金ツール</string>
+    <string name="baseapp_feature4">為替レート</string>
     <string name="baseapp_feature5">優先サポート</string>
     <string-array name="notification_title2"><item>計算結果を確認</item><item>次回の支払いを計画</item><item>保存した結果を確認</item><item>選択肢を比較</item><item>資産を整理</item></string-array>
     <string-array name="notification_message2"><item>Loan Calculation Plus を開いて最新結果を確認</item><item>保存データを使って計画を立てる</item><item>計算履歴を確認できます</item><item>保存したローン計算を比較</item><item>ローンと預金の計画を一か所で管理</item></string-array>

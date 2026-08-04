@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">افتح التطبيق لمراجعة حساباتك المالية</string>
     <string name="baseapp_noti_title">تفعيل الإشعارات</string>
     <string name="baseapp_noti_content">احصل على تذكيرات بحساباتك المحفوظة</string>
-    <string name="baseapp_feature1">حسابات بلا إعلانات</string>
+    <string name="baseapp_feature1">بدون إعلانات</string>
     <string name="baseapp_feature2">مقارنات غير محدودة</string>
-    <string name="baseapp_feature3">جميع أدوات القروض والودائع</string>
-    <string name="baseapp_feature4">محول أسعار الصرف</string>
+    <string name="baseapp_feature3">أدوات القروض والودائع</string>
+    <string name="baseapp_feature4">أسعار الصرف</string>
     <string name="baseapp_feature5">دعم ذو أولوية</string>
     <string-array name="notification_title2"><item>راجع حساباتك</item><item>خطط لدفعتك القادمة</item><item>تحقق من النتائج المحفوظة</item><item>قارن خياراتك</item><item>نظّم أموالك</item></string-array>
     <string-array name="notification_message2"><item>افتح Loan Calculation Plus لمراجعة أحدث النتائج</item><item>استخدم بياناتك المحفوظة للتخطيط مسبقًا</item><item>سجل الحسابات جاهز للعرض</item><item>قارن حسابات القروض المحفوظة جنبًا إلى جنب</item><item>احتفظ بخطط القروض والودائع في مكان واحد</item></string-array>

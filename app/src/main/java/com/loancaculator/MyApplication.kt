@@ -46,7 +46,7 @@ class MyApplication : BaseApplication() {
 
     // ===================== Thương hiệu & Splash =====================
     override fun getAppNameRes(): Int = R.string.app_name
-    override fun getIconSplashRes(): Int = R.drawable.logo            // TODO: icon splash riêng
+    override fun getIconSplashRes(): Int = R.drawable.app_logo
     override fun getSplashLoadingRes(): Int = R.raw.splash_loading
 
     // ===================== Định tuyến =====================

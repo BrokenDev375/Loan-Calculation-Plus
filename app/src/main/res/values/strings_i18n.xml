@@ -4,6 +4,9 @@
     <string name="language_description">Choose the language you want to use.</string>
     <string name="language_done">Done</string>
     <string name="language_search_hint">Search language</string>
+    <string name="currency_description">Select the currency used for your calculations.</string>
+    <string name="currency_search_hint">Search currency</string>
+    <string name="swap_units">Swap units</string>
 
     <!-- Onboarding -->
     <string name="intro1">Plan with confidence</string>

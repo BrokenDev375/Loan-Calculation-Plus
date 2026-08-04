@@ -1,7 +1,12 @@
 package com.loancaculator.ui.screen.finance
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +26,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Build
@@ -32,7 +36,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,14 +47,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.loancaculator.advertisement.NativeAdSlot
 import com.loancaculator.R
+import com.loancaculator.ui.components.dismissKeyboardOnTap
 import androidx.compose.ui.res.stringResource
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 internal data class ToolUnit(
     val id: String,
@@ -87,6 +103,7 @@ internal fun ToolConverterLayout(
     footer: String? = null,
 ) {
     Scaffold(
+        modifier = Modifier.dismissKeyboardOnTap(),
         topBar = { FinanceTopBar(title, onBack = onBack, compact = true) },
         bottomBar = {
             Row(
@@ -262,21 +279,89 @@ private fun UnitMenu(selected: ToolUnit, options: List<ToolUnit>, onSelected: (S
 
 @Composable
 private fun SwapButton(onClick: () -> Unit) {
+    var rotated by remember { mutableStateOf(false) }
+    val swapDescription = stringResource(R.string.swap_units)
+    val rotation by animateFloatAsState(
+        targetValue = if (rotated) 180f else 0f,
+        animationSpec = tween(durationMillis = 420, easing = FastOutSlowInEasing),
+        label = "swap_rotation",
+    )
+
     Box(
         modifier = Modifier
-            .size(50.dp)
-            .background(Color(0xFFEAF4F8), CircleShape)
-            .padding(3.dp)
-            .background(Color(0xFFF2A229), CircleShape),
+            .size(58.dp)
+            .background(Color.White, CircleShape)
+            .border(1.dp, Color(0xFFD5EAF0), CircleShape)
+            .noRippleClickable {
+                rotated = !rotated
+                onClick()
+            }
+            .semantics { contentDescription = swapDescription },
         contentAlignment = Alignment.Center,
     ) {
-        IconButton(onClick = onClick, modifier = Modifier.size(44.dp)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(15.dp).rotate(90f))
-                Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(15.dp).rotate(270f))
-            }
+        Canvas(Modifier.size(40.dp).graphicsLayer { rotationZ = rotation }) {
+            val strokeWidthPx = 3.dp.toPx()
+            val stroke = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
+            val pad = strokeWidthPx * 2.6f
+            val radius = (size.minDimension / 2f) - pad
+            val center = Offset(size.width / 2f, size.height / 2f)
+            val rect = Rect(
+                offset = Offset(center.x - radius, center.y - radius),
+                size = Size(radius * 2f, radius * 2f),
+            )
+            val gapDeg = 14f
+            val sweepDeg = 180f - gapDeg * 2f
+
+            val cyanStart = 135f + gapDeg
+            drawSwapArrow(rect, cyanStart, sweepDeg, Color(0xFF00A6CE), stroke, strokeWidthPx)
+
+            val orangeStart = 315f + gapDeg
+            drawSwapArrow(rect, orangeStart, sweepDeg, Color(0xFFF2A229), stroke, strokeWidthPx)
         }
     }
+}
+
+private fun DrawScope.drawSwapArrow(
+    rect: Rect,
+    startAngleDeg: Float,
+    sweepAngleDeg: Float,
+    color: Color,
+    stroke: Stroke,
+    strokeWidthPx: Float,
+) {
+    val radius = rect.width / 2f
+    val center = rect.center
+    val headSweepDeg = 28f
+    val arcSweepDeg = sweepAngleDeg - headSweepDeg
+    val arcPath = Path().apply { arcTo(rect, startAngleDeg, arcSweepDeg, true) }
+    drawPath(arcPath, color = color, style = stroke)
+
+    val baseAngleRad = Math.toRadians((startAngleDeg + arcSweepDeg).toDouble())
+    val endAngleRad = Math.toRadians((startAngleDeg + sweepAngleDeg).toDouble())
+    val base = Offset(
+        center.x + (radius * cos(baseAngleRad)).toFloat(),
+        center.y + (radius * sin(baseAngleRad)).toFloat(),
+    )
+    val tip = Offset(
+        center.x + (radius * cos(endAngleRad)).toFloat(),
+        center.y + (radius * sin(endAngleRad)).toFloat(),
+    )
+    val axisX = tip.x - base.x
+    val axisY = tip.y - base.y
+    val axisLength = sqrt(axisX * axisX + axisY * axisY).coerceAtLeast(0.001f)
+    val normalX = -axisY / axisLength
+    val normalY = axisX / axisLength
+    val halfWidth = strokeWidthPx * 1.35f
+    val wing1 = Offset(base.x + normalX * halfWidth, base.y + normalY * halfWidth)
+    val wing2 = Offset(base.x - normalX * halfWidth, base.y - normalY * halfWidth)
+
+    val headPath = Path().apply {
+        moveTo(tip.x, tip.y)
+        lineTo(wing1.x, wing1.y)
+        lineTo(wing2.x, wing2.y)
+        close()
+    }
+    drawPath(headPath, color = color)
 }
 
 @Composable

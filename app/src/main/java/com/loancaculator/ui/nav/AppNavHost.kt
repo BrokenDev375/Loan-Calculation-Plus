@@ -18,6 +18,7 @@ import com.loancaculator.ui.screen.finance.CompareDetailScreen
 import com.loancaculator.ui.screen.finance.CompareScreen
 import com.loancaculator.ui.screen.finance.ConverterScreen
 import com.loancaculator.ui.screen.finance.ApiConverterScreen
+import com.loancaculator.ui.screen.finance.CurrencyScreen
 import com.loancaculator.ui.screen.finance.FinanceHomeScreen
 import com.loancaculator.ui.screen.finance.FinanceSettingsScreen
 import com.loancaculator.ui.screen.finance.FinanceViewModel
@@ -63,7 +64,21 @@ fun AppNavHost(startRoute: String, navController: NavHostController = rememberNa
             CompareScreen(onNavigate = ::navigateTab, onOpen = { type -> navController.navigate(Screen.compareDetail(type.key)) })
         }
         composable(Screen.Setting.route) {
-            FinanceSettingsScreen(onNavigate = ::navigateTab, viewModel = hiltViewModel())
+            FinanceSettingsScreen(
+                onNavigate = ::navigateTab,
+                onCurrency = { navController.navigate(Screen.CurrencySetting.route) },
+                viewModel = hiltViewModel(),
+            )
+        }
+        composable(Screen.CurrencySetting.route) {
+            CurrencyScreen(
+                initialCode = AppStorage.exchangeBaseCurrency(context),
+                onBack = back,
+                onDone = { code ->
+                    AppStorage.setExchangeBaseCurrency(context, code)
+                    back()
+                },
+            )
         }
         composable("${Screen.Calculator.route}/{${Screen.ARG_TYPE}}", arguments = listOf(navArgument(Screen.ARG_TYPE) { type = NavType.StringType })) { entry ->
             val type = CalculatorType.fromKey(entry.arguments?.getString(Screen.ARG_TYPE).orEmpty())

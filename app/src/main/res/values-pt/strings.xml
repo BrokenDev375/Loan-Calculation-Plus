@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">Abra o aplicativo para revisar seus cálculos financeiros</string>
     <string name="baseapp_noti_title">Ativar notificações</string>
     <string name="baseapp_noti_content">Receba lembretes sobre seus cálculos salvos</string>
-    <string name="baseapp_feature1">Cálculos sem anúncios</string>
+    <string name="baseapp_feature1">Sem anúncios</string>
     <string name="baseapp_feature2">Comparações ilimitadas</string>
-    <string name="baseapp_feature3">Todas as ferramentas de empréstimos e depósitos</string>
-    <string name="baseapp_feature4">Conversor de taxas de câmbio</string>
+    <string name="baseapp_feature3">Ferramentas de empréstimo</string>
+    <string name="baseapp_feature4">Taxas de câmbio</string>
     <string name="baseapp_feature5">Suporte prioritário</string>
     <string-array name="notification_title2"><item>Revise seus cálculos</item><item>Planeje o próximo pagamento</item><item>Confira os resultados salvos</item><item>Compare suas opções</item><item>Organize suas finanças</item></string-array>
     <string-array name="notification_message2"><item>Abra o Loan Calculation Plus para revisar os resultados mais recentes</item><item>Use seus dados salvos para planejar com antecedência</item><item>Seu histórico de cálculos está pronto</item><item>Compare os cálculos de empréstimos salvos</item><item>Mantenha planos de empréstimos e depósitos em um só lugar</item></string-array>

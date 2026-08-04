@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">Mở ứng dụng để xem lại các phép tính tài chính</string>
     <string name="baseapp_noti_title">Bật thông báo</string>
     <string name="baseapp_noti_content">Nhận lời nhắc về các phép tính đã lưu</string>
-    <string name="baseapp_feature1">Tính toán không quảng cáo</string>
+    <string name="baseapp_feature1">Không quảng cáo</string>
     <string name="baseapp_feature2">So sánh không giới hạn</string>
-    <string name="baseapp_feature3">Đầy đủ công cụ vay và tiền gửi</string>
-    <string name="baseapp_feature4">Công cụ đổi tỷ giá</string>
+    <string name="baseapp_feature3">Công cụ vay &amp; gửi</string>
+    <string name="baseapp_feature4">Đổi tỷ giá</string>
     <string name="baseapp_feature5">Hỗ trợ ưu tiên</string>
     <string-array name="notification_title2"><item>Xem lại phép tính</item><item>Lên kế hoạch thanh toán</item><item>Kiểm tra kết quả đã lưu</item><item>So sánh các lựa chọn</item><item>Quản lý tài chính gọn gàng</item></string-array>
     <string-array name="notification_message2"><item>Mở Loan Calculation Plus để xem kết quả mới nhất</item><item>Dùng dữ liệu đã lưu để lên kế hoạch</item><item>Lịch sử tính toán của bạn đã sẵn sàng</item><item>So sánh các khoản vay đã lưu cạnh nhau</item><item>Lưu kế hoạch vay và tiền gửi ở một nơi</item></string-array>

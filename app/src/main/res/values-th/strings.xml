@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">เปิดแอปเพื่อตรวจสอบการคำนวณทางการเงิน</string>
     <string name="baseapp_noti_title">เปิดการแจ้งเตือน</string>
     <string name="baseapp_noti_content">รับการแจ้งเตือนเกี่ยวกับการคำนวณที่บันทึกไว้</string>
-    <string name="baseapp_feature1">คำนวณโดยไม่มีโฆษณา</string>
+    <string name="baseapp_feature1">ไม่มีโฆษณา</string>
     <string name="baseapp_feature2">เปรียบเทียบได้ไม่จำกัด</string>
-    <string name="baseapp_feature3">เครื่องมือสินเชื่อและเงินฝากทั้งหมด</string>
-    <string name="baseapp_feature4">ตัวแปลงอัตราแลกเปลี่ยน</string>
+    <string name="baseapp_feature3">เครื่องมือสินเชื่อและเงินฝาก</string>
+    <string name="baseapp_feature4">อัตราแลกเปลี่ยน</string>
     <string name="baseapp_feature5">การสนับสนุนแบบพิเศษ</string>
     <string-array name="notification_title2"><item>ตรวจสอบการคำนวณ</item><item>วางแผนการชำระเงินครั้งถัดไป</item><item>ตรวจสอบผลลัพธ์ที่บันทึกไว้</item><item>เปรียบเทียบตัวเลือก</item><item>จัดการการเงินให้เป็นระเบียบ</item></string-array>
     <string-array name="notification_message2"><item>เปิด Loan Calculation Plus เพื่อตรวจสอบผลลัพธ์ล่าสุด</item><item>ใช้ข้อมูลที่บันทึกไว้เพื่อวางแผนล่วงหน้า</item><item>ประวัติการคำนวณพร้อมให้ดูแล้ว</item><item>เปรียบเทียบการคำนวณสินเชื่อที่บันทึกไว้</item><item>เก็บแผนสินเชื่อและเงินฝากไว้ในที่เดียว</item></string-array>

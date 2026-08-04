@@ -12,10 +12,10 @@
     <string name="baseapp_outapp_content">Ouvrez l’application pour consulter vos calculs financiers</string>
     <string name="baseapp_noti_title">Activer les notifications</string>
     <string name="baseapp_noti_content">Recevez des rappels pour vos calculs enregistrés</string>
-    <string name="baseapp_feature1">Calculs sans publicité</string>
+    <string name="baseapp_feature1">Sans pub</string>
     <string name="baseapp_feature2">Comparaisons illimitées</string>
-    <string name="baseapp_feature3">Tous les outils de prêt et de dépôt</string>
-    <string name="baseapp_feature4">Convertisseur de taux de change</string>
+    <string name="baseapp_feature3">Outils prêt &amp; dépôt</string>
+    <string name="baseapp_feature4">Taux de change</string>
     <string name="baseapp_feature5">Assistance prioritaire</string>
     <string-array name="notification_title2"><item>Revoir vos calculs</item><item>Planifier votre prochain paiement</item><item>Vérifier vos résultats enregistrés</item><item>Comparer vos options</item><item>Organiser vos finances</item></string-array>
     <string-array name="notification_message2"><item>Ouvrez Loan Calculation Plus pour revoir vos derniers résultats</item><item>Utilisez vos données enregistrées pour planifier</item><item>Votre historique de calculs est prêt</item><item>Comparez vos calculs de prêts enregistrés</item><item>Conservez vos plans de prêts et de dépôts au même endroit</item></string-array>
