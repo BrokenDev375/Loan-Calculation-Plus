@@ -35,6 +35,14 @@
     <string name="calculator">Calculatrice</string>
     <string name="investment_history">Investissement</string>
     <string name="delete_selected">Supprimer la sélection (%1$d)</string>
+    <string name="delete_history_title">Supprimer l’historique des calculs ?</string>
+    <string name="delete_history_message">Voulez-vous vraiment supprimer %1$d calcul(s) sélectionné(s) ? Cette action est irréversible.</string>
+    <string name="clear_history_title">Effacer l’historique des calculs ?</string>
+    <string name="clear_history_message">Voulez-vous vraiment supprimer tous les calculs enregistrés ? Cette action est irréversible.</string>
+    <string name="cancel_action">Annuler</string>
+    <string name="delete_action">Supprimer</string>
+    <string name="history_deleted">%1$d calcul(s) supprimé(s).</string>
+    <string name="history_cleared">Historique des calculs effacé.</string>
     <string name="settings">Paramètres</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">Effacer l’historique des calculs</string>

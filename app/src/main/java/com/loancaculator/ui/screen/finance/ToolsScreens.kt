@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -92,9 +94,17 @@ fun ToolsScreen(onNavigate: (String) -> Unit, onConverter: (String) -> Unit, onW
             item {
                 Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     tools.chunked(2).forEach { row ->
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            row.forEach { tool -> Box(Modifier.weight(1f)) { ToolTile(tool) { if (tool.key == "clock") onWorldClock() else onConverter(tool.key) } } }
-                            if (row.size == 1) Spacer(Modifier.weight(1f))
+                        Row(
+                            Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            row.forEach { tool ->
+                                ToolTile(
+                                    tool = tool,
+                                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                                ) { if (tool.key == "clock") onWorldClock() else onConverter(tool.key) }
+                            }
+                            if (row.size == 1) Spacer(Modifier.weight(1f).fillMaxHeight())
                         }
                     }
                 }
@@ -104,9 +114,9 @@ fun ToolsScreen(onNavigate: (String) -> Unit, onConverter: (String) -> Unit, onW
 }
 
 @Composable
-private fun ToolTile(tool: ToolDefinition, onClick: () -> Unit) {
+private fun ToolTile(tool: ToolDefinition, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 142.dp)
             .noRippleClickable( onClick = onClick),

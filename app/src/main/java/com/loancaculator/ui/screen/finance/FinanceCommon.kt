@@ -279,6 +279,21 @@ fun money(value: Double, currencyCode: String): String {
     return "${currency.symbol}${String.format(Locale.US, "%,.2f", value)}"
 }
 
+fun parseNumber(value: String): Double? = value.replace(",", "").toDoubleOrNull()
+
+fun formatAmountInput(value: String): String {
+    val normalized = value.filter { it.isDigit() || it == '.' || it == ',' }.replace(",", "")
+    if (normalized.isEmpty()) return ""
+
+    val decimalIndex = normalized.indexOf('.')
+    val integerPart = if (decimalIndex >= 0) normalized.substring(0, decimalIndex) else normalized
+    val fractionPart = if (decimalIndex >= 0) normalized.substring(decimalIndex + 1) else ""
+    val integerDigits = integerPart.trimStart('0').ifEmpty { "0" }
+    val groupedInteger = integerDigits.reversed().chunked(3).joinToString(",").reversed()
+
+    return if (decimalIndex >= 0) "$groupedInteger.$fractionPart" else groupedInteger
+}
+
 fun summaryEntries(summary: String): List<Pair<String, String>> = summary.split("|").mapNotNull { item ->
     val parts = item.split("=", limit = 2)
     if (parts.size == 2) parts[0] to parts[1] else null
@@ -298,10 +313,10 @@ fun payoffDate(startMillis: Long, months: Int): String = Calendar.getInstance().
 @Composable
 fun resultValue(label: String, raw: String, currencyCode: String = "GBP"): String = when {
     label.contains("rate", ignoreCase = true) -> "$raw%"
-    label.equals("Loan Term", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let {
+    label.equals("Loan Term", ignoreCase = true) -> parseNumber(raw)?.toInt()?.let {
         if (it % 12 == 0) stringResource(R.string.duration_years, it / 12)
         else stringResource(R.string.duration_months, it)
     } ?: raw
-    label.contains("months", ignoreCase = true) -> raw.toDoubleOrNull()?.toInt()?.let { stringResource(R.string.duration_months, it) } ?: raw
-    else -> raw.toDoubleOrNull()?.let { money(it, currencyCode) } ?: raw
+    label.contains("months", ignoreCase = true) -> parseNumber(raw)?.toInt()?.let { stringResource(R.string.duration_months, it) } ?: raw
+    else -> parseNumber(raw)?.let { money(it, currencyCode) } ?: raw
 }

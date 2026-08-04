@@ -38,6 +38,14 @@
     <string name="calculator">Tính toán</string>
     <string name="investment_history">Đầu tư</string>
     <string name="delete_selected">Xóa mục đã chọn (%1$d)</string>
+    <string name="delete_history_title">Xóa lịch sử tính toán?</string>
+    <string name="delete_history_message">Bạn có chắc muốn xóa %1$d phép tính đã chọn không? Hành động này không thể hoàn tác.</string>
+    <string name="clear_history_title">Xóa toàn bộ lịch sử tính toán?</string>
+    <string name="clear_history_message">Bạn có chắc muốn xóa tất cả phép tính đã lưu không? Hành động này không thể hoàn tác.</string>
+    <string name="cancel_action">Hủy</string>
+    <string name="delete_action">Xóa</string>
+    <string name="history_deleted">Đã xóa thành công %1$d phép tính.</string>
+    <string name="history_cleared">Đã xóa lịch sử tính toán thành công.</string>
     <string name="settings">Cài đặt</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">Xóa lịch sử tính toán</string>

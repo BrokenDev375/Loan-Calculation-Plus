@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.Canvas
@@ -53,6 +55,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
@@ -69,6 +72,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -226,9 +230,15 @@ internal fun FinanceHistoryCard(
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f)),
                 )
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 stats.forEach { (label, value) ->
-                    Column(Modifier.weight(1f)) {
+                    Column(
+                        Modifier.weight(1f).fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                    ) {
                         Text(financeStatLabel(label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(localizedHistoryValue(value), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 2.dp))
                     }
@@ -240,8 +250,8 @@ internal fun FinanceHistoryCard(
 
 internal fun financeHistoryStats(item: CalculationHistoryEntity, type: CalculatorType): List<Pair<String, String>> {
     val currencyCode = loanCurrencyCode(item.inputJson)
-    val rateValue = inputValue(item.inputJson, "rate")?.toDoubleOrNull()
-        ?: summaryEntries(item.resultSummary).firstOrNull { it.first == "Interest Rate" }?.second?.toDoubleOrNull()
+    val rateValue = inputValue(item.inputJson, "rate")?.let(::parseNumber)
+        ?: summaryEntries(item.resultSummary).firstOrNull { it.first == "Interest Rate" }?.second?.let(::parseNumber)
     val rate = rateValue?.let { "${String.format(Locale.US, "%.2f", it)}%" } ?: "-"
     val months = inputValue(item.inputJson, "months")?.toIntOrNull()
     val durationLabel = if (type.category == "Deposits") "Tenure" else "Duration"
@@ -251,7 +261,7 @@ internal fun financeHistoryStats(item: CalculationHistoryEntity, type: Calculato
         type == CalculatorType.RD -> "monthlyContribution"
         else -> "principal"
     }
-    val amount = inputValue(item.inputJson, amountKey)?.toDoubleOrNull()?.let { money(it, currencyCode) } ?: "-"
+    val amount = inputValue(item.inputJson, amountKey)?.let(::parseNumber)?.let { money(it, currencyCode) } ?: "-"
     val amountLabel = when {
         type == CalculatorType.RD -> "Monthly Deposit"
         type == CalculatorType.FD -> "Investment Amount"
@@ -296,9 +306,17 @@ private fun HomeSectionTitle(title: String) { Text(title, style = MaterialTheme.
 private fun CalculatorGrid(types: List<CalculatorType>, onClick: (CalculatorType) -> Unit) {
     Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         types.chunked(2).forEach { row ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { type -> Box(Modifier.weight(1f)) { CalculatorCard(type) { onClick(type) } } }
-                if (row.size == 1) Spacer(Modifier.weight(1f))
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                row.forEach { type ->
+                    CalculatorCard(
+                        type = type,
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                    ) { onClick(type) }
+                }
+                if (row.size == 1) Spacer(Modifier.weight(1f).fillMaxHeight())
             }
         }
     }
@@ -342,8 +360,8 @@ private fun InvestmentRow(type: CalculatorType, onClick: (CalculatorType) -> Uni
 }
 
 @Composable
-private fun CalculatorCard(type: CalculatorType, onClick: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth().heightIn(min = 116.dp).noRippleClickable(onClick = onClick), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+private fun CalculatorCard(type: CalculatorType, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Card(modifier = modifier.fillMaxWidth().heightIn(min = 116.dp).noRippleClickable(onClick = onClick), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 FinanceLoanIcon(type.iconIndex(), Modifier.size(58.dp))
@@ -477,9 +495,9 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                 item {
                     FinanceField(stringResource(R.string.home_price), principal, {
                         principal = it
-                        val home = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
-                        val currentDown = downPayment.toDoubleOrNull()?.coerceAtLeast(0.0)
-                        val currentPercent = downPaymentPercent.toDoubleOrNull()?.coerceIn(0.0, 100.0)
+                        val home = parseNumber(it)?.coerceAtLeast(0.0) ?: 0.0
+                        val currentDown = parseNumber(downPayment)?.coerceAtLeast(0.0)
+                        val currentPercent = parseNumber(downPaymentPercent)?.coerceIn(0.0, 100.0)
                         if (it.isEmpty()) {
                             downPayment = ""
                             downPaymentPercent = ""
@@ -496,13 +514,13 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                                 }
                             }
                         }
-                        }, prefix = "${currency.symbol} ")
+                        }, prefix = "${currency.symbol} ", formatAsAmount = true)
                 }
                 item {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         FinanceField(stringResource(R.string.down_payment), downPayment, {
-                            val home = principal.toDoubleOrNull() ?: 0.0
-                            val requestedDown = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                            val home = parseNumber(principal) ?: 0.0
+                            val requestedDown = parseNumber(it)?.coerceAtLeast(0.0) ?: 0.0
                             if (it.isEmpty()) {
                                 downPayment = ""
                                 downPaymentPercent = ""
@@ -514,10 +532,10 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                                 downPayment = it
                                 downPaymentPercent = ""
                             }
-                        }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                        }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false, formatAsAmount = true)
                         FinanceField(stringResource(R.string.down_payment), downPaymentPercent, {
-                            val home = principal.toDoubleOrNull() ?: 0.0
-                            val requestedPercent = it.toDoubleOrNull()?.coerceAtLeast(0.0) ?: 0.0
+                            val home = parseNumber(principal) ?: 0.0
+                            val requestedPercent = parseNumber(it)?.coerceAtLeast(0.0) ?: 0.0
                             val clampedPercent = requestedPercent.coerceIn(0.0, 100.0)
                             downPaymentPercent = if (it.isEmpty()) "" else if (requestedPercent > 100.0) "100" else it
                             downPayment = if (it.isEmpty()) "" else if (home > 0.0) {
@@ -525,25 +543,25 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                             } else {
                                 ""
                             }
-                        }, suffix = "%", modifier = Modifier.weight(1f), showInfo = false)
+                        }, suffix = "%", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false)
                     }
                 }
                 item { MortgageTermField(months, { months = it }) }
                 item { FinanceField(stringResource(R.string.interest_rate), rate, { rate = it }, suffix = "%") }
                 item {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        FinanceField(stringResource(R.string.property_tax), propertyTax, { propertyTax = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
-                        FinanceField(stringResource(R.string.pmi), pmi, { pmi = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        FinanceField(stringResource(R.string.property_tax), propertyTax, { propertyTax = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false, formatAsAmount = true)
+                        FinanceField(stringResource(R.string.pmi), pmi, { pmi = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false, formatAsAmount = true)
                     }
                 }
                 item {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        FinanceField(stringResource(R.string.hoa_fees), hoaFees, { hoaFees = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
-                        FinanceField(stringResource(R.string.home_insurance), homeInsurance, { homeInsurance = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f), showInfo = false)
+                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        FinanceField(stringResource(R.string.hoa_fees), hoaFees, { hoaFees = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false, formatAsAmount = true)
+                        FinanceField(stringResource(R.string.home_insurance), homeInsurance, { homeInsurance = it }, prefix = "${currency.symbol} ", modifier = Modifier.weight(1f).fillMaxHeight(), showInfo = false, formatAsAmount = true)
                     }
                 }
             } else {
-                item { FinanceField(amountLabel, principal, { principal = it }, prefix = "${currency.symbol} ") }
+                item { FinanceField(amountLabel, principal, { principal = it }, prefix = "${currency.symbol} ", formatAsAmount = true) }
                 item { FinanceField(stringResource(R.string.interest_rate), rate, { rate = it }, suffix = "%") }
                 item { LoanTermField(months, { months = it }, termUnit, { termUnit = it }, termMenuOpen, { termMenuOpen = it }, label = if (isDeposit) stringResource(R.string.tenure) else stringResource(R.string.loan_term)) }
                 if (type == CalculatorType.FD) {
@@ -558,28 +576,32 @@ fun CalculatorScreen(type: CalculatorType, onBack: () -> Unit, onSaved: (Long) -
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Button(onClick = { principal = ""; rate = ""; months = ""; termUnit = if (isDeposit || type == CalculatorType.BUSINESS) "Month" else "Year"; compounding = "1"; downPayment = ""; downPaymentPercent = ""; propertyTax = ""; pmi = ""; hoaFees = ""; homeInsurance = ""; currencyCode = "GBP"; startDateMillis = System.currentTimeMillis(); error = null }, modifier = Modifier.weight(1f).heightIn(min = 54.dp), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 10.dp), shape = RoundedCornerShape(27.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFBD19))) { Text(stringResource(R.string.reset_fields), textAlign = TextAlign.Center, maxLines = 2) }
                     Button(onClick = {
-                    val p = principal.toDoubleOrNull() ?: 0.0
-                    val r = rate.toDoubleOrNull() ?: 0.0
+                    val p = parseNumber(principal) ?: 0.0
+                    val r = parseNumber(rate) ?: 0.0
                     val m = (months.toIntOrNull() ?: 1) * if (type == CalculatorType.MORTGAGE || termUnit == "Year") 12 else 1
                     if (p <= 0 || r < 0 || m <= 0) {
                         error = invalidInputError
                     } else if (type == CalculatorType.MORTGAGE) {
-                        val down = (downPayment.toDoubleOrNull() ?: 0.0).coerceIn(0.0, p)
+                        val down = (parseNumber(downPayment) ?: 0.0).coerceIn(0.0, p)
                         val financed = (p - down).coerceAtLeast(0.0)
                         if (financed <= 0.0) {
                             error = downPaymentError
                         } else {
                             error = null
                             val result = FinancialCalculator.loan(LoanInput(financed, r, m))
-                            val taxMonthly = (propertyTax.toDoubleOrNull() ?: 0.0) / 12.0
-                            val pmiMonthly = (pmi.toDoubleOrNull() ?: 0.0) / 12.0
-                            val hoaMonthly = hoaFees.toDoubleOrNull() ?: 0.0
-                            val insuranceMonthly = (homeInsurance.toDoubleOrNull() ?: 0.0) / 12.0
+                            val propertyTaxValue = parseNumber(propertyTax) ?: 0.0
+                            val pmiValue = parseNumber(pmi) ?: 0.0
+                            val hoaFeesValue = parseNumber(hoaFees) ?: 0.0
+                            val homeInsuranceValue = parseNumber(homeInsurance) ?: 0.0
+                            val taxMonthly = propertyTaxValue / 12.0
+                            val pmiMonthly = pmiValue / 12.0
+                            val hoaMonthly = hoaFeesValue
+                            val insuranceMonthly = homeInsuranceValue / 12.0
                             val extraMonthly = taxMonthly + pmiMonthly + hoaMonthly + insuranceMonthly
                             val totalMonthly = result.monthlyPayment + extraMonthly
                             val totalPayment = result.totalPayment + extraMonthly * m
-                            val summary = "Home Price=$p|Down Payment=$down|Interest Rate=$r|Loan Term=$m|Property Tax=${propertyTax.toDoubleOrNull() ?: 0.0}|PMI=${pmi.toDoubleOrNull() ?: 0.0}|HOA Fees=${hoaFees.toDoubleOrNull() ?: 0.0}|Home insurance=${homeInsurance.toDoubleOrNull() ?: 0.0}|Principal & Interest=${result.monthlyPayment}|Monthly payment=$totalMonthly|Total payment=$totalPayment|Total interest=${result.totalInterest}"
-                            viewModel.save(type, "homePrice=$p;downPayment=$down;rate=$r;months=$m;propertyTax=$propertyTax;pmi=$pmi;hoaFees=$hoaFees;homeInsurance=$homeInsurance;currency=${currency.code}", summary, onSaved)
+                            val summary = "Home Price=$p|Down Payment=$down|Interest Rate=$r|Loan Term=$m|Property Tax=$propertyTaxValue|PMI=$pmiValue|HOA Fees=$hoaFeesValue|Home insurance=$homeInsuranceValue|Principal & Interest=${result.monthlyPayment}|Monthly payment=$totalMonthly|Total payment=$totalPayment|Total interest=${result.totalInterest}"
+                            viewModel.save(type, "homePrice=$p;downPayment=$down;rate=$r;months=$m;propertyTax=$propertyTaxValue;pmi=$pmiValue;hoaFees=$hoaFeesValue;homeInsurance=$homeInsuranceValue;currency=${currency.code}", summary, onSaved)
                         }
                     } else if (type.category == "Loans") {
                         error = null
@@ -628,7 +650,7 @@ private fun FieldLabel(label: String, showInfo: Boolean = true, modifier: Modifi
     }
 }
 
-private fun formatMortgageAmount(value: Double): String = String.format(Locale.US, "%.2f", value.coerceAtLeast(0.0))
+private fun formatMortgageAmount(value: Double): String = String.format(Locale.US, "%,.2f", value.coerceAtLeast(0.0))
 
 private fun formatMortgagePercent(value: Double): String = String.format(Locale.US, "%.2f", value.coerceIn(0.0, 100.0))
 
@@ -669,11 +691,12 @@ private fun LoanTermField(
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             OutlinedTextField(
                 value = value,
-                onValueChange = { onValueChange(it.filter(Char::isDigit)) },
-                placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
-                modifier = Modifier.weight(1f).height(56.dp),
-                singleLine = true,
-                textStyle = MaterialTheme.typography.bodyMedium,
+            onValueChange = { onValueChange(it.filter(Char::isDigit)) },
+            placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
+            modifier = Modifier.weight(1f).height(56.dp),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            textStyle = MaterialTheme.typography.bodyMedium,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -743,6 +766,7 @@ private fun MortgageTermField(value: String, onValueChange: (String) -> Unit) {
             suffix = { Text(stringResource(R.string.year), style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(30.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -766,17 +790,22 @@ private fun FinanceField(
     suffix: String? = null,
     modifier: Modifier = Modifier,
     showInfo: Boolean = true,
+    formatAsAmount: Boolean = false,
 ) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(modifier, verticalArrangement = Arrangement.SpaceBetween) {
         FieldLabel(label, showInfo)
         OutlinedTextField(
             value = value,
-            onValueChange = { onValueChange(it.filter { char -> char.isDigit() || char == '.' }) },
+            onValueChange = {
+                val filtered = it.filter { char -> char.isDigit() || char == '.' || (formatAsAmount && char == ',') }
+                onValueChange(if (formatAsAmount) formatAmountInput(filtered) else filtered)
+            },
             placeholder = { Text("0", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF9BAEB6)) },
             prefix = { prefix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
             suffix = { suffix?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF8BA1AA)) } },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(30.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -800,7 +829,7 @@ fun ResultScreen(id: Long, onBack: () -> Unit, onCompare: (CalculatorType?) -> U
     val currencyCode = loanCurrencyCode(item?.inputJson.orEmpty())
     val startDate = inputValue(item?.inputJson.orEmpty(), "startDate")?.toLongOrNull()
     val termMonths = inputValue(item?.inputJson.orEmpty(), "months")?.toIntOrNull()
-    val payoffMonths = entries.firstOrNull { it.first.equals("Payoff months", ignoreCase = true) }?.second?.toDoubleOrNull()?.toInt()
+    val payoffMonths = entries.firstOrNull { it.first.equals("Payoff months", ignoreCase = true) }?.second?.let(::parseNumber)?.toInt()
     val calculatorTitle = item?.let { calculatorLabel(CalculatorType.fromKey(it.calculatorType)) }
     Scaffold(topBar = { FinanceTopBar(stringResource(R.string.calculation_result), calculatorTitle, onBack, compact = true) }) { padding ->
         LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -862,7 +891,7 @@ private fun ResultDateRow(label: String, value: String) {
 @Composable
 fun HistoryScreen(onBack: () -> Unit, onOpen: (Long) -> Unit, viewModel: FinanceViewModel = hiltViewModel()) {
     val history by viewModel.history.collectAsState()
-    Scaffold(topBar = { SimpleTopBar(stringResource(R.string.history), onBack) }) { padding ->
+    Scaffold(topBar = { FinanceTopBar(stringResource(R.string.history), onBack = onBack, compact = true) }) { padding ->
         if (history.isEmpty()) Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(stringResource(R.string.no_saved_calculations)) }
         else LazyColumn(Modifier.padding(padding).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(history) { item ->

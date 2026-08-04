@@ -35,6 +35,14 @@
     <string name="calculator">Calculadora</string>
     <string name="investment_history">Investimento</string>
     <string name="delete_selected">Excluir selecionados (%1$d)</string>
+    <string name="delete_history_title">Excluir histórico de cálculos?</string>
+    <string name="delete_history_message">Tem certeza de que deseja excluir %1$d cálculos selecionados? Esta ação não pode ser desfeita.</string>
+    <string name="clear_history_title">Limpar histórico de cálculos?</string>
+    <string name="clear_history_message">Tem certeza de que deseja excluir todos os cálculos salvos? Esta ação não pode ser desfeita.</string>
+    <string name="cancel_action">Cancelar</string>
+    <string name="delete_action">Excluir</string>
+    <string name="history_deleted">%1$d cálculos excluídos com sucesso.</string>
+    <string name="history_cleared">Histórico de cálculos limpo com sucesso.</string>
     <string name="settings">Configurações</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">Limpar histórico de cálculos</string>

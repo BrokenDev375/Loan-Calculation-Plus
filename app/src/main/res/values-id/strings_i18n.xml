@@ -35,6 +35,14 @@
     <string name="calculator">Kalkulator</string>
     <string name="investment_history">Investasi</string>
     <string name="delete_selected">Hapus yang dipilih (%1$d)</string>
+    <string name="delete_history_title">Hapus riwayat perhitungan?</string>
+    <string name="delete_history_message">Yakin ingin menghapus %1$d perhitungan yang dipilih? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="clear_history_title">Kosongkan riwayat perhitungan?</string>
+    <string name="clear_history_message">Yakin ingin menghapus semua perhitungan yang tersimpan? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="cancel_action">Batalkan</string>
+    <string name="delete_action">Hapus</string>
+    <string name="history_deleted">%1$d perhitungan berhasil dihapus.</string>
+    <string name="history_cleared">Riwayat perhitungan berhasil dihapus.</string>
     <string name="settings">Pengaturan</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">Hapus riwayat perhitungan</string>

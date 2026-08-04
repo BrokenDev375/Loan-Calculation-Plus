@@ -35,6 +35,14 @@
     <string name="calculator">Rechner</string>
     <string name="investment_history">Anlage</string>
     <string name="delete_selected">Ausgewählte löschen (%1$d)</string>
+    <string name="delete_history_title">Berechnungsverlauf löschen?</string>
+    <string name="delete_history_message">Möchten Sie wirklich %1$d ausgewählte Berechnungen löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="clear_history_title">Berechnungsverlauf leeren?</string>
+    <string name="clear_history_message">Möchten Sie wirklich alle gespeicherten Berechnungen löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="cancel_action">Abbrechen</string>
+    <string name="delete_action">Löschen</string>
+    <string name="history_deleted">%1$d Berechnungen erfolgreich gelöscht.</string>
+    <string name="history_cleared">Berechnungsverlauf erfolgreich geleert.</string>
     <string name="settings">Einstellungen</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">Berechnungsverlauf löschen</string>

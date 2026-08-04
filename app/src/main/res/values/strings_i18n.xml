@@ -122,6 +122,14 @@
     <string name="select_history">Select history</string>
     <string name="exit_selection">Exit selection mode</string>
     <string name="delete_selected">Delete selected (%1$d)</string>
+    <string name="delete_history_title">Delete calculation history?</string>
+    <string name="delete_history_message">Are you sure you want to delete %1$d selected calculation(s)? This action cannot be undone.</string>
+    <string name="clear_history_title">Clear calculation history?</string>
+    <string name="clear_history_message">Are you sure you want to delete all saved calculations? This action cannot be undone.</string>
+    <string name="cancel_action">Cancel</string>
+    <string name="delete_action">Delete</string>
+    <string name="history_deleted">%1$d calculation(s) deleted successfully.</string>
+    <string name="history_cleared">Calculation history cleared successfully.</string>
     <string name="no_calculator_history">No calculator history records yet.</string>
     <string name="no_investment_history">No investment history records yet.</string>
 

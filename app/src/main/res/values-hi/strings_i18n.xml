@@ -35,6 +35,14 @@
     <string name="calculator">कैलकुलेटर</string>
     <string name="investment_history">निवेश</string>
     <string name="delete_selected">चयनित हटाएं (%1$d)</string>
+    <string name="delete_history_title">गणना इतिहास हटाएं?</string>
+    <string name="delete_history_message">क्या आप वाकई %1$d चयनित गणनाएं हटाना चाहते हैं? इस कार्रवाई को पूर्ववत नहीं किया जा सकता।</string>
+    <string name="clear_history_title">गणना इतिहास साफ़ करें?</string>
+    <string name="clear_history_message">क्या आप वाकई सभी सहेजी गई गणनाएं हटाना चाहते हैं? इस कार्रवाई को पूर्ववत नहीं किया जा सकता।</string>
+    <string name="cancel_action">रद्द करें</string>
+    <string name="delete_action">हटाएं</string>
+    <string name="history_deleted">%1$d गणनाएं सफलतापूर्वक हटाई गईं।</string>
+    <string name="history_cleared">गणना इतिहास सफलतापूर्वक साफ़ किया गया।</string>
     <string name="settings">सेटिंग्स</string>
     <string name="premium">प्रीमियम</string>
     <string name="clear_calculation_history">गणना इतिहास साफ़ करें</string>

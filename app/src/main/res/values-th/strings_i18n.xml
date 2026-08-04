@@ -35,6 +35,14 @@
     <string name="calculator">เครื่องคำนวณ</string>
     <string name="investment_history">การลงทุน</string>
     <string name="delete_selected">ลบรายการที่เลือก (%1$d)</string>
+    <string name="delete_history_title">ลบประวัติการคำนวณหรือไม่?</string>
+    <string name="delete_history_message">คุณแน่ใจหรือไม่ว่าต้องการลบการคำนวณที่เลือก %1$d รายการ การดำเนินการนี้ย้อนกลับไม่ได้</string>
+    <string name="clear_history_title">ล้างประวัติการคำนวณหรือไม่?</string>
+    <string name="clear_history_message">คุณแน่ใจหรือไม่ว่าต้องการลบการคำนวณที่บันทึกไว้ทั้งหมด การดำเนินการนี้ย้อนกลับไม่ได้</string>
+    <string name="cancel_action">ยกเลิก</string>
+    <string name="delete_action">ลบ</string>
+    <string name="history_deleted">ลบการคำนวณ %1$d รายการเรียบร้อยแล้ว</string>
+    <string name="history_cleared">ล้างประวัติการคำนวณเรียบร้อยแล้ว</string>
     <string name="settings">การตั้งค่า</string>
     <string name="premium">Premium</string>
     <string name="clear_calculation_history">ล้างประวัติการคำนวณ</string>

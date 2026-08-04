@@ -35,6 +35,14 @@
     <string name="calculator">الحاسبة</string>
     <string name="investment_history">الاستثمار</string>
     <string name="delete_selected">حذف المحدد (%1$d)</string>
+    <string name="delete_history_title">حذف سجل الحسابات؟</string>
+    <string name="delete_history_message">هل أنت متأكد أنك تريد حذف %1$d من الحسابات المحددة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="clear_history_title">مسح سجل الحسابات؟</string>
+    <string name="clear_history_message">هل أنت متأكد أنك تريد حذف جميع الحسابات المحفوظة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="cancel_action">إلغاء</string>
+    <string name="delete_action">حذف</string>
+    <string name="history_deleted">تم حذف %1$d من الحسابات بنجاح.</string>
+    <string name="history_cleared">تم مسح سجل الحسابات بنجاح.</string>
     <string name="settings">الإعدادات</string>
     <string name="premium">مميز</string>
     <string name="clear_calculation_history">مسح سجل الحسابات</string>

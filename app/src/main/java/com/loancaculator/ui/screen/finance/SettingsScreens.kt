@@ -22,11 +22,20 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +49,7 @@ import com.loancaculator.R
 import com.loancaculator.ui.components.findActivity
 import com.loancaculator.advertisement.NativeAdSlot
 import com.loancaculator.ui.screen.language.MyLanguageActivity
+import kotlinx.coroutines.launch
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -49,7 +59,15 @@ import androidx.compose.material.icons.filled.Star
 fun FinanceSettingsScreen(onNavigate: (String) -> Unit, onCurrency: () -> Unit, viewModel: FinanceViewModel) {
     val context = LocalContext.current
     val baseCurrency = AppStorage.exchangeBaseCurrency(context)
-    Scaffold(topBar = { FinanceTopBar(stringResource(R.string.nav_settings), compact = true) }, bottomBar = { FinanceBottomBar("setting", onNavigate) }) { padding ->
+    var showClearHistoryDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val historyClearedMessage = stringResource(R.string.history_cleared)
+    Scaffold(
+        topBar = { FinanceTopBar(stringResource(R.string.nav_settings), compact = true) },
+        bottomBar = { FinanceBottomBar("setting", onNavigate) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,7 +97,7 @@ fun FinanceSettingsScreen(onNavigate: (String) -> Unit, onCurrency: () -> Unit, 
                 }
                 SettingRow(Icons.Default.Notifications, stringResource(R.string.notifications), stringResource(R.string.notifications_description))
                 SettingRow(Icons.Default.Lock, stringResource(R.string.privacy), stringResource(R.string.privacy_description))
-                Button(onClick = { viewModel.clearHistory() }, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp)) {
+                Button(onClick = { showClearHistoryDialog = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp)) {
                     Icon(Icons.Default.Delete, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
                     Text(stringResource(R.string.clear_calculation_history))
@@ -92,6 +110,32 @@ fun FinanceSettingsScreen(onNavigate: (String) -> Unit, onCurrency: () -> Unit, 
                 style = MaterialTheme.typography.bodySmall,
             )
         }
+    }
+
+    if (showClearHistoryDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearHistoryDialog = false },
+            title = { Text(stringResource(R.string.clear_history_title)) },
+            text = { Text(stringResource(R.string.clear_history_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.clearHistory()
+                        showClearHistoryDialog = false
+                        scope.launch {
+                            snackbarHostState.showSnackbar(historyClearedMessage)
+                        }
+                    },
+                ) {
+                    Text(stringResource(R.string.delete_action), color = Color(0xFFC24545))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearHistoryDialog = false }) {
+                    Text(stringResource(R.string.cancel_action))
+                }
+            },
+        )
     }
 }
 

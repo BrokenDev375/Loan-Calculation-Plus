@@ -35,6 +35,14 @@
     <string name="calculator">計算</string>
     <string name="investment_history">投資</string>
     <string name="delete_selected">選択項目を削除 (%1$d)</string>
+    <string name="delete_history_title">計算履歴を削除しますか？</string>
+    <string name="delete_history_message">選択した%1$d件の計算を削除しますか？この操作は元に戻せません。</string>
+    <string name="clear_history_title">計算履歴を消去しますか？</string>
+    <string name="clear_history_message">保存されているすべての計算を削除しますか？この操作は元に戻せません。</string>
+    <string name="cancel_action">キャンセル</string>
+    <string name="delete_action">削除</string>
+    <string name="history_deleted">%1$d件の計算を削除しました。</string>
+    <string name="history_cleared">計算履歴を削除しました。</string>
     <string name="settings">設定</string>
     <string name="premium">プレミアム</string>
     <string name="clear_calculation_history">計算履歴を消去</string>
